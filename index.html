@@ -142,7 +142,10 @@ tr.dim td{opacity:.28}
   <button class="st active" onclick="setStep('p1','t11',this)">P1 &mdash; T1.1 <span class="sb sb-ok">Aprobado</span></button>
   <button class="st" onclick="setStep('p1','t12',this)">P1 &mdash; T1.2 <span class="sb sb-ok">Aprobado</span></button>
   <button class="st" onclick="setStep('p1','t13',this)">P1 &mdash; T1.3 <span class="sb sb-ok">Aprobado</span></button>
-  <button class="st" onclick="setStep('p2','t2',this)">P2 &mdash; Modelo <span class="sb sb-ok">Aprobado</span></button>
+  <button class="st" onclick="setStep('p2','t21',this)">P2 &mdash; T2.1 <span class="sb sb-ok">Aprobado</span></button>
+  <button class="st" onclick="setStep('p2','t22',this)">P2 &mdash; T2.2 <span class="sb sb-ok">Aprobado</span></button>
+  <button class="st" onclick="setStep('p2','t23',this)">P2 &mdash; T2.3 <span class="sb sb-ok">Aprobado</span></button>
+  <button class="st" onclick="setStep('p2','t24',this)">P2 &mdash; T2.4 <span class="sb sb-ok">Aprobado</span></button>
 </div>
 
 <div class="panels">
@@ -320,54 +323,100 @@ tr.dim td{opacity:.28}
 </div>
 
 
-<!-- ══ LEFT P2 ══ -->
-<div class="sc" id="left-p2-t2">
-<div class="plabel">Paso 2 &middot; Metodolog&iacute;a</div>
-<div class="ptitle">Arquitectura Funcional del PED</div>
-<div class="pdesc">El Paso 2 convierte el inventario est&aacute;tico de P1 en un modelo din&aacute;mico ejecutable. Produce la arquitectura funcional del PED: el conjunto de nodos, sus relaciones de interdependencia formalizadas y las ecuaciones que gobiernan su comportamiento. Al cerrar T2.4, el modelo est&aacute; listo para recibir perturbaciones en P6.</div>
-
-<h3>T2.1 &mdash; Nodos funcionales</h3>
-<p>Un nodo funcional es cualquier componente cuyo estado operativo puede influir en el de otros. Dos activos se agrupan si comparten funci&oacute;n, modo de fallo y tipo de ecuaci&oacute;n can&oacute;nica.</p>
+<!-- ══ LEFT P2 T2.1 ══ -->
+<div class="sc" id="left-p2-t21">
+<div class="plabel">Paso 2 &middot; Tarea 2.1 &middot; Metodolog&iacute;a</div>
+<div class="ptitle">Nodos funcionales</div>
+<div class="pdesc">El Paso 1 describe el PED como inventario de activos. T2.1 lo transforma en las unidades anal&iacute;ticas del modelo de interdependencias. Un nodo funcional es cualquier componente cuyo estado operativo puede influir en el de otros, independientemente de si tiene presencia f&iacute;sica.</div>
+<h3>Dos tipos de nodos</h3>
 <div class="tw"><table>
-<thead><tr><th>Tipo</th><th>Origen</th><th>Capa principal</th></tr></thead>
+<thead><tr><th>Tipo</th><th>Origen</th><th>Ejemplos</th><th>Capa principal</th></tr></thead>
 <tbody>
-<tr><td>F&iacute;sico</td><td>Inventario T1.2</td><td>PH, ICT</td></tr>
-<tr><td>No-f&iacute;sico</td><td>Interfaces externas T1.1</td><td>EC, GV, SO</td></tr>
+<tr><td>F&iacute;sico</td><td>Inventario T1.2</td><td>N_PV, N_bat, N_BT</td><td>PH, ICT</td></tr>
+<tr><td>No-f&iacute;sico</td><td>Interfaces T1.1</td><td>N_mkt, N_reg, N_soc</td><td>EC, GV, SO</td></tr>
 </tbody></table></div>
-<div class="co co-b"><strong>Granularidad</strong>Entre 10 y 30 nodos para PEDs t&iacute;picos. Por debajo de 10 se pierde resoluci&oacute;n para diagn&oacute;stico (P9). Por encima de 30 el esfuerzo de parametrizaci&oacute;n supera el beneficio anal&iacute;tico.</div>
+<h3>Criterio de agrupaci&oacute;n</h3>
+<p>Dos activos se agrupan en un &uacute;nico nodo si y solo si: (1) misma funci&oacute;n operativa, (2) modos de fallo estad&iacute;sticamente indistinguibles, y (3) ecuaciones de mismo tipo can&oacute;nico con par&aacute;metros sumables. Las tres condiciones deben cumplirse simult&aacute;neamente.</p>
+<div class="co co-b"><strong>Criterio de capas m&uacute;ltiples</strong>Un nodo se registra con su capa principal (la que determina su ecuaci&oacute;n de nivel 1). Las dependencias en otras capas se formalizan en T2.2 como tripletas &mdash; el nodo no se duplica.</div>
+<div class="co co-a"><strong>Granularidad</strong>Entre 10 y 30 nodos para PEDs t&iacute;picos. Por debajo de 10 se pierde resoluci&oacute;n para diagn&oacute;stico (P9). Por encima de 30 el esfuerzo de parametrizaci&oacute;n supera el beneficio anal&iacute;tico en la mayor&iacute;a de casos.</div>
+<h3>Criticidad heredada</h3>
+<p>Cada nodo hereda de T1.2 dos valores: <strong style="color:var(--t1)">nivel base</strong> (peor caso, independiente del contexto) y <strong style="color:var(--t1)">nivel contextual</strong> (funci&oacute;n de C-F/C-N/C-C y modificador +V). Ambos se registran porque tienen usos distintos en pasos posteriores.</p>
+<div class="of"><div class="oft">Output &rarr; T2.2</div>
+<div class="fr"><span class="fo">Lista de nodos</span><span class="fa">&rarr;</span><span class="fd">Insumo directo de T2.2 para construir tripletas y matrices W</span></div></div>
+</div>
 
-<h3>T2.2 &mdash; Interdependencias</h3>
-<p>Cada relaci&oacute;n se formaliza como tripleta <strong style="color:var(--t1)">(N_i &rarr; N_j)[capa, w_ij]</strong>. Las tripletas son el registro auditable; las matrices W son su representaci&oacute;n operativa para c&aacute;lculo.</p>
-<div class="co co-b"><strong>K_dep = I + E + P</strong> &mdash; &iacute;ndice ordinal de criticidad estructural<br>
-&bull; I: impacto funcional (1–3) &bull; E: exposici&oacute;n del nodo origen (1–3) &bull; P: potencial de cascada (1–3)<br>
-Umbral por defecto: K_dep &ge; 6 &rarr; dependencia cr&iacute;tica</div>
-
-<h3>T2.3 &mdash; Ecuaciones din&aacute;micas</h3>
+<!-- ══ LEFT P2 T2.2 ══ -->
+<div class="sc" id="left-p2-t22">
+<div class="plabel">Paso 2 &middot; Tarea 2.2 &middot; Metodolog&iacute;a</div>
+<div class="ptitle">Formalizaci&oacute;n de interdependencias</div>
+<div class="pdesc">Identifica, representa formalmente y cuantifica todas las relaciones de dependencia entre nodos en las cinco capas. Produce simult&aacute;neamente las tripletas (registro auditable), las matrices W (instrumento de c&aacute;lculo) y el &iacute;ndice K_dep (priorizaci&oacute;n de dependencias cr&iacute;ticas).</div>
+<h3>La tripleta como unidad de representaci&oacute;n</h3>
+<div class="cb" style="font-size:12px">(N_i &rarr; N_j) [capa, w_ij]</div>
+<p>Las tripletas son el registro auditable: permiten rastrear el origen de cada par&aacute;metro en las matrices y justificar cada relaci&oacute;n ante revisi&oacute;n.</p>
+<h3>Cuantificaci&oacute;n de w_ij</h3>
 <div class="tw"><table>
-<thead><tr><th>Nivel</th><th>Pregunta</th><th>Aplica a</th></tr></thead>
+<thead><tr><th>Capa</th><th>M&eacute;todo</th></tr></thead>
 <tbody>
-<tr><td>1 &mdash; Intra-nodo</td><td>&iquest;C&oacute;mo evoluciona cada nodo?</td><td>Todos los nodos f&iacute;sicos</td></tr>
-<tr><td>2 &mdash; Acoplamiento</td><td>&iquest;C&oacute;mo se propaga el efecto?</td><td>Capas PH e ICT</td></tr>
-<tr><td>3 &mdash; Moduladores</td><td>&iquest;C&oacute;mo modula el contexto?</td><td>Capas EC, GV, SO</td></tr>
+<tr><td>PH</td><td>w = flujo potencia N_i&rarr;N_j / capacidad total N_i</td></tr>
+<tr><td>ICT</td><td>w = fracci&oacute;n de funci&oacute;n perdida si N_i falla</td></tr>
+<tr><td>EC, GV, SO</td><td>Escala ordinal: 0.3 d&eacute;bil / 0.6 moderada / 1.0 total</td></tr>
 </tbody></table></div>
+<h3>&Iacute;ndice K_dep = I + E + P</h3>
+<div class="factors">
+  <div class="factor"><strong>I &mdash; Impacto</strong>3=colapso total / 2=degradado &gt;30% / 1=p&eacute;rdida &lt;30%</div>
+  <div class="factor"><strong>E &mdash; Exposici&oacute;n</strong>3=Cr&iacute;tico sin redundancia / 2=Importante con redundancia parcial / 1=Secundario</div>
+  <div class="factor"><strong>P &mdash; Propagaci&oacute;n</strong>3=&ge;3 nodos en cascada / 2=1&ndash;2 nodos / 1=ninguno</div>
+</div>
+<div class="co co-a"><strong>Umbral por defecto: K_dep &ge; 6 &rarr; dependencia cr&iacute;tica</strong>Corresponde al caso m&iacute;nimo en que al menos dos factores tienen puntuaci&oacute;n alta (&ge;2). El analista puede bajar el umbral a 5 en PEDs con alta vulnerabilidad estructural.</div>
+<div class="of"><div class="oft">Outputs &rarr; T2.3</div>
+<div class="fr"><span class="fo">Matrices W_PH &hellip; W_SO</span><span class="fa">&rarr;</span><span class="fd">P6 lee w_ij desde W en cada paso temporal &Delta;t de la simulaci&oacute;n</span></div></div>
+</div>
+
+<!-- ══ LEFT P2 T2.3 ══ -->
+<div class="sc" id="left-p2-t23">
+<div class="plabel">Paso 2 &middot; Tarea 2.3 &middot; Metodolog&iacute;a</div>
+<div class="ptitle">Ecuaciones din&aacute;micas y vector S(t)</div>
+<div class="pdesc">Formaliza matem&aacute;ticamente el comportamiento din&aacute;mico del sistema en tres niveles complementarios. Al completar T2.3 el modelo es ejecutable: P6 puede usar estas ecuaciones para simular el comportamiento bajo perturbaci&oacute;n en cada paso temporal &Delta;t.</div>
+<h3>Los tres niveles</h3>
+<div class="tw"><table>
+<thead><tr><th>Nivel</th><th>Pregunta</th><th>Capas</th></tr></thead>
+<tbody>
+<tr><td>1 &mdash; Intra-nodo</td><td>&iquest;C&oacute;mo evoluciona cada nodo por s&iacute; solo?</td><td>Todos los nodos f&iacute;sicos</td></tr>
+<tr><td>2 &mdash; Acoplamiento</td><td>&iquest;Cu&aacute;nto afecta el estado de N_i a N_j?</td><td>PH, ICT</td></tr>
+<tr><td>3 &mdash; Moduladores</td><td>&iquest;C&oacute;mo modula el contexto la demanda?</td><td>EC, GV, SO</td></tr>
+</tbody></table></div>
+<h3>Nivel 2 &mdash; ecuaci&oacute;n de acoplamiento</h3>
+<div class="cb" style="font-size:11.5px">x<sub>j,ef</sub>(t) = x<sub>j,nom</sub>(t) &times; [1 &minus; w<sub>ij</sub> &times; (1 &minus; &phi;<sub>i</sub>(t))]</div>
+<p style="font-size:12px;color:var(--t3)">Ref: Ouyang (2014) Reliability Eng. &amp; System Safety 121. &phi;<sub>i</sub>=1: sin efecto. &phi;<sub>i</sub>=0, w=1: N_j colapsa.</p>
+<h3>Nivel 3 &mdash; moduladores</h3>
 <div class="cb" style="font-size:11px">
-<span class="cc">// Nivel 2 — propagaci&oacute;n (Ouyang 2014)</span><br>
-<span class="cv">x_j,ef</span>(t) = <span class="cv">x_j,nom</span>(t) &times; [1 &minus; w_ij &times; (1 &minus; &phi;_i(t))]<br><br>
-<span class="cc">// Nivel 3 — modulador econ&oacute;mico (Aalami et al. 2010)</span><br>
-<span class="cv">f_EC</span>(t) = 1 + &epsilon; &times; (c_E(t) &minus; c_E,ref) / c_E,ref<br><br>
-<span class="cc">// Nivel 3 — modulador social (Staffell et al. 2023)</span><br>
-<span class="cv">f_SO</span>(t) = 1 + &gamma;_h &times; max(0, T_h &minus; T_ext) + &gamma;_c &times; max(0, T_ext &minus; T_c)
+<span class="cc">// EC &mdash; elasticidad precio (Aalami et al. 2010, Ec.12)</span><br>
+f_EC(t) = 1 + &epsilon; &times; (c_E &minus; c_E,ref) / c_E,ref<br><br>
+<span class="cc">// SO &mdash; temperatura-demanda (Staffell et al. 2023, Ecs.7-8)</span><br>
+f_SO(t) = 1 + &gamma;<sub>h</sub>&times;max(0,T<sub>h</sub>&minus;T<sub>ext</sub>) + &gamma;<sub>c</sub>&times;max(0,T<sub>ext</sub>&minus;T<sub>c</sub>)
+</div>
+<h3>Vector de estado S(t)</h3>
+<p>Definici&oacute;n estructural aqu&iacute;; valores concretos (S<sub>0</sub>) en P4 por escenario. Requisito: al menos una variable por cada dimensi&oacute;n R_D y por cada nodo f&iacute;sico.</p>
 </div>
 
-<h3>T2.4 &mdash; Verificaci&oacute;n de coherencia</h3>
-<p>Auditor&iacute;a de 6 criterios antes de avanzar a Fase 2: consistencia de nodos, capas, pesos, cobertura de nodos cr&iacute;ticos, cobertura de S(t) y consistencia de plantillas. El modelo no es ejecutable hasta que los 6 criterios se cumplen.</p>
-
-<div class="of">
-<div class="oft">Output integrador &rarr; Fase 2</div>
-<div class="fr"><span class="fo">Arquitectura Funcional</span><span class="fa">&rarr;</span><span class="fd">P3 (contingencias), P5 (Policy Book), P6 (simulaci&oacute;n), P7 (m&eacute;tricas), P9 (diagn&oacute;stico), P10 (redise&ntilde;o)</span></div>
+<!-- ══ LEFT P2 T2.4 ══ -->
+<div class="sc" id="left-p2-t24">
+<div class="plabel">Paso 2 &middot; Tarea 2.4 &middot; Metodolog&iacute;a</div>
+<div class="ptitle">Verificaci&oacute;n de coherencia del modelo</div>
+<div class="pdesc">Auditor&iacute;a estructurada del modelo completo antes de su uso en fases siguientes. No produce contenido nuevo &mdash; garantiza consistencia interna. Un modelo con nodos aislados, variables faltantes en S(t) o inconsistencias entre tripletas y matrices producir&aacute; resultados inv&aacute;lidos en P6.</div>
+<h3>Los 6 criterios</h3>
+<div class="tw"><table>
+<thead><tr><th>Criterio</th><th>Qu&eacute; se verifica</th><th>Si falla</th></tr></thead>
+<tbody>
+<tr><td>1 &mdash; Consistencia de nodos</td><td>Todos los nodos de tripletas existen en T2.1</td><td>Corregir T2.1 o tripletas</td></tr>
+<tr><td>2 &mdash; Consistencia de capas</td><td>Cada tripleta est&aacute; en la matriz W correcta</td><td>Corregir asignaci&oacute;n de capa</td></tr>
+<tr><td>3 &mdash; Consistencia de pesos</td><td>w_ij en tripletas = valores en matrices W</td><td>Corregir discrepancia</td></tr>
+<tr><td>4 &mdash; Cobertura de Cr&iacute;ticos</td><td>Ning&uacute;n nodo Cr&iacute;tico aislado</td><td>Revisar omisi&oacute;n</td></tr>
+<tr><td>5 &mdash; Cobertura de S(t)</td><td>Al menos una variable por dimensi&oacute;n R_D</td><td>A&ntilde;adir variable faltante</td></tr>
+<tr><td>6 &mdash; Consistencia de plantillas</td><td>Cada nodo f&iacute;sico tiene ecuaci&oacute;n nivel 1</td><td>Asignar plantilla faltante</td></tr>
+</tbody></table></div>
+<div class="co co-a"><strong>Regla de cierre de la Fase 1</strong>El analista no puede avanzar a la Fase 2 (P3) hasta que T2.4 confirme los 6 criterios sin excepci&oacute;n.</div>
 </div>
-</div>
-
 </div><!-- /panel-left -->
 
 <!-- ════════════════ RIGHT PANEL ════════════════ -->
@@ -643,36 +692,106 @@ Cada uno requiere per&iacute;odo, estado inicial y horizonte distintos.</div>
 &bull; Per&iacute;odo de referencia: a determinar por tipo de contingencia en P3/P4</div>
 </div>
 
-<!-- ══ RIGHT P2 ══ -->
-<div class="sc" id="right-p2-t2">
+<!-- ══ RIGHT P2 T2.1 ══ -->
+<div class="sc" id="right-p2-t21">
 <div class="exh">
   <span class="vvb">Valle Verde</span>
-  <div><div class="plabel">Modelo funcional &middot; PED Valle Verde</div>
-  <div style="font-size:17px;font-weight:600;color:var(--t1)">Arquitectura de interdependencias</div></div>
+  <div><div class="plabel">Caso aplicativo &middot; 13 nodos funcionales</div>
+  <div style="font-size:17px;font-weight:600;color:var(--t1)">T2.1 &mdash; Inventario de nodos</div></div>
+</div>
+<div class="tw"><table>
+<thead><tr><th>ID</th><th>Nombre</th><th>Tipo</th><th>Activos</th><th>Capa</th><th>Crit.</th><th>Ecuaci&oacute;n L1</th></tr></thead>
+<tbody>
+<tr><td>N_PV</td><td>Generaci&oacute;n FV</td><td>F&iacute;s.</td><td>A01</td><td>PH</td><td><span class="tag ti">I</span></td><td>Tipo 1 — FV</td></tr>
+<tr><td>N_bat</td><td>BESS comunit.</td><td>F&iacute;s.</td><td>A02</td><td>PH</td><td><span class="tag ti">I</span></td><td>Tipo 2 — BESS</td></tr>
+<tr><td>N_HP</td><td>Bomba calor A/A</td><td>F&iacute;s.</td><td>A03</td><td>PH</td><td><span class="tag ti">I</span></td><td>Tipo 7 — Control</td></tr>
+<tr><td>N_TES</td><td>Acum. t&eacute;rmico</td><td>F&iacute;s.</td><td>A04</td><td>PH</td><td><span class="tag ti">I</span></td><td>Tipo 4 — TES</td></tr>
+<tr><td>N_BT</td><td>Red BT interna</td><td>F&iacute;s.</td><td>A05</td><td>PH</td><td><span class="tag tc">C</span></td><td>Tipo 6 — Balance</td></tr>
+<tr><td>N_EMS</td><td>EMS + SCADA</td><td>F&iacute;s.</td><td>A06+A07</td><td>ICT</td><td><span class="tag tc">C</span></td><td>Tipo 7 — Control</td></tr>
+<tr><td>N_grid</td><td>PAC Iberdrola</td><td>F&iacute;s.</td><td>A08</td><td>PH</td><td><span class="tag ti">I</span></td><td>Tipo 6 — Balance</td></tr>
+<tr><td>N_dem,res</td><td>Bloques res. &times;12</td><td>F&iacute;s.</td><td>A09</td><td>PH</td><td><span class="tag ti">I</span></td><td>Tipo 3+5</td></tr>
+<tr><td>N_dem,cs</td><td>Centro de salud</td><td>F&iacute;s.</td><td>A10</td><td>PH</td><td><span class="tag tc">C</span></td><td>Tipo 5 — Demanda</td></tr>
+<tr><td>N_dem,col</td><td>Colegio p&uacute;blico</td><td>F&iacute;s.</td><td>A11</td><td>PH</td><td><span class="tag ti">I</span></td><td>Tipo 3+5</td></tr>
+<tr style="opacity:.7"><td>N_mkt</td><td>Mercado OMIE</td><td>No-f&iacute;s.</td><td>&mdash;</td><td>EC</td><td>&mdash;</td><td>f_EC modulador</td></tr>
+<tr style="opacity:.7"><td>N_reg</td><td>Regulador</td><td>No-f&iacute;s.</td><td>&mdash;</td><td>GV</td><td>&mdash;</td><td>&delta;_GV modulador</td></tr>
+<tr style="opacity:.7"><td>N_soc</td><td>Usuarios</td><td>No-f&iacute;s.</td><td>&mdash;</td><td>SO</td><td>&mdash;</td><td>f_SO modulador</td></tr>
+</tbody></table></div>
+<div class="co co-g"><strong>Decisi&oacute;n de agrupaci&oacute;n clave</strong>A06+A07 (EMS+SCADA) &rarr; nodo &uacute;nico N_EMS: misma funci&oacute;n de control, fallan conjuntamente ante ciberataque, comparten ecuaci&oacute;n &phi;<sub>EMS</sub>. A09 (12 bloques) &rarr; nodo &uacute;nico N_dem,res: demanda RC sumable, respuesta homog&eacute;nea a corte de red.</div>
 </div>
 
-<p style="font-size:12.5px;color:var(--t2);margin-bottom:10px">Haz clic en un nodo o arista para ver sus propiedades. Filtra capas con los botones. Las aristas gruesas indican K_dep &ge; 6 (dependencia cr&iacute;tica).</p>
-
-<!-- Layer filters -->
-<div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px" id="layer-filters">
-  <button class="lf-btn active" data-layer="PH" onclick="toggleLayer('PH',this)" style="background:rgba(16,185,129,0.12);color:#6ee7b7;border:1px solid rgba(16,185,129,0.3);padding:3px 10px;border-radius:4px;font-family:var(--f);font-size:11px;font-weight:600;cursor:pointer">PH F&iacute;sica</button>
-  <button class="lf-btn active" data-layer="ICT" onclick="toggleLayer('ICT',this)" style="background:rgba(59,130,246,0.12);color:#93c5fd;border:1px solid rgba(59,130,246,0.3);padding:3px 10px;border-radius:4px;font-family:var(--f);font-size:11px;font-weight:600;cursor:pointer">ICT Control</button>
-  <button class="lf-btn active" data-layer="EC" onclick="toggleLayer('EC',this)" style="background:rgba(245,158,11,0.12);color:#fcd34d;border:1px solid rgba(245,158,11,0.3);padding:3px 10px;border-radius:4px;font-family:var(--f);font-size:11px;font-weight:600;cursor:pointer">EC Econ&oacute;mica</button>
-  <button class="lf-btn active" data-layer="GV" onclick="toggleLayer('GV',this)" style="background:rgba(167,139,250,0.12);color:#c4b5fd;border:1px solid rgba(167,139,250,0.3);padding:3px 10px;border-radius:4px;font-family:var(--f);font-size:11px;font-weight:600;cursor:pointer">GV Gobernanza</button>
-  <button class="lf-btn active" data-layer="SO" onclick="toggleLayer('SO',this)" style="background:rgba(244,114,182,0.12);color:#f9a8d4;border:1px solid rgba(244,114,182,0.3);padding:3px 10px;border-radius:4px;font-family:var(--f);font-size:11px;font-weight:600;cursor:pointer">SO Social</button>
+<!-- ══ RIGHT P2 T2.2 ══ -->
+<div class="sc" id="right-p2-t22">
+<div class="exh">
+  <span class="vvb">Valle Verde</span>
+  <div><div class="plabel">Caso aplicativo &middot; 20 tripletas &middot; 5 capas</div>
+  <div style="font-size:17px;font-weight:600;color:var(--t1)">T2.2 &mdash; Modelo de interdependencias</div></div>
+</div>
+<p style="font-size:12.5px;color:var(--t2);margin-bottom:8px">Arrastra nodos. Filtra capas. Clic en nodo o arista para ver propiedades.</p>
+<div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px" id="layer-filters">
+  <button class="lf-btn lf-active" data-layer="PH"  onclick="toggleLayer('PH',this)"  style="background:rgba(16,185,129,0.12);color:#6ee7b7;border:1px solid rgba(16,185,129,0.3);padding:3px 10px;border-radius:4px;font-family:var(--f);font-size:11px;font-weight:600;cursor:pointer">&#9632; PH F&iacute;sica</button>
+  <button class="lf-btn lf-active" data-layer="ICT" onclick="toggleLayer('ICT',this)" style="background:rgba(59,130,246,0.12);color:#93c5fd;border:1px solid rgba(59,130,246,0.3);padding:3px 10px;border-radius:4px;font-family:var(--f);font-size:11px;font-weight:600;cursor:pointer">&#9632; ICT Control</button>
+  <button class="lf-btn lf-active" data-layer="EC"  onclick="toggleLayer('EC',this)"  style="background:rgba(245,158,11,0.12);color:#fcd34d;border:1px solid rgba(245,158,11,0.3);padding:3px 10px;border-radius:4px;font-family:var(--f);font-size:11px;font-weight:600;cursor:pointer">&#9632; EC Econ&oacute;mica</button>
+  <button class="lf-btn lf-active" data-layer="GV"  onclick="toggleLayer('GV',this)"  style="background:rgba(167,139,250,0.12);color:#c4b5fd;border:1px solid rgba(167,139,250,0.3);padding:3px 10px;border-radius:4px;font-family:var(--f);font-size:11px;font-weight:600;cursor:pointer">&#9632; GV Gobernanza</button>
+  <button class="lf-btn lf-active" data-layer="SO"  onclick="toggleLayer('SO',this)"  style="background:rgba(244,114,182,0.12);color:#f9a8d4;border:1px solid rgba(244,114,182,0.3);padding:3px 10px;border-radius:4px;font-family:var(--f);font-size:11px;font-weight:600;cursor:pointer">&#9632; SO Social</button>
+</div>
+<div style="position:relative;border:1px solid var(--b1);border-radius:6px;background:#0d0d0d;overflow:hidden;cursor:grab">
+  <svg id="net-svg" width="100%" viewBox="0 0 580 400" style="display:block"></svg>
+</div>
+<div id="net-info" style="margin-top:8px;padding:9px 13px;background:var(--s2);border:1px solid var(--b1);border-radius:6px;font-size:12px;color:var(--t2);min-height:48px;line-height:1.7">
+  <span style="color:var(--t3);font-size:11px">Selecciona un nodo o arista &mdash;</span>
+</div>
+<div class="co co-a" style="margin-top:10px"><strong>12 dependencias cr&iacute;ticas (K_dep &ge; 6)</strong>N_BT y N_EMS aparecen en 9 de las 12. Son los nodos estructuralmente m&aacute;s vulnerables &mdash; coincide con la clasificaci&oacute;n Cr&iacute;tico de T1.2.</div>
 </div>
 
-<!-- Network canvas -->
-<div style="position:relative;border:1px solid var(--b1);border-radius:6px;background:var(--black);overflow:hidden">
-  <svg id="net-svg" width="100%" viewBox="0 0 600 420" style="display:block"></svg>
+<!-- ══ RIGHT P2 T2.3 ══ -->
+<div class="sc" id="right-p2-t23">
+<div class="exh">
+  <span class="vvb">Valle Verde</span>
+  <div><div class="plabel">Caso aplicativo &middot; Ecuaciones instanciadas</div>
+  <div style="font-size:17px;font-weight:600;color:var(--t1)">T2.3 &mdash; Ecuaciones y vector S(t)</div></div>
+</div>
+<h3>Nivel 1 &mdash; plantillas instanciadas</h3>
+<div class="tw"><table>
+<thead><tr><th>Nodo</th><th>Ecuaci&oacute;n instanciada</th><th>Par&aacute;metros Valle Verde</th></tr></thead>
+<tbody>
+<tr><td>N_PV</td><td>P_gen,PV = 280&middot;CF(t)&middot;&phi;_PV(t) kW</td><td>P_peak=280 kWp, CF(t) desde TMY Madrid</td></tr>
+<tr><td>N_bat</td><td>E_bat(t+&Delta;t)=E_bat+[P_chg&middot;0.93&minus;P_dis/0.93]&middot;&Delta;t</td><td>E_max=400 kWh, SoC_min=0.10</td></tr>
+<tr><td>N_HP</td><td>Q_HP = COP&middot;P_el,HP = 3.2&middot;P_el,HP</td><td>COP=3.2, P_nom=120 kW, T_op_min=&minus;5&deg;C</td></tr>
+<tr><td>N_TES</td><td>E_TES(t+&Delta;t) = E_TES + [Q_HP&minus;Q_dis&minus;UA_TES&middot;&Delta;T]&middot;&Delta;t</td><td>E_max=8 MWh, T_min=55&deg;C</td></tr>
+<tr><td>N_BT</td><td>P_grid = P_dem &minus; P_gen,PV &minus; (P_dis&minus;P_chg)</td><td>Cap_imp=200 kW, Cap_exp=150 kW</td></tr>
+<tr><td>N_EMS</td><td>&phi;_EMS(t) &isin; [0,1]; mode = f(SoC, P_grid, T_int, c_E)</td><td>Latencia=1 s, Disp=99.5%, modo_deg=s&iacute;</td></tr>
+<tr><td>N_dem,res</td><td>dT_int/dt=[Q_HP&minus;28&middot;(T_int&minus;T_ext)+Q_int]/320; P_dem,el=P_ref&middot;f_SO&middot;f_EC</td><td>C_th=320 kWh/&deg;C, UA=28 kW/&deg;C (A09)</td></tr>
+</tbody></table></div>
+<h3>Vector S(t) &mdash; Valle Verde</h3>
+<div class="cb" style="font-size:11px">
+S(t) = [<span class="cv">P_gen,PV</span>(t), <span class="cv">E_bat</span>(t), <span class="cv">T_TES</span>(t), <span class="cv">&phi;_HP</span>(t),<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cv">P_grid</span>(t), <span class="cv">T_int</span>(t), <span class="cv">P_dem,cs</span>(t),<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cv">c_E</span>(t), <span class="cv">&phi;_EMS</span>(t), <span class="cv">GHG</span>(t)]
+</div>
+<p style="font-size:11px;color:var(--t3)">Cobertura: R_E (P_gen,PV, E_bat, P_grid) &middot; R_S (T_int, P_dem,cs, T_TES) &middot; R_Ec (c_E, P_grid) &middot; R_Env (GHG, P_gen,PV) &middot; R_Op (&phi;_EMS, E_bat) &mdash; todas las dimensiones cubiertas &#10003;</p>
 </div>
 
-<!-- Info panel -->
-<div id="net-info" style="margin-top:10px;padding:10px 14px;background:var(--s2);border:1px solid var(--b1);border-radius:6px;font-size:12px;color:var(--t2);min-height:52px;line-height:1.7">
-  <span style="color:var(--t3);font-size:11px">Selecciona un nodo o arista para ver sus propiedades &mdash;</span>
+<!-- ══ RIGHT P2 T2.4 ══ -->
+<div class="sc" id="right-p2-t24">
+<div class="exh">
+  <span class="vvb">Valle Verde</span>
+  <div><div class="plabel">Caso aplicativo &middot; Auditor&iacute;a de cierre</div>
+  <div style="font-size:17px;font-weight:600;color:var(--t1)">T2.4 &mdash; Verificaci&oacute;n de coherencia</div></div>
 </div>
+<div class="tw"><table>
+<thead><tr><th>Criterio</th><th>Resultado</th><th>Nota</th></tr></thead>
+<tbody>
+<tr><td>1 &mdash; Consistencia de nodos</td><td><span class="tag ts">&#10003; PASA</span></td><td>Los 13 nodos de tripletas existen en T2.1</td></tr>
+<tr><td>2 &mdash; Consistencia de capas</td><td><span class="tag ts">&#10003; PASA</span></td><td>PH: flujos f&iacute;sicos &middot; ICT: se&ntilde;ales control &middot; EC/GV/SO: moduladores</td></tr>
+<tr><td>3 &mdash; Consistencia de pesos</td><td><span class="tag ts">&#10003; PASA</span></td><td>w_ij en tripletas = valores en matrices W verificados</td></tr>
+<tr><td>4 &mdash; Cobertura Cr&iacute;ticos</td><td><span class="tag ts">&#10003; PASA</span></td><td>N_BT: 7 conexiones &middot; N_EMS: 7 conexiones &middot; N_dem,cs: 1 entrada (terminal, justificado)</td></tr>
+<tr><td>5 &mdash; Cobertura S(t)</td><td><span class="tag ts">&#10003; PASA</span></td><td>R_E, R_S, R_Ec, R_Env, R_Op &mdash; todas con al menos una variable</td></tr>
+<tr><td>6 &mdash; Plantillas nivel 1</td><td><span class="tag ts">&#10003; PASA</span></td><td>Nodos demanda con Tipo 3+5: dos variables de estado distintas (T_int, P_dem,el)</td></tr>
+</tbody></table></div>
+<div class="co co-g" style="margin-top:16px"><strong>&#10003; Regla de cierre satisfecha &mdash; 6/6 criterios cumplidos</strong>El modelo es internamente consistente. La Fase 1 est&aacute; cerrada. El sistema puede avanzar a la Fase 2 &mdash; Dise&ntilde;o de escenarios de perturbaci&oacute;n (Paso 3).</div>
+<div class="of" style="margin-top:16px"><div class="oft">Output integrador &rarr; Fase 2</div>
+<div class="fr"><span class="fo">Arquitectura Funcional del PED</span><span class="fa">&rarr;</span><span class="fd">P3 (contingencias), P5 (Policy Book), P6 (simulaci&oacute;n), P7 (m&eacute;tricas), P9 (diagn&oacute;stico), P10 (redise&ntilde;o)</span></div></div>
 </div>
-
 </div><!-- /panel-right -->
 </div><!-- /panels -->
 
@@ -984,6 +1103,325 @@ var _origSetStep = window.setStep;
 window.setStep = function(phase, step, el){
   _origSetStep(phase, step, el);
   if(phase==='p2' && !netBuilt){ buildNet(); netBuilt=true; }
+};
+
+
+// ═══════════════════════════════════════════════
+// FORCE-DIRECTED NETWORK — Valle Verde T2.2
+// ═══════════════════════════════════════════════
+var FD = {
+  W: 580, H: 400,
+  nodes: [
+    {id:'N_PV',    lbl:'N_PV',     sub:'FV cubiertas',    crit:'I', layer:'PH',  eq:'Tipo 1 — Gen. FV', assets:'A01'},
+    {id:'N_bat',   lbl:'N_bat',    sub:'BESS comunit.',   crit:'I', layer:'PH',  eq:'Tipo 2 — BESS',    assets:'A02'},
+    {id:'N_HP',    lbl:'N_HP',     sub:'Bomba calor',     crit:'I', layer:'PH',  eq:'Tipo 7 — Control', assets:'A03'},
+    {id:'N_TES',   lbl:'N_TES',    sub:'Acum. térmico',   crit:'I', layer:'PH',  eq:'Tipo 4 — TES',     assets:'A04'},
+    {id:'N_BT',    lbl:'N_BT',     sub:'Red BT interna',  crit:'C', layer:'PH',  eq:'Tipo 6 — Balance', assets:'A05'},
+    {id:'N_EMS',   lbl:'N_EMS',    sub:'EMS + SCADA',     crit:'C', layer:'ICT', eq:'Tipo 7 — Control', assets:'A06+A07'},
+    {id:'N_grid',  lbl:'N_grid',   sub:'PAC Iberdrola',   crit:'I', layer:'PH',  eq:'Tipo 6 — Balance', assets:'A08'},
+    {id:'N_dem_cs',lbl:'N_dem,cs', sub:'Centro salud',    crit:'C', layer:'PH',  eq:'Tipo 5 — Demanda', assets:'A10'},
+    {id:'N_dem_res',lbl:'N_dem,res',sub:'Bloques res.×12',crit:'I', layer:'PH',  eq:'Tipo 3+5',         assets:'A09'},
+    {id:'N_dem_col',lbl:'N_dem,col',sub:'Colegio público',crit:'I', layer:'PH',  eq:'Tipo 3+5',         assets:'A11'},
+    {id:'N_mkt',   lbl:'N_mkt',    sub:'Mercado OMIE',    crit:'-', layer:'EC',  eq:'f_EC modulador',   assets:'—'},
+    {id:'N_reg',   lbl:'N_reg',    sub:'Regulador',       crit:'-', layer:'GV',  eq:'δ_GV modulador',   assets:'—'},
+    {id:'N_soc',   lbl:'N_soc',    sub:'Usuarios',        crit:'-', layer:'SO',  eq:'f_SO modulador',   assets:'—'}
+  ],
+  edges: [
+    {s:'N_PV',    t:'N_BT',      layer:'PH',  w:0.70,K:7, just:'FV aporta ~70% de generación local'},
+    {s:'N_bat',   t:'N_BT',      layer:'PH',  w:0.60,K:7, just:'Batería cubre déficit FV; fallo nocturno→dependencia total de red'},
+    {s:'N_HP',    t:'N_TES',     layer:'PH',  w:0.80,K:7, just:'Bomba de calor es única fuente de carga del acumulador térmico'},
+    {s:'N_TES',   t:'N_dem_res', layer:'PH',  w:0.50,K:6, just:'Acumulador suministra calefacción/ACS a residencial'},
+    {s:'N_TES',   t:'N_dem_col', layer:'PH',  w:0.50,K:5, just:'Acumulador suministra calefacción/ACS al colegio'},
+    {s:'N_BT',    t:'N_dem_res', layer:'PH',  w:1.00,K:8, just:'Red BT único camino de distribución eléctrica — sin redundancia'},
+    {s:'N_BT',    t:'N_dem_cs',  layer:'PH',  w:1.00,K:7, just:'Red BT único camino al centro de salud (carga crítica F1)'},
+    {s:'N_BT',    t:'N_dem_col', layer:'PH',  w:1.00,K:7, just:'Red BT único camino al colegio'},
+    {s:'N_BT',    t:'N_EMS',     layer:'PH',  w:0.60,K:9, just:'Fallo red BT apaga EMS → cascada total (K=9 máximo)'},
+    {s:'N_grid',  t:'N_BT',      layer:'PH',  w:0.60,K:7, just:'Red Iberdrola cubre déficit; corte fuerza operación en isla'},
+    {s:'N_EMS',   t:'N_bat',     layer:'ICT', w:1.00,K:9, just:'EMS controla despacho de batería; sin EMS→modo pasivo (K=9)'},
+    {s:'N_EMS',   t:'N_HP',      layer:'ICT', w:1.00,K:8, just:'EMS controla arranque/parada de bomba de calor'},
+    {s:'N_EMS',   t:'N_grid',    layer:'ICT', w:0.60,K:7, just:'EMS gestiona importación/exportación por PAC'},
+    {s:'N_EMS',   t:'N_PV',      layer:'ICT', w:0.30,K:5, just:'EMS monitoriza FV; FV opera autónomamente si EMS falla'},
+    {s:'N_mkt',   t:'N_EMS',     layer:'EC',  w:0.60,K:5, just:'Precio spot OMIE modula decisión de carga/descarga batería'},
+    {s:'N_mkt',   t:'N_dem_res', layer:'EC',  w:0.30,K:3, just:'Señal de precio influye en demanda residencial (efecto débil)'},
+    {s:'N_reg',   t:'N_grid',    layer:'GV',  w:0.60,K:5, just:'Regulador limita capacidad máxima de inyección a red'},
+    {s:'N_reg',   t:'N_EMS',     layer:'GV',  w:0.30,K:3, just:'Cambios regulatorios pueden requerir ajuste del Policy Book'},
+    {s:'N_soc',   t:'N_dem_res', layer:'SO',  w:0.60,K:5, just:'Ola de calor amplifica demanda residencial sobre perfil de referencia'},
+    {s:'N_soc',   t:'N_dem_col', layer:'SO',  w:0.60,K:4, just:'Idem colegio — efecto local sin cascada significativa'}
+  ]
+};
+
+var LC = {PH:'#10b981',ICT:'#3b82f6',EC:'#f59e0b',GV:'#a78bfa',SO:'#f472b6'};
+var CC = {C:'#ef4444',I:'#f59e0b','-':'#6ee7b7'};
+var activeLayers = {PH:true,ICT:true,EC:true,GV:true,SO:true};
+var fdNodes = [];
+var fdRunning = false;
+var fdBuilt = false;
+var dragNode = null, dragOff = {x:0,y:0};
+
+function fdInit(){
+  if(fdBuilt) return;
+  fdBuilt = true;
+  var svg = document.getElementById('net-svg');
+  if(!svg) return;
+  var W = FD.W, H = FD.H;
+
+  // init node positions — spiral layout for natural start
+  fdNodes = FD.nodes.map(function(n,i){
+    var angle = i * 2.4;
+    var r = 60 + i * 15;
+    return {
+      id: n.id, data: n,
+      x: W/2 + r*Math.cos(angle),
+      y: H/2 + r*Math.sin(angle),
+      vx: 0, vy: 0,
+      r: n.crit==='C' ? 22 : (n.layer==='PH'||n.layer==='ICT' ? 18 : 14),
+      shape: (n.layer==='EC'||n.layer==='GV'||n.layer==='SO') ? 'diamond' : 'circle'
+    };
+  });
+
+  buildSVG(svg, W, H);
+  fdRunning = true;
+  requestAnimationFrame(fdTick);
+}
+
+function buildSVG(svg, W, H){
+  svg.innerHTML = '';
+
+  // defs: markers
+  var defs = document.createElementNS('http://www.w3.org/2000/svg','defs');
+  Object.keys(LC).forEach(function(lyr){
+    var m = document.createElementNS('http://www.w3.org/2000/svg','marker');
+    m.setAttribute('id','m'+lyr); m.setAttribute('markerWidth','8'); m.setAttribute('markerHeight','8');
+    m.setAttribute('refX','7'); m.setAttribute('refY','3'); m.setAttribute('orient','auto');
+    var p = document.createElementNS('http://www.w3.org/2000/svg','polygon');
+    p.setAttribute('points','0 0,8 3,0 6'); p.setAttribute('fill',LC[lyr]);
+    m.appendChild(p); defs.appendChild(m);
+  });
+  svg.appendChild(defs);
+
+  var gEdge = document.createElementNS('http://www.w3.org/2000/svg','g');
+  gEdge.setAttribute('id','fd-edges'); svg.appendChild(gEdge);
+
+  var gNode = document.createElementNS('http://www.w3.org/2000/svg','g');
+  gNode.setAttribute('id','fd-nodes'); svg.appendChild(gNode);
+
+  // draw edges
+  FD.edges.forEach(function(e,i){
+    var col = LC[e.layer];
+    var isCrit = e.K >= 6;
+    var sw = isCrit ? e.w*3+2 : e.w*2+0.5;
+    var path = document.createElementNS('http://www.w3.org/2000/svg','path');
+    path.setAttribute('id','fe'+i);
+    path.setAttribute('class','fd-edge edge-'+e.layer);
+    path.setAttribute('fill','none');
+    path.setAttribute('stroke',col);
+    path.setAttribute('stroke-width',sw);
+    path.setAttribute('stroke-opacity', isCrit?'0.8':'0.35');
+    path.setAttribute('marker-end','url(#m'+e.layer+')');
+    path.style.cursor='pointer';
+    if(!activeLayers[e.layer]) path.style.display='none';
+    path.addEventListener('click',function(ev){ ev.stopPropagation(); showEdge(i); });
+    gEdge.appendChild(path);
+  });
+
+  // draw nodes
+  fdNodes.forEach(function(nd){
+    var col = CC[nd.data.crit];
+    var g = document.createElementNS('http://www.w3.org/2000/svg','g');
+    g.setAttribute('id','fn'+nd.id);
+    g.style.cursor='grab';
+
+    var shape;
+    if(nd.shape==='diamond'){
+      shape = document.createElementNS('http://www.w3.org/2000/svg','polygon');
+      shape.setAttribute('class','nd-shape');
+      shape.setAttribute('fill',hexRgba(col,0.15));
+      shape.setAttribute('stroke',col); shape.setAttribute('stroke-width','1.5');
+    } else {
+      shape = document.createElementNS('http://www.w3.org/2000/svg','circle');
+      shape.setAttribute('class','nd-shape');
+      shape.setAttribute('r',nd.r);
+      shape.setAttribute('fill',hexRgba(col,0.15));
+      shape.setAttribute('stroke',col);
+      shape.setAttribute('stroke-width', nd.data.crit==='C'?'2.5':'1.5');
+    }
+    g.appendChild(shape);
+
+    var txt = document.createElementNS('http://www.w3.org/2000/svg','text');
+    txt.setAttribute('class','nd-lbl');
+    txt.setAttribute('text-anchor','middle'); txt.setAttribute('dominant-baseline','middle');
+    txt.setAttribute('font-family','Inter,sans-serif');
+    txt.setAttribute('font-size', nd.data.crit==='C'?'9.5':'8.5');
+    txt.setAttribute('font-weight','700');
+    txt.setAttribute('fill',col); txt.setAttribute('pointer-events','none');
+    txt.textContent = nd.data.lbl;
+    g.appendChild(txt);
+
+    var sub = document.createElementNS('http://www.w3.org/2000/svg','text');
+    sub.setAttribute('class','nd-sub');
+    sub.setAttribute('text-anchor','middle');
+    sub.setAttribute('font-family','Inter,sans-serif');
+    sub.setAttribute('font-size','7'); sub.setAttribute('fill','rgba(255,255,255,0.3)');
+    sub.setAttribute('pointer-events','none');
+    sub.textContent = nd.data.sub;
+    g.appendChild(sub);
+
+    // drag
+    g.addEventListener('mousedown',function(ev){
+      ev.stopPropagation();
+      dragNode = nd;
+      var rect = svg.getBoundingClientRect();
+      var scx = FD.W / rect.width;
+      dragOff.x = ev.clientX * scx - nd.x;
+      dragOff.y = (ev.clientY - rect.top) * (FD.H/rect.height) - nd.y;
+      nd.pinned = true;
+      svg.style.cursor='grabbing';
+    });
+    g.addEventListener('click',function(ev){ ev.stopPropagation(); showNode(nd.id); });
+
+    gNode.appendChild(g);
+  });
+
+  svg.addEventListener('mousemove',function(ev){
+    if(!dragNode) return;
+    var rect = svg.getBoundingClientRect();
+    dragNode.x = ev.clientX*(FD.W/rect.width) - dragOff.x;
+    dragNode.y = (ev.clientY-rect.top)*(FD.H/rect.height) - dragOff.y;
+    dragNode.vx=0; dragNode.vy=0;
+  });
+  svg.addEventListener('mouseup',function(){ dragNode=null; svg.style.cursor='grab'; });
+  svg.addEventListener('mouseleave',function(){ dragNode=null; });
+}
+
+function fdTick(){
+  if(!fdRunning) return;
+  var nodes = fdNodes;
+  var edges = FD.edges;
+  var W = FD.W, H = FD.H;
+  var nodeMap = {};
+  nodes.forEach(function(n){ nodeMap[n.id]=n; });
+
+  // forces
+  nodes.forEach(function(a){
+    if(a.pinned && a===dragNode) return;
+    var fx=0, fy=0;
+
+    // repulsion all pairs
+    nodes.forEach(function(b){
+      if(b===a) return;
+      var dx=a.x-b.x, dy=a.y-b.y;
+      var d2 = dx*dx+dy*dy+0.01;
+      var d = Math.sqrt(d2);
+      var F = 4000/d2;
+      fx += F*dx/d; fy += F*dy/d;
+    });
+
+    // spring attraction along edges
+    edges.forEach(function(e){
+      var other = null;
+      if(e.s===a.id) other=nodeMap[e.t];
+      else if(e.t===a.id) other=nodeMap[e.s];
+      if(!other) return;
+      var dx=other.x-a.x, dy=other.y-a.y;
+      var d=Math.sqrt(dx*dx+dy*dy)+0.01;
+      var rest = 100 + (1-e.w)*60;
+      var F = 0.04*(d-rest);
+      fx += F*dx/d; fy += F*dy/d;
+    });
+
+    // center pull
+    fx += (W/2-a.x)*0.003;
+    fy += (H/2-a.y)*0.004;
+
+    a.vx = (a.vx + fx)*0.82;
+    a.vy = (a.vy + fy)*0.82;
+    if(!a.pinned){
+      a.x += a.vx; a.y += a.vy;
+    }
+    a.x = Math.max(a.r+4, Math.min(W-a.r-4, a.x));
+    a.y = Math.max(a.r+4, Math.min(H-a.r-20, a.y));
+  });
+
+  // release pin after drag ends
+  nodes.forEach(function(n){ if(n.pinned && n!==dragNode) n.pinned=false; });
+
+  // render
+  nodes.forEach(function(nd){
+    var g = document.getElementById('fn'+nd.id);
+    if(!g) return;
+    if(nd.shape==='diamond'){
+      var r=nd.r, pts=[nd.x+','+(nd.y-r),(nd.x+r)+','+nd.y,nd.x+','+(nd.y+r),(nd.x-r)+','+nd.y].join(' ');
+      var sh = g.querySelector('.nd-shape'); if(sh) sh.setAttribute('points',pts);
+    } else {
+      var sh = g.querySelector('.nd-shape');
+      if(sh){ sh.setAttribute('cx',nd.x); sh.setAttribute('cy',nd.y); }
+    }
+    var lbl=g.querySelector('.nd-lbl'); if(lbl){ lbl.setAttribute('x',nd.x); lbl.setAttribute('y',nd.y); }
+    var sub=g.querySelector('.nd-sub'); if(sub){ sub.setAttribute('x',nd.x); sub.setAttribute('y',nd.y+nd.r+10); }
+  });
+
+  var nodeMap2 = {};
+  nodes.forEach(function(n){ nodeMap2[n.id]=n; });
+  FD.edges.forEach(function(e,i){
+    var a=nodeMap2[e.s], b=nodeMap2[e.t];
+    if(!a||!b) return;
+    var path = document.getElementById('fe'+i);
+    if(!path) return;
+    var dx=b.x-a.x, dy=b.y-a.y;
+    var d=Math.sqrt(dx*dx+dy*dy)+0.01;
+    var br=b.r+6;
+    var ex=b.x-dx/d*br, ey=b.y-dy/d*br;
+    var mx=(a.x+b.x)/2 + (i%3-1)*20;
+    var my=(a.y+b.y)/2 + (i%2===0?15:-15);
+    path.setAttribute('d','M '+a.x+' '+a.y+' Q '+mx+' '+my+' '+ex+' '+ey);
+  });
+
+  requestAnimationFrame(fdTick);
+}
+
+function hexRgba(hex,a){
+  var r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
+  return 'rgba('+r+','+g+','+b+','+a+')';
+}
+
+function showNode(id){
+  var nd = fdNodes.find(function(n){ return n.id===id; });
+  if(!nd) return;
+  var col = CC[nd.data.crit];
+  var critLbl = {C:'<b style="color:#ef4444">Crítico</b>',I:'<b style="color:#f59e0b">Importante</b>','-':'<span style="color:#6ee7b7">No-físico</span>'};
+  var eo = FD.edges.filter(function(e){ return e.s===id; }).length;
+  var ei = FD.edges.filter(function(e){ return e.t===id; }).length;
+  document.getElementById('net-info').innerHTML =
+    '<b style="color:'+col+'">'+nd.data.lbl+'</b> — '+nd.data.sub+
+    ' &nbsp;|&nbsp; Capa: '+nd.data.layer+' &nbsp;|&nbsp; Criticidad: '+critLbl[nd.data.crit]+
+    '<br>Activos: '+nd.data.assets+' &nbsp;|&nbsp; Ecuación: '+nd.data.eq+
+    ' &nbsp;|&nbsp; Conexiones: '+eo+' salientes, '+ei+' entrantes';
+}
+
+function showEdge(i){
+  var e = FD.edges[i];
+  var col = LC[e.layer];
+  var crit = e.K>=6 ? ' <b style="color:'+col+'">▲ DEPENDENCIA CRÍTICA</b>' : '';
+  document.getElementById('net-info').innerHTML =
+    '<b style="color:'+col+'">'+e.s.replace('_','_')+'→'+e.t+'</b> ['+e.layer+', w='+e.w+']'+crit+
+    ' &nbsp;K_dep='+e.K+'<br>'+e.just;
+}
+
+function toggleLayer(lyr, btn){
+  activeLayers[lyr] = !activeLayers[lyr];
+  btn.style.opacity = activeLayers[lyr] ? '1' : '0.3';
+  document.querySelectorAll('.edge-'+lyr).forEach(function(el){
+    el.style.display = activeLayers[lyr] ? '' : 'none';
+  });
+}
+
+// hook into setStep to init diagram
+var _ss = window.setStep;
+window.setStep = function(phase, step, el){
+  _ss(phase, step, el);
+  if(phase==='p2' && step==='t22'){
+    setTimeout(function(){ fdInit(); }, 50);
+  }
 };
 
 </script>
