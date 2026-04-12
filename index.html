@@ -328,76 +328,203 @@ tr.dim td{opacity:.28}
 <div class="sc" id="left-p2-t21">
 <div class="plabel">Paso 2 &middot; Tarea 2.1 &middot; Metodolog&iacute;a</div>
 <div class="ptitle">Nodos funcionales</div>
-<div class="pdesc">El Paso 1 describe el PED como inventario de activos. T2.1 lo transforma en las unidades anal&iacute;ticas del modelo de interdependencias. Un nodo funcional es cualquier componente cuyo estado operativo puede influir en el de otros, independientemente de si tiene presencia f&iacute;sica.</div>
+<div class="pdesc">El Paso 1 describe el PED como inventario de activos est&aacute;ticos. T2.1 transforma ese inventario en las unidades anal&iacute;ticas del modelo din&aacute;mico. Un nodo funcional representa cualquier componente cuyo estado operativo puede influir en el de otros, con independencia de si tiene presencia f&iacute;sica.</div>
+
 <h3>Dos tipos de nodos</h3>
 <div class="tw"><table>
-<thead><tr><th>Tipo</th><th>Origen</th><th>Ejemplos</th><th>Capa principal</th></tr></thead>
+<thead><tr><th>Tipo</th><th>Origen</th><th>Capa principal</th><th>Ecuaci&oacute;n de nivel 1</th></tr></thead>
 <tbody>
-<tr><td>F&iacute;sico</td><td>Inventario T1.2</td><td>N_PV, N_bat, N_BT</td><td>PH, ICT</td></tr>
-<tr><td>No-f&iacute;sico</td><td>Interfaces T1.1</td><td>N_mkt, N_reg, N_soc</td><td>EC, GV, SO</td></tr>
+<tr><td><strong>F&iacute;sico</strong></td><td>Inventario T1.2</td><td>PH o ICT</td><td>Plantilla can&oacute;nica (ver T2.3)</td></tr>
+<tr><td><strong>No-f&iacute;sico</strong></td><td>Interfaces externas T1.1 + actores institucionales</td><td>EC, GV o SO</td><td>Modulador f_EC, &delta;_GV o f_SO (nivel 3)</td></tr>
 </tbody></table></div>
-<h3>Criterio de agrupaci&oacute;n</h3>
-<p>Dos activos se agrupan en un &uacute;nico nodo si y solo si: (1) misma funci&oacute;n operativa, (2) modos de fallo estad&iacute;sticamente indistinguibles, y (3) ecuaciones de mismo tipo can&oacute;nico con par&aacute;metros sumables. Las tres condiciones deben cumplirse simult&aacute;neamente.</p>
-<div class="co co-b"><strong>Criterio de capas m&uacute;ltiples</strong>Un nodo se registra con su capa principal (la que determina su ecuaci&oacute;n de nivel 1). Las dependencias en otras capas se formalizan en T2.2 como tripletas &mdash; el nodo no se duplica.</div>
-<div class="co co-a"><strong>Granularidad</strong>Entre 10 y 30 nodos para PEDs t&iacute;picos. Por debajo de 10 se pierde resoluci&oacute;n para diagn&oacute;stico (P9). Por encima de 30 el esfuerzo de parametrizaci&oacute;n supera el beneficio anal&iacute;tico en la mayor&iacute;a de casos.</div>
+<p style="font-size:12.5px;color:var(--t2)">Los nodos no-f&iacute;sicos se incluyen <em>solo</em> si tienen al menos una dependencia con el sistema energ&eacute;tico relevante para alguna dimensi&oacute;n de resiliencia. Su omisi&oacute;n debe justificarse expl&iacute;citamente.</p>
+
+<h3>Criterio de agrupaci&oacute;n de activos</h3>
+<p>Dos activos del inventario T1.2 se agrupan en un &uacute;nico nodo si y solo si se cumplen <em>simult&aacute;neamente</em> las tres condiciones siguientes:</p>
+<div class="sr"><strong>1. Misma funci&oacute;n operativa&nbsp;</strong>— Realizan la misma funci&oacute;n en el sistema (ambos generan, ambos almacenan, ambos controlan...)</div>
+<div class="sr"><strong>2. Modos de fallo indistinguibles&nbsp;</strong>— Para el an&aacute;lisis de resiliencia, el fallo de uno es equivalente al fallo del otro (no aportan redundancia diferenciada entre s&iacute;)</div>
+<div class="sr"><strong>3. Ecuaciones can&oacute;nicas del mismo tipo con par&aacute;metros sumables&nbsp;</strong>— La ecuaci&oacute;n de nivel 1 es la misma y sus par&aacute;metros (P_peak, E_max, C_th, etc.) son simplemente adicionables</div>
+<div class="co co-a"><strong>Si alguna condici&oacute;n no se cumple &rarr; nodos separados</strong>Un activo con criticidad distinta al grupo, o con ecuaci&oacute;n de tipo diferente, o que aporta redundancia operativa real, debe mantenerse como nodo independiente.</div>
+
+<h3>Criterio de capas m&uacute;ltiples</h3>
+<p>Cada nodo se registra con su <strong>capa principal</strong> &mdash; la que determina su ecuaci&oacute;n de nivel 1. Un mismo nodo puede participar en dependencias de otras capas; esas dependencias se formalizan en T2.2 como tripletas en la capa correspondiente. El nodo no se duplica.</p>
+<div class="co co-b"><strong>Ejemplo:</strong> N_BT (red BT interna) tiene capa principal PH porque su ecuaci&oacute;n es un balance de potencia. Su dependencia con N_EMS se formaliza en T2.2 como tripleta ICT. N_BT aparece una sola vez en la lista de nodos.</div>
+
+<h3>Granularidad</h3>
+<p>Para PEDs t&iacute;picos, entre 10 y 30 nodos funcionales es suficiente para capturar las din&aacute;micas relevantes sin introducir complejidad computacional innecesaria:</p>
+<div class="factors">
+  <div class="factor"><strong>&lt; 10 nodos</strong>P&eacute;rdida de resoluci&oacute;n para identificar causas ra&iacute;z en P9. Activos cr&iacute;ticos quedan enmascarados bajo agregaciones excesivas.</div>
+  <div class="factor"><strong>&gt; 30 nodos</strong>El esfuerzo de parametrizaci&oacute;n supera el beneficio anal&iacute;tico. Las matrices W crecen cuadr&aacute;ticamente y la simulaci&oacute;n de P6 se encarece sin mejorar el diagn&oacute;stico.</div>
+</div>
+
 <h3>Criticidad heredada</h3>
-<p>Cada nodo hereda de T1.2 dos valores: <strong style="color:var(--t1)">nivel base</strong> (peor caso, independiente del contexto) y <strong style="color:var(--t1)">nivel contextual</strong> (funci&oacute;n de C-F/C-N/C-C y modificador +V). Ambos se registran porque tienen usos distintos en pasos posteriores.</p>
+<p>Cada nodo hereda de T1.2 <strong>dos valores de criticidad</strong>, no uno:</p>
+<div class="sr"><strong>Nivel base&nbsp;</strong>— Peor caso posible (contexto C-F si el nodo soporta calefacci&oacute;n, o C-C si soporta refrigeraci&oacute;n). Independiente del contexto operativo activo. Usado en P3 (dimensionar la biblioteca de contingencias) y P10 (dise&ntilde;ar redundancias).</div>
+<div class="sr"><strong>Nivel contextual&nbsp;</strong>— Funci&oacute;n del contexto C-F/C-N/C-C y modificador +V activos en el escenario que se eval&uacute;a. Refleja qu&eacute; servicio conduce la criticidad del nodo en ese momento. Usado en P5 (Policy Book) y P7 (ponderaci&oacute;n de q(t)).</div>
+<div class="co co-b"><strong>Regla de derivaci&oacute;n desde T1.1</strong>
+&bull; Nodo es &uacute;nico proveedor de servicio Cr&iacute;tico &rarr; <span class="tag tc">Cr&iacute;tico</span><br>
+&bull; Contribuye a servicio Cr&iacute;tico con alternativa disponible &rarr; <span class="tag ti">Importante</span><br>
+&bull; Solo contribuye a servicios Importantes o Secundarios &rarr; hereda el nivel m&aacute;s alto</div>
+
 <div class="of"><div class="oft">Output &rarr; T2.2</div>
-<div class="fr"><span class="fo">Lista de nodos</span><span class="fa">&rarr;</span><span class="fd">Insumo directo de T2.2 para construir tripletas y matrices W</span></div></div>
+<div class="fr"><span class="fo">Lista de nodos</span><span class="fa">&rarr;</span><span class="fd">Insumo directo para construir tripletas (N_i, N_j) y poblar matrices W</span></div>
+<div class="fr"><span class="fo">Criticidad base + contextual</span><span class="fa">&rarr;</span><span class="fd">Alimenta K_dep (E: exposici&oacute;n del nodo origen) en T2.2</span></div>
+</div>
 </div>
 
 <!-- ══ LEFT P2 T2.2 ══ -->
 <div class="sc" id="left-p2-t22">
 <div class="plabel">Paso 2 &middot; Tarea 2.2 &middot; Metodolog&iacute;a</div>
 <div class="ptitle">Formalizaci&oacute;n de interdependencias</div>
-<div class="pdesc">Identifica, representa formalmente y cuantifica todas las relaciones de dependencia entre nodos en las cinco capas. Produce simult&aacute;neamente las tripletas (registro auditable), las matrices W (instrumento de c&aacute;lculo) y el &iacute;ndice K_dep (priorizaci&oacute;n de dependencias cr&iacute;ticas).</div>
+<div class="pdesc">Identifica, representa y cuantifica todas las relaciones de dependencia entre nodos en las cinco capas. Produce simult&aacute;neamente las tripletas (registro auditable), las matrices W (instrumento de c&aacute;lculo para P6) y el &iacute;ndice K_dep (priorizaci&oacute;n estructural). La fuente de verdad son las tripletas; las matrices son su organizaci&oacute;n operativa.</div>
+
 <h3>La tripleta como unidad de representaci&oacute;n</h3>
-<div class="cb" style="font-size:12px">(N_i &rarr; N_j) [capa, w_ij]</div>
-<p>Las tripletas son el registro auditable: permiten rastrear el origen de cada par&aacute;metro en las matrices y justificar cada relaci&oacute;n ante revisi&oacute;n.</p>
+<div class="cb" style="font-size:13px;letter-spacing:.03em">(N_i &rarr; N_j) [capa, w_ij]</div>
+<p>Cada tripleta registra: nodo origen, nodo destino, capa de la dependencia y peso. El peso w_ij &isin; [0,1] cuantifica la intensidad de la dependencia. Las tripletas permiten rastrear el origen de cada valor en las matrices y justificar cada relaci&oacute;n ante revisi&oacute;n de pares.</p>
+
 <h3>Cuantificaci&oacute;n de w_ij</h3>
 <div class="tw"><table>
-<thead><tr><th>Capa</th><th>M&eacute;todo</th></tr></thead>
+<thead><tr><th>Capa</th><th>M&eacute;todo</th><th>Referencia</th></tr></thead>
 <tbody>
-<tr><td>PH</td><td>w = flujo potencia N_i&rarr;N_j / capacidad total N_i</td></tr>
-<tr><td>ICT</td><td>w = fracci&oacute;n de funci&oacute;n perdida si N_i falla</td></tr>
-<tr><td>EC, GV, SO</td><td>Escala ordinal: 0.3 d&eacute;bil / 0.6 moderada / 1.0 total</td></tr>
+<tr><td>PH</td><td>w = flujo de potencia N_i&rarr;N_j / capacidad total disponible de N_i</td><td>Ouyang (2014)</td></tr>
+<tr><td>ICT</td><td>w = fracci&oacute;n de funci&oacute;n perdida si N_i falla completamente</td><td>Ouyang (2014)</td></tr>
+<tr><td>EC, GV, SO</td><td>Escala ordinal experta: 0.3 (d&eacute;bil) / 0.6 (moderada) / 1.0 (total)</td><td>Ouyang (2014)</td></tr>
 </tbody></table></div>
-<h3>&Iacute;ndice K_dep = I + E + P</h3>
-<div class="factors">
-  <div class="factor"><strong>I &mdash; Impacto</strong>3=colapso total / 2=degradado &gt;30% / 1=p&eacute;rdida &lt;30%</div>
-  <div class="factor"><strong>E &mdash; Exposici&oacute;n</strong>3=Cr&iacute;tico sin redundancia / 2=Importante con redundancia parcial / 1=Secundario</div>
-  <div class="factor"><strong>P &mdash; Propagaci&oacute;n</strong>3=&ge;3 nodos en cascada / 2=1&ndash;2 nodos / 1=ninguno</div>
+<p style="font-size:11.5px;color:var(--t3)">Calibraci&oacute;n por simulaci&oacute;n: en PEDs con datos hist&oacute;ricos, los pesos pueden ajustarse iterativamente comparando comportamiento simulado con observado.</p>
+
+<h3>&Iacute;ndice de criticidad K_dep = I + E + P</h3>
+<p>El &iacute;ndice K_dep no es una medida probabil&iacute;stica de riesgo &mdash; es un indicador ordinal de importancia estructural de cada dependencia. Se calcula como la suma de tres componentes:</p>
+
+<div class="slabel">I &mdash; Impacto funcional: &iquest;qu&eacute; le ocurre al nodo destino si esta dependencia se interrumpe?</div>
+<div class="tw"><table>
+<thead><tr><th>Puntuaci&oacute;n</th><th>Condici&oacute;n</th></tr></thead>
+<tbody>
+<tr><td style="text-align:center"><strong>3</strong></td><td>El nodo destino pierde su funci&oacute;n completamente (colapso total)</td></tr>
+<tr><td style="text-align:center"><strong>2</strong></td><td>El nodo destino opera en modo degradado (p&eacute;rdida &gt; 30% de capacidad)</td></tr>
+<tr><td style="text-align:center"><strong>1</strong></td><td>El nodo destino opera con p&eacute;rdida menor (&lt; 30% de capacidad)</td></tr>
+</tbody></table></div>
+
+<div class="slabel">E &mdash; Exposici&oacute;n estructural: &iquest;cu&aacute;n vulnerable es el nodo origen a perturbaciones?</div>
+<div class="tw"><table>
+<thead><tr><th>Puntuaci&oacute;n</th><th>Condici&oacute;n</th></tr></thead>
+<tbody>
+<tr><td style="text-align:center"><strong>3</strong></td><td>Nodo origen clasificado Cr&iacute;tico en T1.2 &mdash; sin redundancia operativa</td></tr>
+<tr><td style="text-align:center"><strong>2</strong></td><td>Nodo origen Importante en T1.2 &mdash; con redundancia parcial disponible</td></tr>
+<tr><td style="text-align:center"><strong>1</strong></td><td>Nodo origen Secundario, o con redundancia completa que cubre el fallo</td></tr>
+</tbody></table></div>
+
+<div class="slabel">P &mdash; Potencial de propagaci&oacute;n: &iquest;cu&aacute;ntos nodos adicionales se ven afectados en cascada?</div>
+<div class="tw"><table>
+<thead><tr><th>Puntuaci&oacute;n</th><th>Condici&oacute;n</th></tr></thead>
+<tbody>
+<tr><td style="text-align:center"><strong>3</strong></td><td>&ge; 3 nodos adicionales afectados en cascada directa</td></tr>
+<tr><td style="text-align:center"><strong>2</strong></td><td>1&ndash;2 nodos adicionales afectados</td></tr>
+<tr><td style="text-align:center"><strong>1</strong></td><td>Ning&uacute;n nodo adicional afectado (impacto localizado)</td></tr>
+</tbody></table></div>
+
+<div class="co co-a"><strong>Umbral por defecto: K_dep &ge; 6 &rarr; dependencia cr&iacute;tica</strong>K_dep &isin; [3, 9]. El umbral de 6 corresponde al caso m&iacute;nimo en que al menos dos de los tres factores tienen puntuaci&oacute;n alta (&ge; 2). El analista puede bajar el umbral a 5 si el PED presenta alta vulnerabilidad estructural (muchos nodos Cr&iacute;ticos sin redundancia). Debe documentarlo.</div>
+
+<h3>De tripletas a matrices W: pipeline</h3>
+<p>Una vez formalizadas las tripletas de todas las capas, se organiza cada capa en una <strong>matriz de adyacencia ponderada W_L</strong> de dimensi&oacute;n N&times;N (N = n&uacute;mero de nodos). El elemento [i,j] es el peso w_ij,L de la tripleta de capa L entre N_i y N_j; si no existe dependencia, el elemento es cero. La diagonal principal es siempre nula.</p>
+<div class="cb" style="font-size:11px">
+Tripleta (N_i &rarr; N_j)[capa, w_ij] &nbsp;&rarr;&nbsp; W_capa[i,j] = w_ij<br>
+<span class="cc">// 5 matrices resultantes:</span><br>
+W_PH &nbsp; W_ICT &nbsp; W_EC &nbsp; W_GV &nbsp; W_SO &nbsp; (dimensi&oacute;n N&times;N cada una)
 </div>
-<div class="co co-a"><strong>Umbral por defecto: K_dep &ge; 6 &rarr; dependencia cr&iacute;tica</strong>Corresponde al caso m&iacute;nimo en que al menos dos factores tienen puntuaci&oacute;n alta (&ge;2). El analista puede bajar el umbral a 5 en PEDs con alta vulnerabilidad estructural.</div>
-<div class="of"><div class="oft">Outputs &rarr; T2.3</div>
-<div class="fr"><span class="fo">Matrices W_PH &hellip; W_SO</span><span class="fa">&rarr;</span><span class="fd">P6 lee w_ij desde W en cada paso temporal &Delta;t de la simulaci&oacute;n</span></div></div>
+<p style="font-size:12px;color:var(--t2)">El simulador de P6 lee w_ij directamente desde W en cada paso temporal &Delta;t para propagar efectos entre nodos v&iacute;a la ecuaci&oacute;n de nivel 2.</p>
+
+<div class="of"><div class="oft">Outputs &rarr; T2.3 y P6</div>
+<div class="fr"><span class="fo">Tripletas (N_i&rarr;N_j)[capa, w_ij, K_dep]</span><span class="fa">&rarr;</span><span class="fd">Registro auditable; fuente de verdad para los pesos</span></div>
+<div class="fr"><span class="fo">Matrices W_PH &hellip; W_SO</span><span class="fa">&rarr;</span><span class="fd">P6 lee w_ij en cada &Delta;t para propagar efectos (ecuaci&oacute;n nivel 2)</span></div>
+<div class="fr"><span class="fo">Dependencias cr&iacute;ticas (K_dep &ge; 6)</span><span class="fa">&rarr;</span><span class="fd">P3 (contingencias prioritarias), P9 (causa ra&iacute;z)</span></div>
+</div>
 </div>
 
 <!-- ══ LEFT P2 T2.3 ══ -->
 <div class="sc" id="left-p2-t23">
 <div class="plabel">Paso 2 &middot; Tarea 2.3 &middot; Metodolog&iacute;a</div>
 <div class="ptitle">Ecuaciones din&aacute;micas y vector S(t)</div>
-<div class="pdesc">Formaliza matem&aacute;ticamente el comportamiento din&aacute;mico del sistema en tres niveles complementarios. Al completar T2.3 el modelo es ejecutable: P6 puede usar estas ecuaciones para simular el comportamiento bajo perturbaci&oacute;n en cada paso temporal &Delta;t.</div>
-<h3>Los tres niveles</h3>
-<div class="tw"><table>
-<thead><tr><th>Nivel</th><th>Pregunta</th><th>Capas</th></tr></thead>
+<div class="pdesc">Formaliza el comportamiento din&aacute;mico del modelo en tres niveles complementarios. Al completar T2.3 el modelo es ejecutable: P6 puede propagar perturbaciones en cada paso temporal &Delta;t. La metodolog&iacute;a define las formas can&oacute;nicas y criterios de selecci&oacute;n; el proyectista instancia los par&aacute;metros desde el inventario de T1.2.</div>
+
+<h3>Nivel 1 &mdash; Biblioteca de plantillas intra-nodo</h3>
+<p>Cada nodo f&iacute;sico tiene asignada exactamente una plantilla de nivel 1. El proyectista selecciona la plantilla seg&uacute;n el tipo funcional del nodo e instancia sus par&aacute;metros con los datos del inventario. Los valores por defecto (<span class="tag tn">&#9888;</span>) son aceptables para an&aacute;lisis preliminar pero deben reemplazarse con datos reales antes de una evaluaci&oacute;n definitiva.</p>
+
+<div class="co co-b"><strong>Tipo 1 &mdash; Generaci&oacute;n renovable variable</strong>
+<div class="cb" style="font-size:11px;margin-top:6px">P_gen(t) = P_peak &times; CF(t) &times; &phi;_i(t)</div>
+<div style="font-size:12px;margin-top:6px;color:var(--t2)"><strong>Criterio:</strong> Aplica cuando la generaci&oacute;n depende de recurso variable (irradiancia, viento). &phi;_i(t) &isin; [0,1] representa el estado operativo del activo.<br>
+<strong>Par&aacute;metros a instanciar:</strong> P_peak [kWp] desde ficha t&eacute;cnica; CF(t) del baseline B(t) (TMY o EMS hist&oacute;rico).<br>
+<strong>Ref:</strong> IEC 61724-1; Huld, T. et al. (2010) Solar Energy, 84(3).</div></div>
+
+<div class="co co-b" style="margin-top:10px"><strong>Tipo 2 &mdash; Almacenamiento el&eacute;ctrico (BESS)</strong>
+<div class="cb" style="font-size:11px;margin-top:6px">E(t+&Delta;t) = E(t) + [P_chg &middot; &eta;_c &minus; P_dis / &eta;_d] &middot; &Delta;t<br>
+sujeto a: SoC_min &middot; E_max &le; E(t) &le; E_max &nbsp;&nbsp; P_chg, P_dis &le; P_max</div>
+<div style="font-size:12px;margin-top:6px;color:var(--t2)"><strong>Criterio:</strong> Aplica para bater&iacute;as electroquímicas y supercondensadores.<br>
+<strong>Par&aacute;metros:</strong> E_max [kWh], &eta;_c, &eta;_d (default: 0.93/0.93 &#9888;), SoC_min (default: 0.10 &#9888;), P_max desde ficha t&eacute;cnica.<br>
+<strong>Ref:</strong> Plett, G.L. (2015) Battery Management Systems Vol. 1.</div></div>
+
+<div class="co co-b" style="margin-top:10px"><strong>Tipo 3 &mdash; Demanda t&eacute;rmica (modelo RC de primer orden)</strong>
+<div class="cb" style="font-size:11px;margin-top:6px">dT_int/dt = [Q_HVAC(t) &minus; UA &middot; (T_int &minus; T_ext) + Q_int] / C_th</div>
+<div style="font-size:12px;margin-top:6px;color:var(--t2)"><strong>Criterio:</strong> Aplica para edificios con inercia t&eacute;rmica significativa (C_th &gt; 0.05 kWh/&deg;C&middot;m&sup2;). Para edificios sin inercia relevante usar balance est&aacute;tico.<br>
+<strong>Par&aacute;metros:</strong> C_th [kWh/&deg;C] desde simulaci&oacute;n energ&eacute;tica o ISO 52016-1 (default: 0.10 kWh/&deg;C&middot;m&sup2; &#9888;); UA [kW/&deg;C] desde certificado energ&eacute;tico; Q_int [kW] de ganancias internas.<br>
+<strong>Ref:</strong> EN ISO 52016-1:2017 &sect;6.5; Yang, J. et al. (2024) Energy &amp; Buildings 323.</div></div>
+
+<div class="co co-b" style="margin-top:10px"><strong>Tipo 4 &mdash; Almacenamiento t&eacute;rmico (TES)</strong>
+<div class="cb" style="font-size:11px;margin-top:6px">E_TES(t+&Delta;t) = E_TES(t) + [Q_chg &middot; &eta;_TES &minus; Q_dis] &middot; &Delta;t &minus; UA_TES &middot; (T_TES &minus; T_amb) &middot; &Delta;t</div>
+<div style="font-size:12px;margin-top:6px;color:var(--t2)"><strong>Criterio:</strong> Aplica para acumuladores de agua caliente y sistemas PCM.<br>
+<strong>Par&aacute;metros:</strong> E_max [kWh], T_min, T_max, UA_TES (p&eacute;rdidas t&eacute;rmicas al ambiente) desde ficha t&eacute;cnica.<br>
+<strong>Ref:</strong> Dincer &amp; Rosen (2011) Thermal Energy Storage; EN 15332:2007.</div></div>
+
+<div class="co co-b" style="margin-top:10px"><strong>Tipo 5 &mdash; Demanda el&eacute;ctrica</strong>
+<div class="cb" style="font-size:11px;margin-top:6px">P_dem,el(t) = P_dem,ref(t) &times; f_SO(t) &times; f_EC(t)</div>
+<div style="font-size:12px;margin-top:6px;color:var(--t2)"><strong>Criterio:</strong> Aplica para todos los nodos de demanda el&eacute;ctrica. P_dem,ref(t) proviene de B(t). Los moduladores f_SO y f_EC pertenecen al Nivel 3.<br>
+<strong>Par&aacute;metros:</strong> P_dem,ref(t) desde EMS hist&oacute;rico o perfil IDAE seg&uacute;n tipolog&iacute;a de uso.<br>
+<strong>Ref:</strong> Mancarella, P. (2014) Energy, 65, 1&ndash;17.</div></div>
+
+<div class="co co-b" style="margin-top:10px"><strong>Tipo 6 &mdash; Interfaz con red externa (balance de potencia)</strong>
+<div class="cb" style="font-size:11px;margin-top:6px">P_grid(t) = P_dem,total(t) &minus; P_gen(t) &minus; [P_dis(t) &minus; P_chg(t)]<br>
+<span class="cc">// P_grid &gt; 0: importaci&oacute;n &nbsp;&nbsp; P_grid &lt; 0: exportaci&oacute;n</span></div>
+<div style="font-size:12px;margin-top:6px;color:var(--t2)"><strong>Criterio:</strong> Aplica cuando existe PAC con red externa. P_grid,max se define seg&uacute;n contrato de conexi&oacute;n.<br>
+<strong>Par&aacute;metros:</strong> P_grid,max [kW] y P_grid,min [kW] desde contrato de conexi&oacute;n con distribuidora.<br>
+<strong>Ref:</strong> Mancarella (2014) Energy 65; EN 50160.</div></div>
+
+<div class="co co-b" style="margin-top:10px"><strong>Tipo 7 &mdash; Sistema de control (EMS)</strong>
+<div class="cb" style="font-size:11px;margin-top:6px">&phi;_EMS(t) &isin; [0,1]<br>
+mode(t) = f(SoC(t), P_grid(t), T_int(t), c_E(t), &phi;_EMS(t))</div>
+<div style="font-size:12px;margin-top:6px;color:var(--t2)"><strong>Criterio:</strong> Aplica para nodos de control (EMS, SCADA). &phi;_EMS = 1: operaci&oacute;n normal; 0: fallo total; valores intermedios: degradaci&oacute;n progresiva. El modo activo determina las reglas del Policy Book (P5).<br>
+<strong>Par&aacute;metros:</strong> Umbrales de activaci&oacute;n de modos definidos en P5; latencia y disponibilidad desde especificaci&oacute;n t&eacute;cnica.<br>
+<strong>Ref:</strong> Bemporad &amp; Morari (1999) Automatica &mdash; sistemas h&iacute;bridos; IEC 61968.</div></div>
+
+<h3>Nivel 2 &mdash; Ecuaci&oacute;n general de acoplamiento</h3>
+<p>Aplica a capas PH e ICT. Convierte los pesos est&aacute;ticos w_ij de las matrices W en operadores din&aacute;micos de propagaci&oacute;n en cada paso temporal:</p>
+<div class="cb" style="font-size:12px">x<sub>j,ef</sub>(t) = x<sub>j,nom</sub>(t) &times; [1 &minus; w<sub>ij,L</sub> &times; (1 &minus; &phi;<sub>i</sub>(t))]</div>
+<div class="tw" style="margin-top:8px"><table>
+<thead><tr><th>Condici&oacute;n</th><th>Resultado</th></tr></thead>
 <tbody>
-<tr><td>1 &mdash; Intra-nodo</td><td>&iquest;C&oacute;mo evoluciona cada nodo por s&iacute; solo?</td><td>Todos los nodos f&iacute;sicos</td></tr>
-<tr><td>2 &mdash; Acoplamiento</td><td>&iquest;Cu&aacute;nto afecta el estado de N_i a N_j?</td><td>PH, ICT</td></tr>
-<tr><td>3 &mdash; Moduladores</td><td>&iquest;C&oacute;mo modula el contexto la demanda?</td><td>EC, GV, SO</td></tr>
+<tr><td>&phi;_i = 1 (nodo sano)</td><td>x_j,ef = x_j,nom &mdash; sin efecto sobre N_j</td></tr>
+<tr><td>&phi;_i = 0, w = 1.0 (dependencia total)</td><td>x_j,ef = 0 &mdash; N_j colapsa completamente</td></tr>
+<tr><td>&phi;_i = 0.4, w = 0.7 (degradaci&oacute;n parcial)</td><td>x_j,ef = 0.58 &times; x_j,nom &mdash; N_j opera al 58%</td></tr>
 </tbody></table></div>
-<h3>Nivel 2 &mdash; ecuaci&oacute;n de acoplamiento</h3>
-<div class="cb" style="font-size:11.5px">x<sub>j,ef</sub>(t) = x<sub>j,nom</sub>(t) &times; [1 &minus; w<sub>ij</sub> &times; (1 &minus; &phi;<sub>i</sub>(t))]</div>
-<p style="font-size:12px;color:var(--t3)">Ref: Ouyang (2014) Reliability Eng. &amp; System Safety 121. &phi;<sub>i</sub>=1: sin efecto. &phi;<sub>i</sub>=0, w=1: N_j colapsa.</p>
-<h3>Nivel 3 &mdash; moduladores</h3>
+<p style="font-size:11.5px;color:var(--t3)">No aplica a capas EC, GV, SO &mdash; esas usan el Nivel 3 (moduladores). Ref: Ouyang (2014) Reliability Engineering &amp; System Safety, 121.</p>
+
+<h3>Nivel 3 &mdash; Moduladores EC, GV, SO</h3>
 <div class="cb" style="font-size:11px">
-<span class="cc">// EC &mdash; elasticidad precio (Aalami et al. 2010, Ec.12)</span><br>
-f_EC(t) = 1 + &epsilon; &times; (c_E &minus; c_E,ref) / c_E,ref<br><br>
-<span class="cc">// SO &mdash; temperatura-demanda (Staffell et al. 2023, Ecs.7-8)</span><br>
-f_SO(t) = 1 + &gamma;<sub>h</sub>&times;max(0,T<sub>h</sub>&minus;T<sub>ext</sub>) + &gamma;<sub>c</sub>&times;max(0,T<sub>ext</sub>&minus;T<sub>c</sub>)
+<span class="cc">// EC &mdash; elasticidad-precio (Aalami et al. 2010, EPSR 80(4), Ec.12)</span><br>
+f_EC(t) = 1 + &epsilon; &times; (c_E(t) &minus; c_E,ref) / c_E,ref &nbsp;&nbsp; <span class="cc">// &epsilon; &lt; 0</span><br><br>
+<span class="cc">// GV &mdash; restricci&oacute;n regulatoria</span><br>
+P_grid,max,ef(t) = P_grid,max &times; &delta;_GV(t) &nbsp;&nbsp; <span class="cc">// &delta;_GV &isin; [0,1]</span><br><br>
+<span class="cc">// SO &mdash; temperatura-demanda (Staffell et al. 2023, NE 8; Fazeli et al. 2016, Ecs.1-2)</span><br>
+f_SO(t) = 1 + &gamma;_h &times; max(0, T_h &minus; T_ext) + &gamma;_c &times; max(0, T_ext &minus; T_c)
 </div>
+
 <h3>Vector de estado S(t)</h3>
-<p>Definici&oacute;n estructural aqu&iacute;; valores concretos (S<sub>0</sub>) en P4 por escenario. Requisito: al menos una variable por cada dimensi&oacute;n R_D y por cada nodo f&iacute;sico.</p>
+<p>S(t) se define estructuralmente aqu&iacute;. Sus valores concretos (estado inicial S<sub>0</sub>) se asignan en P4 para cada escenario. Requisito m&iacute;nimo: al menos una variable por cada dimensi&oacute;n R_D y por cada nodo f&iacute;sico del modelo.</p>
+
+<div class="of"><div class="oft">Outputs &rarr; P6</div>
+<div class="fr"><span class="fo">Plantillas nivel 1 (7 tipos)</span><span class="fa">&rarr;</span><span class="fd">P6 calcula estado de cada nodo en cada &Delta;t</span></div>
+<div class="fr"><span class="fo">Ecuaci&oacute;n nivel 2</span><span class="fa">&rarr;</span><span class="fd">P6 propaga efectos entre nodos usando w_ij de las matrices W</span></div>
+<div class="fr"><span class="fo">Moduladores nivel 3</span><span class="fa">&rarr;</span><span class="fd">P6 aplica contexto econ&oacute;mico, regulatorio y social sobre la demanda</span></div>
+<div class="fr"><span class="fo">Vector S(t)</span><span class="fa">&rarr;</span><span class="fd">P6 (propagaci&oacute;n), P7 (m&eacute;tricas q_D), P9 (causa ra&iacute;z)</span></div>
+</div>
 </div>
 
 <!-- ══ LEFT P2 T2.4 ══ -->
@@ -440,8 +567,6 @@ f_SO(t) = 1 + &gamma;<sub>h</sub>&times;max(0,T<sub>h</sub>&minus;T<sub>ext</sub
 <div class="sr"><strong>Aristas gruesas</strong> = K_dep &ge; 6 (dependencias cr&iacute;ticas)</div>
 <div class="sr"><strong>Color de arista</strong> = capa: verde PH &middot; azul ICT &middot; &aacute;mbar EC &middot; violeta GV &middot; rosa SO</div>
 <div class="co co-g" style="margin-top:16px"><strong>Regla de cierre verificada &mdash; 6/6 criterios T2.4</strong>El modelo supera la auditor&iacute;a de coherencia. La Fase 2 puede iniciarse.</div>
-</div>
-
 </div>
 </div><!-- /panel-left -->
 
@@ -750,26 +875,60 @@ Cada uno requiere per&iacute;odo, estado inicial y horizonte distintos.</div>
 <div class="exh">
   <span class="vvb">Valle Verde</span>
   <div><div class="plabel">Caso aplicativo &middot; 20 tripletas &middot; 5 capas</div>
-  <div style="font-size:17px;font-weight:600;color:var(--t1)">T2.2 &mdash; Modelo de interdependencias</div></div>
+  <div style="font-size:17px;font-weight:600;color:var(--t1)">T2.2 &mdash; Tripletas e interdependencias</div></div>
 </div>
-<h3>Dependencias cr&iacute;ticas (K_dep &ge; 6)</h3>
+
+<div class="slabel">Capa PH &mdash; F&iacute;sica / Energ&eacute;tica (10 tripletas)</div>
 <div class="tw"><table>
-<thead><tr><th>Tripleta</th><th>Capa</th><th>K_dep</th></tr></thead>
+<thead><tr><th>N_i &rarr; N_j</th><th>w_ij</th><th>I</th><th>E</th><th>P</th><th>K</th><th>Justificaci&oacute;n</th></tr></thead>
 <tbody>
-<tr><td>N_BT&rarr;N_EMS</td><td>PH</td><td><span class="tag tc">9</span></td></tr>
-<tr><td>N_EMS&rarr;N_bat</td><td>ICT</td><td><span class="tag tc">9</span></td></tr>
-<tr><td>N_BT&rarr;N_dem,res</td><td>PH</td><td><span class="tag tc">8</span></td></tr>
-<tr><td>N_EMS&rarr;N_HP</td><td>ICT</td><td><span class="tag tc">8</span></td></tr>
-<tr><td>N_PV&rarr;N_BT</td><td>PH</td><td><span class="tag ti">7</span></td></tr>
-<tr><td>N_bat&rarr;N_BT</td><td>PH</td><td><span class="tag ti">7</span></td></tr>
-<tr><td>N_HP&rarr;N_TES</td><td>PH</td><td><span class="tag ti">7</span></td></tr>
-<tr><td>N_BT&rarr;N_dem,cs</td><td>PH</td><td><span class="tag ti">7</span></td></tr>
-<tr><td>N_BT&rarr;N_dem,col</td><td>PH</td><td><span class="tag ti">7</span></td></tr>
-<tr><td>N_EMS&rarr;N_grid</td><td>ICT</td><td><span class="tag ti">7</span></td></tr>
-<tr><td>N_grid&rarr;N_BT</td><td>PH</td><td><span class="tag ti">7</span></td></tr>
-<tr><td>N_TES&rarr;N_dem,res</td><td>PH</td><td><span class="tag ti">6</span></td></tr>
+<tr><td>N_PV &rarr; N_BT</td><td>0.70</td><td>2</td><td>2</td><td>3</td><td><span class="tag ti">7</span></td><td>FV aporta ~70% de generaci&oacute;n local; fallo propaga a todos los nodos de demanda</td></tr>
+<tr><td>N_bat &rarr; N_BT</td><td>0.60</td><td>2</td><td>2</td><td>3</td><td><span class="tag ti">7</span></td><td>Bater&iacute;a cubre d&eacute;ficit FV; fallo en per&iacute;odo nocturno genera dependencia total de red</td></tr>
+<tr><td>N_HP &rarr; N_TES</td><td>0.80</td><td>3</td><td>2</td><td>2</td><td><span class="tag ti">7</span></td><td>Bomba de calor es &uacute;nica fuente de carga del acumulador t&eacute;rmico</td></tr>
+<tr><td>N_TES &rarr; N_dem,res</td><td>0.50</td><td>2</td><td>2</td><td>2</td><td><span class="tag ti">6</span></td><td>Acumulador suministra calefacci&oacute;n/ACS a residencial; fallo &rarr; modo degradado t&eacute;rmico</td></tr>
+<tr><td>N_TES &rarr; N_dem,col</td><td>0.50</td><td>2</td><td>2</td><td>1</td><td><span class="tag ts">5</span></td><td>&Iacute;dem colegio &mdash; afectaci&oacute;n local sin cascada significativa</td></tr>
+<tr><td>N_BT &rarr; N_dem,res</td><td>1.00</td><td>3</td><td>3</td><td>2</td><td><span class="tag tc">8</span></td><td>Red BT es &uacute;nico camino de distribuci&oacute;n el&eacute;ctrica &mdash; sin redundancia topol&oacute;gica</td></tr>
+<tr><td>N_BT &rarr; N_dem,cs</td><td>1.00</td><td>3</td><td>3</td><td>1</td><td><span class="tag ti">7</span></td><td>&Iacute;dem centro de salud (carga cr&iacute;tica F1); UPS s&oacute;lo cubre 30 min</td></tr>
+<tr><td>N_BT &rarr; N_dem,col</td><td>1.00</td><td>3</td><td>3</td><td>1</td><td><span class="tag ti">7</span></td><td>&Iacute;dem colegio p&uacute;blico</td></tr>
+<tr><td>N_BT &rarr; N_EMS</td><td>0.60</td><td>3</td><td>3</td><td>3</td><td><span class="tag tc">9</span></td><td>EMS requiere alimentaci&oacute;n el&eacute;ctrica; fallo de BT apaga EMS &rarr; cascada total al sistema</td></tr>
+<tr><td>N_grid &rarr; N_BT</td><td>0.60</td><td>2</td><td>2</td><td>3</td><td><span class="tag ti">7</span></td><td>Red Iberdrola cubre d&eacute;ficit FV+bat; corte de suministro &rarr; isla forzada sin backup</td></tr>
 </tbody></table></div>
-<div class="co co-a"><strong>N_BT y N_EMS en 9/12 dependencias cr&iacute;ticas</strong>Son los nodos estructuralmente m&aacute;s vulnerables. Coincide con la clasificaci&oacute;n Cr&iacute;tico de T1.2 &mdash; coherencia metodol&oacute;gica verificada.</div>
+
+<div class="slabel">Capa ICT &mdash; Informacional / Control (4 tripletas)</div>
+<div class="tw"><table>
+<thead><tr><th>N_i &rarr; N_j</th><th>w_ij</th><th>I</th><th>E</th><th>P</th><th>K</th><th>Justificaci&oacute;n</th></tr></thead>
+<tbody>
+<tr><td>N_EMS &rarr; N_bat</td><td>1.00</td><td>3</td><td>3</td><td>3</td><td><span class="tag tc">9</span></td><td>EMS controla despacho BESS; sin EMS la bater&iacute;a opera en modo pasivo sin optimizaci&oacute;n</td></tr>
+<tr><td>N_EMS &rarr; N_HP</td><td>1.00</td><td>3</td><td>3</td><td>2</td><td><span class="tag tc">8</span></td><td>EMS controla arranque/parada de la bomba de calor seg&uacute;n T_int y SoC_TES</td></tr>
+<tr><td>N_EMS &rarr; N_grid</td><td>0.60</td><td>2</td><td>3</td><td>2</td><td><span class="tag ti">7</span></td><td>EMS gestiona importaci&oacute;n/exportaci&oacute;n por PAC; sin EMS el PAC opera sin gesti&oacute;n activa</td></tr>
+<tr><td>N_EMS &rarr; N_PV</td><td>0.30</td><td>1</td><td>3</td><td>1</td><td><span class="tag ts">5</span></td><td>EMS monitoriza FV; FV opera aut&oacute;nomamente ante fallo de EMS (inversor autosuficiente)</td></tr>
+</tbody></table></div>
+
+<div class="slabel">Capa EC &mdash; Econ&oacute;mica / Mercado (2 tripletas)</div>
+<div class="tw"><table>
+<thead><tr><th>N_i &rarr; N_j</th><th>w_ij</th><th>I</th><th>E</th><th>P</th><th>K</th><th>Justificaci&oacute;n</th></tr></thead>
+<tbody>
+<tr><td>N_mkt &rarr; N_EMS</td><td>0.60</td><td>2</td><td>1</td><td>2</td><td><span class="tag ts">5</span></td><td>Precio spot OMIE modula decisi&oacute;n de carga/descarga bater&iacute;a y despacho en el Policy Book</td></tr>
+<tr><td>N_mkt &rarr; N_dem,res</td><td>0.30</td><td>1</td><td>1</td><td>1</td><td><span class="tag ts">3</span></td><td>Se&ntilde;al de precio influye en respuesta de demanda residencial &mdash; efecto d&eacute;bil (baja elasticidad)</td></tr>
+</tbody></table></div>
+
+<div class="slabel">Capa GV &mdash; Gobernanza / Institucional (2 tripletas)</div>
+<div class="tw"><table>
+<thead><tr><th>N_i &rarr; N_j</th><th>w_ij</th><th>I</th><th>E</th><th>P</th><th>K</th><th>Justificaci&oacute;n</th></tr></thead>
+<tbody>
+<tr><td>N_reg &rarr; N_grid</td><td>0.60</td><td>2</td><td>1</td><td>2</td><td><span class="tag ts">5</span></td><td>Regulador limita capacidad m&aacute;xima de inyecci&oacute;n &mdash; restringe exportaci&oacute;n de excedente FV</td></tr>
+<tr><td>N_reg &rarr; N_EMS</td><td>0.30</td><td>1</td><td>1</td><td>1</td><td><span class="tag ts">3</span></td><td>Cambios regulatorios pueden requerir ajuste de reglas del Policy Book (P5)</td></tr>
+</tbody></table></div>
+
+<div class="slabel">Capa SO &mdash; Social / Conductual (2 tripletas)</div>
+<div class="tw"><table>
+<thead><tr><th>N_i &rarr; N_j</th><th>w_ij</th><th>I</th><th>E</th><th>P</th><th>K</th><th>Justificaci&oacute;n</th></tr></thead>
+<tbody>
+<tr><td>N_soc &rarr; N_dem,res</td><td>0.60</td><td>2</td><td>1</td><td>2</td><td><span class="tag ts">5</span></td><td>Comportamiento extremo (ola de calor + vulnerabilidad) amplifica demanda sobre perfil B(t)</td></tr>
+<tr><td>N_soc &rarr; N_dem,col</td><td>0.60</td><td>2</td><td>1</td><td>1</td><td><span class="tag ts">4</span></td><td>&Iacute;dem colegio &mdash; efecto local sin cascada significativa al resto del sistema</td></tr>
+</tbody></table></div>
+
+<div class="co co-a" style="margin-top:14px"><strong>12 dependencias cr&iacute;ticas (K_dep &ge; 6)</strong>N_BT y N_EMS aparecen en 9 de las 12. Son los nodos estructuralmente m&aacute;s vulnerables &mdash; coherente con su clasificaci&oacute;n Cr&iacute;tico en T1.2. Ambas dependencias PH k=9 (N_BT&rarr;N_EMS) e ICT k=9 (N_EMS&rarr;N_bat) representan bucles de retroalimentaci&oacute;n cr&iacute;ticos: el fallo de cualquiera de los dos puede desencadenar el colapso del otro.</div>
 </div>
 
 <!-- ══ RIGHT P2 T2.3 ══ -->
