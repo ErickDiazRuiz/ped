@@ -146,6 +146,7 @@ tr.dim td{opacity:.28}
   <button class="st" onclick="setStep('p2','t22',this)">P2 &mdash; T2.2 <span class="sb sb-ok">Aprobado</span></button>
   <button class="st" onclick="setStep('p2','t23',this)">P2 &mdash; T2.3 <span class="sb sb-ok">Aprobado</span></button>
   <button class="st" onclick="setStep('p2','t24',this)">P2 &mdash; T2.4 <span class="sb sb-ok">Aprobado</span></button>
+  <button class="st" onclick="setStep('f1','out',this)">Fase 1 &mdash; Output <span class="sb" style="background:rgba(16,185,129,0.15);color:var(--green);border:1px solid var(--gbd)">Modelo</span></button>
 </div>
 
 <div class="panels">
@@ -321,7 +322,7 @@ tr.dim td{opacity:.28}
 <div class="fr"><span class="fo">Variables m&iacute;nimas</span><span class="fa">&rarr;</span><span class="fd">P2-T2.3 (verificaci&oacute;n cobertura S(t))</span></div>
 <div class="fr"><span class="fo">Inventario de fuentes</span><span class="fa">&rarr;</span><span class="fd">P4 (instanciaci&oacute;n de B(t) por escenario)</span></div>
 </div>
-
+</div>
 
 <!-- ══ LEFT P2 T2.1 ══ -->
 <div class="sc" id="left-p2-t21">
@@ -416,7 +417,31 @@ f_SO(t) = 1 + &gamma;<sub>h</sub>&times;max(0,T<sub>h</sub>&minus;T<sub>ext</sub
 <tr><td>6 &mdash; Consistencia de plantillas</td><td>Cada nodo f&iacute;sico tiene ecuaci&oacute;n nivel 1</td><td>Asignar plantilla faltante</td></tr>
 </tbody></table></div>
 <div class="co co-a"><strong>Regla de cierre de la Fase 1</strong>El analista no puede avanzar a la Fase 2 (P3) hasta que T2.4 confirme los 6 criterios sin excepci&oacute;n.</div>
+
+<!-- ══ LEFT F1 OUTPUT ══ -->
+<div class="sc" id="left-f1-out">
+<div class="plabel">Fase 1 &middot; Output integrador</div>
+<div class="ptitle">Arquitectura Funcional del PED</div>
+<div class="pdesc">La Arquitectura Funcional es el output &uacute;nico e integrado de la Fase 1. Sintetiza todo lo construido en los Pasos 1 y 2: el inventario de activos, la jerarqu&iacute;a de criticidad, las interdependencias formalizadas y las ecuaciones din&aacute;micas. Es el modelo ejecutable que alimenta todas las fases siguientes.</div>
+<h3>Qu&eacute; contiene</h3>
+<div class="tw"><table>
+<thead><tr><th>Componente</th><th>Origen</th><th>Usado en</th></tr></thead>
+<tbody>
+<tr><td>13 nodos funcionales</td><td>T2.1</td><td>P3, P6, P9, P10</td></tr>
+<tr><td>20 tripletas &middot; 5 matrices W</td><td>T2.2</td><td>P6 (propaga efectos en cada &Delta;t)</td></tr>
+<tr><td>K_dep &middot; 12 dep. cr&iacute;ticas</td><td>T2.2</td><td>P3 (seleccionar contingencias), P9</td></tr>
+<tr><td>7 plantillas nivel 1 + nivel 2 + nivel 3</td><td>T2.3</td><td>P6 (ecuaciones de estado)</td></tr>
+<tr><td>Vector S(t) &middot; 10 variables</td><td>T2.3</td><td>P6, P7, P9</td></tr>
+</tbody></table></div>
+<h3>C&oacute;mo leer el diagrama</h3>
+<div class="sr"><strong>Nodos grandes rojos</strong> = Cr&iacute;ticos (N_BT, N_EMS, N_dem,cs)</div>
+<div class="sr"><strong>Nodos medianos &aacute;mbar</strong> = Importantes (N_PV, N_bat, N_HP, N_TES, N_grid, N_dem,res, N_dem,col)</div>
+<div class="sr"><strong>Rombos verdes</strong> = No-f&iacute;sicos (N_mkt, N_reg, N_soc)</div>
+<div class="sr"><strong>Aristas gruesas</strong> = K_dep &ge; 6 (dependencias cr&iacute;ticas)</div>
+<div class="sr"><strong>Color de arista</strong> = capa: verde PH &middot; azul ICT &middot; &aacute;mbar EC &middot; violeta GV &middot; rosa SO</div>
+<div class="co co-g" style="margin-top:16px"><strong>Regla de cierre verificada &mdash; 6/6 criterios T2.4</strong>El modelo supera la auditor&iacute;a de coherencia. La Fase 2 puede iniciarse.</div>
 </div>
+
 </div><!-- /panel-left -->
 
 <!-- ════════════════ RIGHT PANEL ════════════════ -->
@@ -726,21 +751,24 @@ Cada uno requiere per&iacute;odo, estado inicial y horizonte distintos.</div>
   <div><div class="plabel">Caso aplicativo &middot; 20 tripletas &middot; 5 capas</div>
   <div style="font-size:17px;font-weight:600;color:var(--t1)">T2.2 &mdash; Modelo de interdependencias</div></div>
 </div>
-<p style="font-size:12.5px;color:var(--t2);margin-bottom:8px">Arrastra nodos. Filtra capas. Clic en nodo o arista para ver propiedades.</p>
-<div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px" id="layer-filters">
-  <button class="lf-btn lf-active" data-layer="PH"  onclick="toggleLayer('PH',this)"  style="background:rgba(16,185,129,0.12);color:#6ee7b7;border:1px solid rgba(16,185,129,0.3);padding:3px 10px;border-radius:4px;font-family:var(--f);font-size:11px;font-weight:600;cursor:pointer">&#9632; PH F&iacute;sica</button>
-  <button class="lf-btn lf-active" data-layer="ICT" onclick="toggleLayer('ICT',this)" style="background:rgba(59,130,246,0.12);color:#93c5fd;border:1px solid rgba(59,130,246,0.3);padding:3px 10px;border-radius:4px;font-family:var(--f);font-size:11px;font-weight:600;cursor:pointer">&#9632; ICT Control</button>
-  <button class="lf-btn lf-active" data-layer="EC"  onclick="toggleLayer('EC',this)"  style="background:rgba(245,158,11,0.12);color:#fcd34d;border:1px solid rgba(245,158,11,0.3);padding:3px 10px;border-radius:4px;font-family:var(--f);font-size:11px;font-weight:600;cursor:pointer">&#9632; EC Econ&oacute;mica</button>
-  <button class="lf-btn lf-active" data-layer="GV"  onclick="toggleLayer('GV',this)"  style="background:rgba(167,139,250,0.12);color:#c4b5fd;border:1px solid rgba(167,139,250,0.3);padding:3px 10px;border-radius:4px;font-family:var(--f);font-size:11px;font-weight:600;cursor:pointer">&#9632; GV Gobernanza</button>
-  <button class="lf-btn lf-active" data-layer="SO"  onclick="toggleLayer('SO',this)"  style="background:rgba(244,114,182,0.12);color:#f9a8d4;border:1px solid rgba(244,114,182,0.3);padding:3px 10px;border-radius:4px;font-family:var(--f);font-size:11px;font-weight:600;cursor:pointer">&#9632; SO Social</button>
-</div>
-<div style="position:relative;border:1px solid var(--b1);border-radius:6px;background:#0d0d0d;overflow:hidden;cursor:grab">
-  <svg id="net-svg" width="100%" viewBox="0 0 580 400" style="display:block"></svg>
-</div>
-<div id="net-info" style="margin-top:8px;padding:9px 13px;background:var(--s2);border:1px solid var(--b1);border-radius:6px;font-size:12px;color:var(--t2);min-height:48px;line-height:1.7">
-  <span style="color:var(--t3);font-size:11px">Selecciona un nodo o arista &mdash;</span>
-</div>
-<div class="co co-a" style="margin-top:10px"><strong>12 dependencias cr&iacute;ticas (K_dep &ge; 6)</strong>N_BT y N_EMS aparecen en 9 de las 12. Son los nodos estructuralmente m&aacute;s vulnerables &mdash; coincide con la clasificaci&oacute;n Cr&iacute;tico de T1.2.</div>
+<h3>Dependencias cr&iacute;ticas (K_dep &ge; 6)</h3>
+<div class="tw"><table>
+<thead><tr><th>Tripleta</th><th>Capa</th><th>K_dep</th></tr></thead>
+<tbody>
+<tr><td>N_BT&rarr;N_EMS</td><td>PH</td><td><span class="tag tc">9</span></td></tr>
+<tr><td>N_EMS&rarr;N_bat</td><td>ICT</td><td><span class="tag tc">9</span></td></tr>
+<tr><td>N_BT&rarr;N_dem,res</td><td>PH</td><td><span class="tag tc">8</span></td></tr>
+<tr><td>N_EMS&rarr;N_HP</td><td>ICT</td><td><span class="tag tc">8</span></td></tr>
+<tr><td>N_PV&rarr;N_BT</td><td>PH</td><td><span class="tag ti">7</span></td></tr>
+<tr><td>N_bat&rarr;N_BT</td><td>PH</td><td><span class="tag ti">7</span></td></tr>
+<tr><td>N_HP&rarr;N_TES</td><td>PH</td><td><span class="tag ti">7</span></td></tr>
+<tr><td>N_BT&rarr;N_dem,cs</td><td>PH</td><td><span class="tag ti">7</span></td></tr>
+<tr><td>N_BT&rarr;N_dem,col</td><td>PH</td><td><span class="tag ti">7</span></td></tr>
+<tr><td>N_EMS&rarr;N_grid</td><td>ICT</td><td><span class="tag ti">7</span></td></tr>
+<tr><td>N_grid&rarr;N_BT</td><td>PH</td><td><span class="tag ti">7</span></td></tr>
+<tr><td>N_TES&rarr;N_dem,res</td><td>PH</td><td><span class="tag ti">6</span></td></tr>
+</tbody></table></div>
+<div class="co co-a"><strong>N_BT y N_EMS en 9/12 dependencias cr&iacute;ticas</strong>Son los nodos estructuralmente m&aacute;s vulnerables. Coincide con la clasificaci&oacute;n Cr&iacute;tico de T1.2 &mdash; coherencia metodol&oacute;gica verificada.</div>
 </div>
 
 <!-- ══ RIGHT P2 T2.3 ══ -->
@@ -790,8 +818,31 @@ S(t) = [<span class="cv">P_gen,PV</span>(t), <span class="cv">E_bat</span>(t), <
 </tbody></table></div>
 <div class="co co-g" style="margin-top:16px"><strong>&#10003; Regla de cierre satisfecha &mdash; 6/6 criterios cumplidos</strong>El modelo es internamente consistente. La Fase 1 est&aacute; cerrada. El sistema puede avanzar a la Fase 2 &mdash; Dise&ntilde;o de escenarios de perturbaci&oacute;n (Paso 3).</div>
 <div class="of" style="margin-top:16px"><div class="oft">Output integrador &rarr; Fase 2</div>
-<div class="fr"><span class="fo">Arquitectura Funcional del PED</span><span class="fa">&rarr;</span><span class="fd">P3 (contingencias), P5 (Policy Book), P6 (simulaci&oacute;n), P7 (m&eacute;tricas), P9 (diagn&oacute;stico), P10 (redise&ntilde;o)</span></div></div>
+<div class="fr"><span class="fo">Arquitectura Funcional del PED</span><span class="fa">&rarr;</span><span class="fd">P3 (contingencias), P5 (Policy Book), P6 (simulaci&oacute;n), P7 (m&eacute;tricas), P9 (diagn&oacute;stico), P10 (redise&ntilde;o)</span></div>
+
+<!-- ══ RIGHT F1 OUTPUT ══ -->
+<div class="sc" id="right-f1-out">
+<div class="exh">
+  <span class="vvb">Valle Verde</span>
+  <div><div class="plabel">Arquitectura Funcional &middot; 13 nodos &middot; 20 aristas &middot; 5 capas</div>
+  <div style="font-size:17px;font-weight:600;color:var(--t1)">Modelo de interdependencias</div></div>
 </div>
+<div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px" id="layer-filters-out">
+  <button class="lf-btn lf-active" data-layer="PH"  onclick="toggleLayerOut('PH',this)"  style="background:rgba(16,185,129,0.12);color:#6ee7b7;border:1px solid rgba(16,185,129,0.3);padding:4px 11px;border-radius:5px;font-family:var(--f);font-size:11px;font-weight:600;cursor:pointer;transition:all .15s">PH</button>
+  <button class="lf-btn lf-active" data-layer="ICT" onclick="toggleLayerOut('ICT',this)" style="background:rgba(59,130,246,0.12);color:#93c5fd;border:1px solid rgba(59,130,246,0.3);padding:4px 11px;border-radius:5px;font-family:var(--f);font-size:11px;font-weight:600;cursor:pointer;transition:all .15s">ICT</button>
+  <button class="lf-btn lf-active" data-layer="EC"  onclick="toggleLayerOut('EC',this)"  style="background:rgba(245,158,11,0.12);color:#fcd34d;border:1px solid rgba(245,158,11,0.3);padding:4px 11px;border-radius:5px;font-family:var(--f);font-size:11px;font-weight:600;cursor:pointer;transition:all .15s">EC</button>
+  <button class="lf-btn lf-active" data-layer="GV"  onclick="toggleLayerOut('GV',this)"  style="background:rgba(167,139,250,0.12);color:#c4b5fd;border:1px solid rgba(167,139,250,0.3);padding:4px 11px;border-radius:5px;font-family:var(--f);font-size:11px;font-weight:600;cursor:pointer;transition:all .15s">GV</button>
+  <button class="lf-btn lf-active" data-layer="SO"  onclick="toggleLayerOut('SO',this)"  style="background:rgba(244,114,182,0.12);color:#f9a8d4;border:1px solid rgba(244,114,182,0.3);padding:4px 11px;border-radius:5px;font-family:var(--f);font-size:11px;font-weight:600;cursor:pointer;transition:all .15s">SO</button>
+  <span style="margin-left:auto;font-size:11px;color:var(--t3);align-self:center">Arrastra &middot; clic para info</span>
+</div>
+<div style="position:relative;border:1px solid rgba(16,185,129,0.15);border-radius:8px;background:radial-gradient(ellipse at center, #0f1a14 0%, #080808 100%);overflow:hidden">
+  <svg id="net-svg-out" width="100%" viewBox="0 0 600 480" style="display:block"></svg>
+</div>
+<div id="net-info-out" style="margin-top:8px;padding:10px 14px;background:rgba(16,185,129,0.04);border:1px solid rgba(16,185,129,0.12);border-radius:6px;font-size:12px;color:var(--t2);min-height:48px;line-height:1.7">
+  <span style="color:var(--t3);font-size:11px">&#9654; Selecciona un nodo o arista</span>
+</div>
+</div>
+
 </div><!-- /panel-right -->
 </div><!-- /panels -->
 
@@ -1069,7 +1120,7 @@ function showNodeInfo(id){
   var critLabel = {C:'<span style="color:#ef4444;font-weight:600">Cr\u00edtico</span>',I:'<span style="color:#f59e0b;font-weight:600">Importante</span>','-':'<span style="color:#6ee7b7">No-f\u00edsico</span>'};
   var edges_out = NET.edges.filter(function(e){ return e.from===id; }).length;
   var edges_in  = NET.edges.filter(function(e){ return e.to===id;   }).length;
-  document.getElementById('net-info').innerHTML =
+  document.getElementById(infoId).innerHTML =
     '<strong style="color:'+col+'">'+n.label+'</strong> &mdash; '+n.sub+
     '<br><span style="color:var(--t3)">Tipo:</span> '+(n.type==='phy'?'F\u00edsico':'No-f\u00edsico')+
     ' &nbsp;|&nbsp; <span style="color:var(--t3)">Capa principal:</span> '+n.layer+
@@ -1083,16 +1134,17 @@ function showEdgeInfo(idx){
   var e = NET.edges[idx];
   var col = LAYER_COLORS[e.layer];
   var critMark = e.K>=6 ? ' <span style="color:'+col+';font-weight:700">&#9650; DEPENDENCIA CR\u00cdTICA</span>' : '';
-  document.getElementById('net-info').innerHTML =
+  document.getElementById(infoId).innerHTML =
     '<strong style="color:'+col+'">'+e.from+' &rarr; '+e.to+'</strong> ['+e.layer+', w='+e.wij+']'+critMark+
     '<br><span style="color:var(--t3)">K_dep:</span> '+e.K+' (I='+e.I+' E='+e.E+' P='+e.P+')'+
     '<br><span style="color:var(--t3)">Justificaci\u00f3n:</span> '+e.just;
 }
 
-function toggleLayer(lyr, btn){
+function toggleLayer(lyr, btn, svgId){
   activeLayers[lyr] = !activeLayers[lyr];
   btn.style.opacity = activeLayers[lyr] ? '1' : '0.3';
-  document.querySelectorAll('.edge-'+lyr).forEach(function(el){
+  var container = svgId ? document.getElementById(svgId) : document;
+  (container||document).querySelectorAll('.edge-'+lyr).forEach(function(el){
     el.style.display = activeLayers[lyr] ? '' : 'none';
   });
 }
@@ -1110,7 +1162,7 @@ window.setStep = function(phase, step, el){
 // FORCE-DIRECTED NETWORK — Valle Verde T2.2
 // ═══════════════════════════════════════════════
 var FD = {
-  W: 580, H: 400,
+  W: 580, H: 480,
   nodes: [
     {id:'N_PV',    lbl:'N_PV',     sub:'FV cubiertas',    crit:'I', layer:'PH',  eq:'Tipo 1 — Gen. FV', assets:'A01'},
     {id:'N_bat',   lbl:'N_bat',    sub:'BESS comunit.',   crit:'I', layer:'PH',  eq:'Tipo 2 — BESS',    assets:'A02'},
@@ -1158,11 +1210,12 @@ var fdRunning = false;
 var fdBuilt = false;
 var dragNode = null, dragOff = {x:0,y:0};
 
-function fdInit(){
-  if(fdBuilt) return;
-  fdBuilt = true;
-  var svg = document.getElementById('net-svg');
+function fdInit(svgId, infoId, filterId){
+  if(!svgId) svgId='net-svg-out';
+  if(!infoId) infoId='net-info-out';
+  var svg = document.getElementById(svgId);
   if(!svg) return;
+  svg._infoId = infoId;
   var W = FD.W, H = FD.H;
 
   // init node positions — spiral layout for natural start
@@ -1179,81 +1232,143 @@ function fdInit(){
     };
   });
 
-  buildSVG(svg, W, H);
+  buildSVG(svg, W, H, infoId);
   fdRunning = true;
   requestAnimationFrame(fdTick);
 }
 
-function buildSVG(svg, W, H){
+function buildSVG(svg, W, H, infoId){
   svg.innerHTML = '';
-
-  // defs: markers
   var defs = document.createElementNS('http://www.w3.org/2000/svg','defs');
+
+  // glow filters per criticality
+  [['glowC','#ef4444'],['glowI','#f59e0b'],['glowN','#10b981']].forEach(function(g){
+    var f = document.createElementNS('http://www.w3.org/2000/svg','filter');
+    f.setAttribute('id',g[0]); f.setAttribute('x','-50%'); f.setAttribute('y','-50%');
+    f.setAttribute('width','200%'); f.setAttribute('height','200%');
+    var fe = document.createElementNS('http://www.w3.org/2000/svg','feGaussianBlur');
+    fe.setAttribute('in','SourceGraphic'); fe.setAttribute('stdDeviation','4');
+    fe.setAttribute('result','blur');
+    var cm = document.createElementNS('http://www.w3.org/2000/svg','feColorMatrix');
+    cm.setAttribute('in','blur'); cm.setAttribute('type','matrix');
+    cm.setAttribute('values','0 0 0 0 '+hexF(g[1],0)+' 0 0 0 0 '+hexF(g[1],1)+' 0 0 0 0 '+hexF(g[1],2)+' 0 0 0 3 0');
+    var merge = document.createElementNS('http://www.w3.org/2000/svg','feMerge');
+    var m1 = document.createElementNS('http://www.w3.org/2000/svg','feMergeNode');
+    var m2 = document.createElementNS('http://www.w3.org/2000/svg','feMergeNode');
+    m2.setAttribute('in','SourceGraphic');
+    merge.appendChild(m1); merge.appendChild(m2);
+    f.appendChild(fe); f.appendChild(cm); f.appendChild(merge);
+    defs.appendChild(f);
+  });
+
+  // gradient edge definitions
   Object.keys(LC).forEach(function(lyr){
+    var col = LC[lyr];
+    // arrowhead
     var m = document.createElementNS('http://www.w3.org/2000/svg','marker');
-    m.setAttribute('id','m'+lyr); m.setAttribute('markerWidth','8'); m.setAttribute('markerHeight','8');
+    m.setAttribute('id','arr-out-'+lyr); m.setAttribute('markerWidth','8'); m.setAttribute('markerHeight','8');
     m.setAttribute('refX','7'); m.setAttribute('refY','3'); m.setAttribute('orient','auto');
     var p = document.createElementNS('http://www.w3.org/2000/svg','polygon');
-    p.setAttribute('points','0 0,8 3,0 6'); p.setAttribute('fill',LC[lyr]);
+    p.setAttribute('points','0 0,8 3,0 6'); p.setAttribute('fill',col); p.setAttribute('fill-opacity','0.9');
     m.appendChild(p); defs.appendChild(m);
   });
+
   svg.appendChild(defs);
 
+  // CSS animation for critical nodes
+  var style = document.createElementNS('http://www.w3.org/2000/svg','style');
+  style.textContent = '@keyframes pulse{0%,100%{opacity:0.6;r:24}50%{opacity:1;r:26}} .pulse-ring{animation:pulse 2.5s ease-in-out infinite;}';
+  svg.appendChild(style);
+
   var gEdge = document.createElementNS('http://www.w3.org/2000/svg','g');
-  gEdge.setAttribute('id','fd-edges'); svg.appendChild(gEdge);
-
+  gEdge.setAttribute('id','fd-edges-out'); svg.appendChild(gEdge);
   var gNode = document.createElementNS('http://www.w3.org/2000/svg','g');
-  gNode.setAttribute('id','fd-nodes'); svg.appendChild(gNode);
+  gNode.setAttribute('id','fd-nodes-out'); svg.appendChild(gNode);
 
-  // draw edges
+  // Draw edges
   FD.edges.forEach(function(e,i){
     var col = LC[e.layer];
     var isCrit = e.K >= 6;
-    var sw = isCrit ? e.w*3+2 : e.w*2+0.5;
+    var sw = isCrit ? e.w*4+2.5 : e.w*2+0.8;
     var path = document.createElementNS('http://www.w3.org/2000/svg','path');
-    path.setAttribute('id','fe'+i);
+    path.setAttribute('id','feo'+i);
     path.setAttribute('class','fd-edge edge-'+e.layer);
     path.setAttribute('fill','none');
-    path.setAttribute('stroke',col);
-    path.setAttribute('stroke-width',sw);
-    path.setAttribute('stroke-opacity', isCrit?'0.8':'0.35');
-    path.setAttribute('marker-end','url(#m'+e.layer+')');
+    path.setAttribute('stroke', col);
+    path.setAttribute('stroke-width', sw);
+    path.setAttribute('stroke-opacity', isCrit ? '0.75' : '0.28');
+    path.setAttribute('stroke-linecap','round');
+    path.setAttribute('marker-end','url(#arr-out-'+e.layer+')');
     path.style.cursor='pointer';
+    path.style.transition='stroke-opacity 0.2s';
     if(!activeLayers[e.layer]) path.style.display='none';
-    path.addEventListener('click',function(ev){ ev.stopPropagation(); showEdge(i); });
+    path.addEventListener('click',function(ev){ ev.stopPropagation(); showEdge(i, infoId); });
+    path.addEventListener('mouseenter',function(){ this.setAttribute('stroke-opacity','1'); });
+    path.addEventListener('mouseleave',function(){ this.setAttribute('stroke-opacity', e.K>=6?'0.75':'0.28'); });
     gEdge.appendChild(path);
   });
 
-  // draw nodes
+  // Draw nodes
   fdNodes.forEach(function(nd){
     var col = CC[nd.data.crit];
+    var glowId = nd.data.crit==='C'?'glowC':(nd.data.crit==='I'?'glowI':'glowN');
     var g = document.createElementNS('http://www.w3.org/2000/svg','g');
-    g.setAttribute('id','fn'+nd.id);
+    g.setAttribute('id','fno'+nd.id);
     g.style.cursor='grab';
+    g.style.transition='transform 0.05s';
 
-    var shape;
     if(nd.shape==='diamond'){
-      shape = document.createElementNS('http://www.w3.org/2000/svg','polygon');
+      // outer glow ring
+      var gr = document.createElementNS('http://www.w3.org/2000/svg','polygon');
+      gr.setAttribute('class','nd-glow');
+      gr.setAttribute('fill',hexRgba(col,0.08));
+      gr.setAttribute('stroke',col); gr.setAttribute('stroke-width','0.5');
+      gr.setAttribute('stroke-opacity','0.3');
+      gr.setAttribute('filter','url(#'+glowId+')');
+      g.appendChild(gr);
+
+      var shape = document.createElementNS('http://www.w3.org/2000/svg','polygon');
       shape.setAttribute('class','nd-shape');
-      shape.setAttribute('fill',hexRgba(col,0.15));
+      shape.setAttribute('fill',hexRgba(col,0.18));
       shape.setAttribute('stroke',col); shape.setAttribute('stroke-width','1.5');
+      shape.setAttribute('stroke-opacity','0.9');
+      g.appendChild(shape);
     } else {
-      shape = document.createElementNS('http://www.w3.org/2000/svg','circle');
+      // pulse ring for critical nodes
+      if(nd.data.crit==='C'){
+        var ring = document.createElementNS('http://www.w3.org/2000/svg','circle');
+        ring.setAttribute('class','nd-ring pulse-ring');
+        ring.setAttribute('r', nd.r+6);
+        ring.setAttribute('fill','none');
+        ring.setAttribute('stroke',col); ring.setAttribute('stroke-width','1');
+        ring.setAttribute('stroke-opacity','0.4');
+        g.appendChild(ring);
+      }
+      // glow bg
+      var gbg = document.createElementNS('http://www.w3.org/2000/svg','circle');
+      gbg.setAttribute('class','nd-gbg');
+      gbg.setAttribute('r', nd.r+4);
+      gbg.setAttribute('fill',hexRgba(col,0.06));
+      gbg.setAttribute('filter','url(#'+glowId+')');
+      g.appendChild(gbg);
+
+      var shape = document.createElementNS('http://www.w3.org/2000/svg','circle');
       shape.setAttribute('class','nd-shape');
-      shape.setAttribute('r',nd.r);
-      shape.setAttribute('fill',hexRgba(col,0.15));
-      shape.setAttribute('stroke',col);
+      shape.setAttribute('r', nd.r);
+      shape.setAttribute('fill', 'radial-gradient' in {} ? hexRgba(col,0.2) : hexRgba(col,0.2));
+      shape.setAttribute('stroke', col);
       shape.setAttribute('stroke-width', nd.data.crit==='C'?'2.5':'1.5');
+      g.appendChild(shape);
     }
-    g.appendChild(shape);
 
     var txt = document.createElementNS('http://www.w3.org/2000/svg','text');
     txt.setAttribute('class','nd-lbl');
     txt.setAttribute('text-anchor','middle'); txt.setAttribute('dominant-baseline','middle');
     txt.setAttribute('font-family','Inter,sans-serif');
     txt.setAttribute('font-size', nd.data.crit==='C'?'9.5':'8.5');
-    txt.setAttribute('font-weight','700');
-    txt.setAttribute('fill',col); txt.setAttribute('pointer-events','none');
+    txt.setAttribute('font-weight','700'); txt.setAttribute('fill',col);
+    txt.setAttribute('pointer-events','none');
+    txt.setAttribute('letter-spacing','0.02em');
     txt.textContent = nd.data.lbl;
     g.appendChild(txt);
 
@@ -1261,24 +1376,21 @@ function buildSVG(svg, W, H){
     sub.setAttribute('class','nd-sub');
     sub.setAttribute('text-anchor','middle');
     sub.setAttribute('font-family','Inter,sans-serif');
-    sub.setAttribute('font-size','7'); sub.setAttribute('fill','rgba(255,255,255,0.3)');
+    sub.setAttribute('font-size','7'); sub.setAttribute('fill','rgba(255,255,255,0.35)');
     sub.setAttribute('pointer-events','none');
     sub.textContent = nd.data.sub;
     g.appendChild(sub);
 
-    // drag
     g.addEventListener('mousedown',function(ev){
       ev.stopPropagation();
       dragNode = nd;
       var rect = svg.getBoundingClientRect();
-      var scx = FD.W / rect.width;
-      dragOff.x = ev.clientX * scx - nd.x;
-      dragOff.y = (ev.clientY - rect.top) * (FD.H/rect.height) - nd.y;
+      dragOff.x = ev.clientX*(FD.W/rect.width) - nd.x;
+      dragOff.y = (ev.clientY-rect.top)*(FD.H/rect.height) - nd.y;
       nd.pinned = true;
       svg.style.cursor='grabbing';
     });
-    g.addEventListener('click',function(ev){ ev.stopPropagation(); showNode(nd.id); });
-
+    g.addEventListener('click',function(ev){ ev.stopPropagation(); showNode(nd.id, infoId); });
     gNode.appendChild(g);
   });
 
@@ -1291,6 +1403,14 @@ function buildSVG(svg, W, H){
   });
   svg.addEventListener('mouseup',function(){ dragNode=null; svg.style.cursor='grab'; });
   svg.addEventListener('mouseleave',function(){ dragNode=null; });
+}
+
+function hexF(hex,ch){
+  // extract r,g,b channel as 0-1 for feColorMatrix
+  var r=parseInt(hex.slice(1,3),16)/255;
+  var g=parseInt(hex.slice(3,5),16)/255;
+  var b=parseInt(hex.slice(5,7),16)/255;
+  return [r,g,b][ch].toFixed(2);
 }
 
 function fdTick(){
@@ -1347,7 +1467,7 @@ function fdTick(){
 
   // render
   nodes.forEach(function(nd){
-    var g = document.getElementById('fn'+nd.id);
+    var g = document.getElementById('fno'+nd.id) || document.getElementById('fn'+nd.id);
     if(!g) return;
     if(nd.shape==='diamond'){
       var r=nd.r, pts=[nd.x+','+(nd.y-r),(nd.x+r)+','+nd.y,nd.x+','+(nd.y+r),(nd.x-r)+','+nd.y].join(' ');
@@ -1365,7 +1485,7 @@ function fdTick(){
   FD.edges.forEach(function(e,i){
     var a=nodeMap2[e.s], b=nodeMap2[e.t];
     if(!a||!b) return;
-    var path = document.getElementById('fe'+i);
+    var path = document.getElementById('feo'+i) || document.getElementById('fe'+i);
     if(!path) return;
     var dx=b.x-a.x, dy=b.y-a.y;
     var d=Math.sqrt(dx*dx+dy*dy)+0.01;
@@ -1384,7 +1504,8 @@ function hexRgba(hex,a){
   return 'rgba('+r+','+g+','+b+','+a+')';
 }
 
-function showNode(id){
+function showNode(id, infoId){
+  if(!infoId) infoId='net-info-out';
   var nd = fdNodes.find(function(n){ return n.id===id; });
   if(!nd) return;
   var col = CC[nd.data.crit];
@@ -1398,7 +1519,8 @@ function showNode(id){
     ' &nbsp;|&nbsp; Conexiones: '+eo+' salientes, '+ei+' entrantes';
 }
 
-function showEdge(i){
+function showEdge(i, infoId){
+  if(!infoId) infoId='net-info-out';
   var e = FD.edges[i];
   var col = LC[e.layer];
   var crit = e.K>=6 ? ' <b style="color:'+col+'">▲ DEPENDENCIA CRÍTICA</b>' : '';
@@ -1415,14 +1537,18 @@ function toggleLayer(lyr, btn){
   });
 }
 
-// hook into setStep to init diagram
+// hook into setStep
 var _ss = window.setStep;
+var fdOutBuilt = false;
 window.setStep = function(phase, step, el){
   _ss(phase, step, el);
-  if(phase==='p2' && step==='t22'){
-    setTimeout(function(){ fdInit(); }, 50);
+  if(phase==='f1' && step==='out' && !fdOutBuilt){
+    fdOutBuilt = true;
+    setTimeout(function(){ fdInitOut(); }, 60);
   }
 };
+function fdInitOut(){ fdInit('net-svg-out','net-info-out','layer-filters-out'); }
+function toggleLayerOut(lyr,btn){ toggleLayer(lyr,btn,'net-svg-out'); }
 
 </script>
 </body>
