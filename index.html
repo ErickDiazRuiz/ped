@@ -101,9 +101,10 @@ tr.dim td{opacity:.28}
 .ctx-sel{display:flex;gap:6px;margin:14px 0 10px;flex-wrap:wrap}
 .cs{padding:5px 14px;border-radius:5px;border:1px solid var(--b1);background:transparent;color:var(--t3);font-family:var(--f);font-size:12px;font-weight:500;cursor:pointer;transition:all .12s;white-space:nowrap}
 .cs:hover{background:var(--s3);color:var(--t2)}
-.cs.inv.active{background:rgba(59,130,246,0.1);color:#93c5fd;border-color:rgba(59,130,246,0.3)}
-.cs.vmod.active{background:rgba(16,185,129,0.1);color:#6ee7b7;border-color:rgba(16,185,129,0.3)}
-.cs.vext.active{background:rgba(239,68,68,0.1);color:#fca5a5;border-color:rgba(239,68,68,0.3)}
+.cs.cf.active{background:rgba(59,130,246,0.1);color:#93c5fd;border-color:rgba(59,130,246,0.3)}
+.cs.cn.active{background:rgba(16,185,129,0.1);color:#6ee7b7;border-color:rgba(16,185,129,0.3)}
+.cs.cc.active{background:rgba(239,68,68,0.1);color:#fca5a5;border-color:rgba(239,68,68,0.3)}
+.cs.vactive{background:rgba(245,158,11,0.12);color:#fcd34d;border-color:rgba(245,158,11,0.4);border-style:solid}
 .hm-wrap{margin:10px 0 6px;border-radius:6px;border:1px solid var(--b1);overflow:hidden}
 .hm-table{width:100%;border-collapse:collapse;font-size:12px}
 .hm-table th{background:var(--s3);color:var(--t3);padding:7px 11px;text-align:left;font-weight:500;font-size:10px;letter-spacing:.05em;text-transform:uppercase;border-bottom:1px solid var(--b2)}
@@ -151,58 +152,68 @@ tr.dim td{opacity:.28}
 <div class="sc active" id="left-p1-t11">
 <div class="plabel">Paso 1 &middot; Tarea 1.1 &middot; Metodolog&iacute;a</div>
 <div class="ptitle">Delimitaci&oacute;n del sistema y clasificaci&oacute;n de servicios</div>
-<div class="pdesc">Antes de evaluar la resiliencia es necesario saber qu&eacute; debe proteger el sistema y con qu&eacute; urgencia. Esta tarea establece los l&iacute;mites espaciales y funcionales del PED e identifica, para cada servicio energ&eacute;tico, el tiempo m&aacute;ximo tolerable de interrupci&oacute;n. La criticidad asignada aqu&iacute; opera como jerarqu&iacute;a de prioridades a lo largo de toda la metodolog&iacute;a: en el dise&ntilde;o de contingencias (P3), en las reglas del sistema de control (P5) y en el c&aacute;lculo de las funciones de desempe&ntilde;o (P7).</div>
+<div class="pdesc">Antes de evaluar la resiliencia es necesario saber qu&eacute; debe proteger el sistema y con qu&eacute; urgencia. Esta tarea establece los l&iacute;mites del PED, define los contextos operativos bajo los cuales la criticidad de los servicios puede cambiar, y proporciona una biblioteca de referencia que el proyectista utiliza para construir la tabla de criticidad de su PED espec&iacute;fico.</div>
 
 <h3>Per&iacute;metro del sistema</h3>
-<p>El l&iacute;mite del sistema distingue tres niveles: <strong style="color:var(--t1)">sistema interno</strong> (activos operados directamente por el EMS del PED), <strong style="color:var(--t1)">interfaces externas</strong> (conexiones con sistemas externos que son fuente de dependencia operativa o de perturbaci&oacute;n ex&oacute;gena) y <strong style="color:var(--t1)">contexto externo</strong> (factores regulatorios e institucionales que condicionan la operaci&oacute;n pero no forman parte del modelo din&aacute;mico).</p>
-<div class="co co-b"><strong>Criterio &mdash; conflicto funcional vs. regulatorio</strong>Prevalece el criterio que maximiza la coherencia del balance energ&eacute;tico. Si el l&iacute;mite regulatorio divide una microrred que opera como unidad &rarr; ampliar y documentar. Si el l&iacute;mite funcional incluye activos sin control del operador &rarr; excluir y registrar como interfaz.</div>
-<div class="co co-b"><strong>Criterio &mdash; inclusi&oacute;n de interfaces externas</strong>Incluir si: (1) el PED no puede operar sin ella m&aacute;s de su horizonte de autonom&iacute;a T_islanding, o (2) es vector de entrada de perturbaciones ex&oacute;genas sobre activos internos.</div>
+<p>El l&iacute;mite distingue tres niveles: <strong style="color:var(--t1)">sistema interno</strong> (activos bajo control directo del EMS), <strong style="color:var(--t1)">interfaces externas</strong> (dependencia operativa o perturbaci&oacute;n ex&oacute;gena) y <strong style="color:var(--t1)">contexto externo</strong> (factores regulatorios e institucionales).</p>
+<div class="co co-b"><strong>Criterio &mdash; conflicto funcional vs. regulatorio</strong>Prevalece el criterio que maximiza la coherencia del balance energ&eacute;tico. Si el l&iacute;mite regulatorio divide una microrred que opera como unidad &rarr; ampliar y documentar. Si incluye activos sin control del operador &rarr; excluir y registrar como interfaz.</div>
+<div class="co co-b"><strong>Criterio &mdash; inclusi&oacute;n de interfaces externas</strong>Incluir si: (1) el PED no puede operar sin ella m&aacute;s de T_islanding, o (2) es vector de perturbaciones ex&oacute;genas sobre activos internos.</div>
 
-<h3>Clasificaci&oacute;n de servicios por criticidad</h3>
-<p>La criticidad de un servicio se define como el tiempo m&aacute;ximo tolerable de interrupci&oacute;n (MTTI) antes de que ocurra el primer efecto adverso no tolerable. Est&aacute; determinado por el primero en ocurrir de cuatro factores:</p>
-<div class="factors">
-  <div class="factor"><strong>F1 &mdash; Seguridad / salud</strong>Tiempo hasta riesgo directo para personas: equipos m&eacute;dicos, soporte vital, iluminaci&oacute;n de emergencia.</div>
-  <div class="factor"><strong>F2 &mdash; Inercia f&iacute;sica</strong>Tiempo hasta que una variable f&iacute;sica cruza un umbral tolerable: temperatura interior, SoC bater&iacute;a, temperatura ACS.</div>
-  <div class="factor"><strong>F3 &mdash; Cascada sist&eacute;mica</strong>Tiempo hasta que el fallo de este servicio deteriora otro servicio cr&iacute;tico (ej. EMS offline &rarr; p&eacute;rdida de control &rarr; cascada).</div>
-  <div class="factor"><strong>F4 &mdash; Irreversibilidad</strong>Tiempo hasta da&ntilde;o irreversible en activos o p&eacute;rdida de datos: bater&iacute;a sobredescargada, corrupci&oacute;n de registros.</div>
-</div>
-<p style="font-size:12px;color:var(--t3)">MTTI = m&iacute;n(t<sub>F1</sub>, t<sub>F2</sub>, t<sub>F3</sub>, t<sub>F4</sub>). El nivel por defecto se obtiene de la tabla siguiente; las reglas de ajuste contextual pueden modificarlo seg&uacute;n las condiciones del PED evaluado.</p>
-
-<p>La siguiente tabla muestra el MTTI y nivel de criticidad para cada contexto estacional. El contexto determina qu&eacute; reglas de ajuste est&aacute;n activas y c&oacute;mo se modifica el MTTI. Las columnas representan los tres contextos operativos definidos metodol&oacute;gicamente.</p>
-<div class="tw" style="margin-top:10px"><table>
-<thead>
-<tr>
-  <th rowspan="2" style="vertical-align:middle">Servicio</th>
-  <th rowspan="2" style="vertical-align:middle;text-align:center">Factor</th>
-  <th colspan="2" style="text-align:center;border-bottom:1px solid rgba(255,255,255,0.1)">Invierno</th>
-  <th colspan="2" style="text-align:center;border-bottom:1px solid rgba(255,255,255,0.1)">Verano moderado</th>
-  <th colspan="2" style="text-align:center;border-bottom:1px solid rgba(255,255,255,0.1)">Verano extremo</th>
-</tr>
-<tr>
-  <th style="text-align:center;font-size:9px">MTTI</th><th style="text-align:center;font-size:9px">Nivel</th>
-  <th style="text-align:center;font-size:9px">MTTI</th><th style="text-align:center;font-size:9px">Nivel</th>
-  <th style="text-align:center;font-size:9px">MTTI</th><th style="text-align:center;font-size:9px">Nivel</th>
-</tr>
-</thead>
+<h3>Contextos operativos formales</h3>
+<p>Un contexto operativo es la combinaci&oacute;n de condiciones que determina qu&eacute; servicios est&aacute;n bajo presi&oacute;n y cu&aacute;les no. La criticidad de un servicio no es un valor fijo &mdash; es una funci&oacute;n del contexto activo. Se definen tres contextos base m&aacute;s un modificador transversal:</p>
+<div class="tw"><table>
+<thead><tr><th>C&oacute;digo</th><th>Nombre</th><th>Condici&oacute;n de activaci&oacute;n</th><th>Servicio que cambia de nivel</th></tr></thead>
 <tbody>
-<tr><td>Electricidad &mdash; inst. m&eacute;dicas</td><td style="text-align:center">F1</td><td style="text-align:center">&lt;0,5 h</td><td><span class="tag tc">Cr&iacute;tico</span></td><td style="text-align:center">&lt;0,5 h</td><td><span class="tag tc">Cr&iacute;tico</span></td><td style="text-align:center">&lt;0,5 h</td><td><span class="tag tc">Cr&iacute;tico</span></td></tr>
-<tr><td>Servicios digitales / EMS</td><td style="text-align:center">F3</td><td style="text-align:center">&lt;1 h</td><td><span class="tag tc">Cr&iacute;tico</span></td><td style="text-align:center">&lt;1 h</td><td><span class="tag tc">Cr&iacute;tico</span></td><td style="text-align:center">&lt;1 h</td><td><span class="tag tc">Cr&iacute;tico</span></td></tr>
-<tr><td>Electricidad &mdash; residencial</td><td style="text-align:center">F2/F1</td><td style="text-align:center">1&ndash;4 h</td><td><span class="tag ti">Importante</span></td><td style="text-align:center">1&ndash;4 h</td><td><span class="tag ti">Importante</span></td><td style="text-align:center">1&ndash;2 h</td><td><span class="tag ti">Importante&thinsp;&darr;</span></td></tr>
-<tr><td>Calefacci&oacute;n</td><td style="text-align:center">F2</td><td style="text-align:center">2&ndash;6 h</td><td><span class="tag ti">Importante</span></td><td style="text-align:center">&gt;8 h</td><td><span class="tag ts">Secundario</span></td><td style="text-align:center">&gt;8 h</td><td><span class="tag ts">Secundario</span></td></tr>
-<tr><td>Climatizaci&oacute;n</td><td style="text-align:center">F2</td><td style="text-align:center">&gt;8 h</td><td><span class="tag ts">Secundario</span></td><td style="text-align:center">&gt;8 h</td><td><span class="tag ts">Secundario</span></td><td style="text-align:center">1&ndash;4 h</td><td><span class="tag ti">Importante&thinsp;&darr;</span></td></tr>
-<tr><td>ACS</td><td style="text-align:center">F2</td><td style="text-align:center">4&ndash;8 h</td><td><span class="tag ti">Importante</span></td><td style="text-align:center">4&ndash;8 h</td><td><span class="tag ti">Importante</span></td><td style="text-align:center">4&ndash;8 h</td><td><span class="tag ti">Importante</span></td></tr>
-<tr><td>Electricidad &mdash; terciario/colegio</td><td style="text-align:center">F2/F3</td><td style="text-align:center">2&ndash;6 h</td><td><span class="tag ti">Importante</span></td><td style="text-align:center">2&ndash;6 h</td><td><span class="tag ti">Importante</span></td><td style="text-align:center">2&ndash;3 h</td><td><span class="tag ti">Importante&thinsp;&darr;</span></td></tr>
-<tr><td>Recarga VE</td><td style="text-align:center">&mdash;</td><td style="text-align:center">&gt;8 h</td><td><span class="tag ts">Secundario</span></td><td style="text-align:center">&gt;8 h</td><td><span class="tag ts">Secundario</span></td><td style="text-align:center">&gt;8 h</td><td><span class="tag ts">Secundario</span></td></tr>
+<tr><td><span class="tag" style="background:rgba(59,130,246,0.12);color:#93c5fd;border:1px solid rgba(59,130,246,0.3)">C-F</span></td><td>Fr&iacute;o</td><td>T_ext &lt; umbral inferior de confort (~18&thinsp;&deg;C)</td><td>Calefacci&oacute;n: Secundario &rarr; Importante</td></tr>
+<tr><td><span class="tag" style="background:rgba(16,185,129,0.1);color:#6ee7b7;border:1px solid rgba(16,185,129,0.25)">C-N</span></td><td>Neutro</td><td>Umbral inferior &lt; T_ext &lt; umbral superior</td><td>Ni calefacci&oacute;n ni refrigeraci&oacute;n activas como Importantes</td></tr>
+<tr><td><span class="tag" style="background:rgba(239,68,68,0.1);color:#fca5a5;border:1px solid rgba(239,68,68,0.25)">C-C</span></td><td>Calor</td><td>T_ext &gt; umbral superior de confort (~26&thinsp;&deg;C)</td><td>Refrigeraci&oacute;n: Secundario &rarr; Importante</td></tr>
+<tr><td><span class="tag" style="background:rgba(245,158,11,0.1);color:#fcd34d;border:1px solid rgba(245,158,11,0.25)">+V</span></td><td>Vulnerabilidad activa</td><td>&gt;20% usuarios vulnerables O T_ext extremo sostenido &ge; 48 h</td><td>MTTI al l&iacute;mite inferior en servicios afectados (se combina con C-F, C-N o C-C)</td></tr>
 </tbody></table></div>
-<p style="font-size:11px;color:var(--t3);margin-top:-8px">&darr; = mismo nivel; MTTI ajustado al l&iacute;mite inferior del rango por Regla B (poblaci&oacute;n vulnerable activa). Regla A (clima severo) reduce MTTI de calefacci&oacute;n en invierno. Regla D (inercia t&eacute;rmica alta) extiende MTTI +2 h.</p>
+<p style="font-size:11.5px;color:var(--t3)">Los umbrales de confort corresponden a EN 16798-1 Categor&iacute;a II. +V es un modificador, no un contexto independiente: C-F+V (invierno severo con vulnerables), C-C+V (ola de calor con vulnerables).</p>
+
+<h3>Factores determinantes del MTTI</h3>
+<p>El MTTI de un servicio es el tiempo hasta el primer efecto adverso no tolerable: MTTI = m&iacute;n(t<sub>F1</sub>, t<sub>F2</sub>, t<sub>F3</sub>, t<sub>F4</sub>).</p>
+<div class="factors">
+  <div class="factor"><strong>F1 &mdash; Seguridad / salud</strong>Riesgo directo para personas: equipos m&eacute;dicos, soporte vital, iluminaci&oacute;n de emergencia.</div>
+  <div class="factor"><strong>F2 &mdash; Inercia f&iacute;sica</strong>Variable f&iacute;sica cruza umbral tolerable: T_int, SoC bater&iacute;a, T_ACS.</div>
+  <div class="factor"><strong>F3 &mdash; Cascada sist&eacute;mica</strong>Fallo de este servicio deteriora otro cr&iacute;tico (ej. EMS offline &rarr; cascada).</div>
+  <div class="factor"><strong>F4 &mdash; Irreversibilidad</strong>Da&ntilde;o permanente en activos o p&eacute;rdida de datos.</div>
+</div>
+
+<h3>Biblioteca de servicios energ&eacute;ticos</h3>
+<p>Tabla de referencia para que el proyectista identifique los servicios de su PED y estime el MTTI con sus condiciones espec&iacute;ficas. El rango orientativo es un punto de partida &mdash; el valor final debe justificarse con los par&aacute;metros del sistema (C_th, UA, SoC, normativa nacional aplicable).</p>
+<div class="tw"><table>
+<thead><tr><th>Servicio</th><th>Factor dom.</th><th>Contexto relevante</th><th>Rango MTTI orientativo</th><th>Criterio de estimaci&oacute;n</th></tr></thead>
+<tbody>
+<tr><td>Electricidad &mdash; inst. m&eacute;dicas</td><td>F1</td><td>Todos</td><td>0&ndash;30 min</td><td>Normativa sanitaria nacional + IEC 60364-7-710</td></tr>
+<tr><td>Servicios digitales / EMS / SCADA</td><td>F3</td><td>Todos</td><td>15 min &ndash; 2 h</td><td>Existencia de modo degradado documentado</td></tr>
+<tr><td>Electricidad &mdash; residencial</td><td>F2 / F1</td><td>Todos; &darr; con +V</td><td>1&ndash;6 h</td><td>Inercia de equipos + vulnerabilidad usuarios</td></tr>
+<tr><td>Electricidad &mdash; terciario / colegio</td><td>F2 / F3</td><td>Todos; &darr; con +V</td><td>1&ndash;8 h</td><td>Tipo de actividad + dependencia de servicios</td></tr>
+<tr><td>Calefacci&oacute;n</td><td>F2</td><td>C-F (activo), C-N / C-C (no activo)</td><td>1&ndash;8 h en C-F</td><td>C_th edificio + &Delta;T = T_int,0 &minus; T_comfort &divide; tasa enfriamiento</td></tr>
+<tr><td>Refrigeraci&oacute;n / Climatizaci&oacute;n</td><td>F2</td><td>C-C (activo), C-F / C-N (no activo)</td><td>1&ndash;6 h en C-C</td><td>C_th edificio + &Delta;T = T_comfort &minus; T_int,0 &divide; tasa calentamiento</td></tr>
+<tr><td>ACS</td><td>F2</td><td>Todos</td><td>3&ndash;12 h</td><td>Vol. acumulador + temperatura + tasa de demanda</td></tr>
+<tr><td>Red de gas</td><td>F2 / F1</td><td>C-F principalmente</td><td>2&ndash;24 h</td><td>Activos dependientes + alternativas disponibles</td></tr>
+<tr><td>Cogeneraci&oacute;n / CHP</td><td>F2 / F3</td><td>C-F principalmente</td><td>1&ndash;4 h</td><td>Si es &uacute;nica fuente de calor o electricidad</td></tr>
+<tr><td>Hidr&oacute;geno / almac. estacional</td><td>F2</td><td>Todos</td><td>8&ndash;48 h</td><td>Capacidad del sistema + activos dependientes</td></tr>
+<tr><td>Recarga veh&iacute;culo el&eacute;ctrico</td><td>Ninguno</td><td>Todos</td><td>&gt; 8 h</td><td>Servicio diferible por definici&oacute;n</td></tr>
+<tr><td>Movilidad el&eacute;ctrica compartida</td><td>F3</td><td>C-C + C-F con vulnerables</td><td>4&ndash;12 h</td><td>Dependencia de servicios urbanos asociados</td></tr>
+<tr><td>Iluminaci&oacute;n exterior</td><td>Ninguno</td><td>Todos</td><td>&gt; 8 h</td><td>Sin consecuencia operativa inmediata</td></tr>
+</tbody></table></div>
+
+<div class="slabel">Reglas de ajuste contextual</div>
+<p>Una vez identificado el contexto activo (C-F, C-N, C-C) y si el modificador +V aplica, estas reglas precisan c&oacute;mo ajustar el MTTI dentro del rango orientativo de la biblioteca:</p>
+<div class="sr"><strong>A &mdash; Clima severo:&nbsp;</strong>T_ext &lt; &minus;5&thinsp;&deg;C &rarr; MTTI calefacci&oacute;n al l&iacute;mite inferior del rango (C-F m&aacute;s exigente)</div>
+<div class="sr"><strong>B &mdash; Poblaci&oacute;n vulnerable:&nbsp;</strong>Activa el modificador +V &rarr; MTTI al l&iacute;mite inferior en refrigeraci&oacute;n (C-C) y electricidad residencial</div>
+<div class="sr"><strong>C &mdash; Modo degradado EMS:&nbsp;</strong>Policy Book (P5) con modo degradado robusto &rarr; MTTI EMS extendible hasta 4 h. Sin ese modo &rarr; mantener &lt; 1 h</div>
+<div class="sr"><strong>D &mdash; Inercia t&eacute;rmica:&nbsp;</strong>C_th alto (T1.2) &rarr; MTTI calefacci&oacute;n/refrigeraci&oacute;n +X h seg&uacute;n tasa de cambio de T_int del edificio</div>
 
 <div class="of">
 <div class="oft">Outputs &rarr; pasos posteriores</div>
 <div class="fr"><span class="fo">Per&iacute;metro geogr&aacute;fico</span><span class="fa">&rarr;</span><span class="fd">P2-T2.1 &mdash; identificar actores institucionales</span></div>
-<div class="fr"><span class="fo">Tabla de servicios</span><span class="fa">&rarr;</span><span class="fd">P3 (contingencias), P5 (Policy Book)</span></div>
-<div class="fr"><span class="fo">Criticidad de servicios</span><span class="fa">&rarr;</span><span class="fd">P5 (prioridades de control), P7 (ponderaci&oacute;n q(t)), P9, P10</span></div>
+<div class="fr"><span class="fo">Contextos operativos C-F / C-N / C-C / +V</span><span class="fa">&rarr;</span><span class="fd">P5 (reglas estacionales del Policy Book)</span></div>
+<div class="fr"><span class="fo">Tabla de criticidad contextual</span><span class="fa">&rarr;</span><span class="fd">P3 (contingencias), P5 (prioridades de control), P7 (ponderaci&oacute;n q(t))</span></div>
 </div>
-</div>
+</div></div>
 
 <!-- ══ LEFT T1.2 ══ -->
 <div class="sc" id="left-p1-t12">
@@ -323,94 +334,55 @@ tr.dim td{opacity:.28}
 </div>
 
 <h3>Per&iacute;metro &mdash; esquema del distrito</h3>
-<p>L&iacute;mite funcional coincide con la concesi&oacute;n de la comunidad energ&eacute;tica. Sin conflicto regulatorio &mdash; no requiere ajuste.</p>
-
+<p>L&iacute;mite funcional coincide con la concesi&oacute;n de la comunidad energ&eacute;tica. Sin conflicto regulatorio.</p>
 <div class="map-wrap">
 <svg width="100%" viewBox="0 0 460 260" xmlns="http://www.w3.org/2000/svg" style="display:block">
-  <defs>
-    <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
-      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="0.5"/>
-    </pattern>
-  </defs>
+  <defs><pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="0.5"/></pattern></defs>
   <rect width="460" height="260" fill="#111111"/>
   <rect width="460" height="260" fill="url(#grid)"/>
-
-  <!-- PED boundary -->
-  <rect x="60" y="30" width="280" height="200" rx="6"
-        fill="rgba(16,185,129,0.04)" stroke="#10b981" stroke-width="1.2" stroke-dasharray="6 3"/>
-  <text x="68" y="24" font-family="Inter,sans-serif" font-size="9" font-weight="600"
-        fill="#10b981" letter-spacing="0.07em" text-transform="uppercase">P&Eacute;RIMETRO PED VALLE VERDE (~8 ha)</text>
-
-  <!-- Residential blocks 3x4 grid -->
-  <!-- row 1 -->
+  <rect x="60" y="30" width="280" height="200" rx="6" fill="rgba(16,185,129,0.04)" stroke="#10b981" stroke-width="1.2" stroke-dasharray="6 3"/>
+  <text x="68" y="24" font-family="Inter,sans-serif" font-size="9" font-weight="600" fill="#10b981" letter-spacing="0.07em">P&Eacute;RIMETRO PED VALLE VERDE (~8 ha)</text>
   <rect x="80" y="50" width="38" height="28" rx="3" fill="#1e2733" stroke="rgba(16,185,129,0.3)" stroke-width="0.8"/>
   <rect x="128" y="50" width="38" height="28" rx="3" fill="#1e2733" stroke="rgba(16,185,129,0.3)" stroke-width="0.8"/>
   <rect x="176" y="50" width="38" height="28" rx="3" fill="#1e2733" stroke="rgba(16,185,129,0.3)" stroke-width="0.8"/>
-  <!-- row 2 -->
   <rect x="80" y="92" width="38" height="28" rx="3" fill="#1e2733" stroke="rgba(16,185,129,0.3)" stroke-width="0.8"/>
   <rect x="128" y="92" width="38" height="28" rx="3" fill="#1e2733" stroke="rgba(16,185,129,0.3)" stroke-width="0.8"/>
   <rect x="176" y="92" width="38" height="28" rx="3" fill="#1e2733" stroke="rgba(16,185,129,0.3)" stroke-width="0.8"/>
-  <!-- row 3 -->
   <rect x="80" y="134" width="38" height="28" rx="3" fill="#1e2733" stroke="rgba(16,185,129,0.3)" stroke-width="0.8"/>
   <rect x="128" y="134" width="38" height="28" rx="3" fill="#1e2733" stroke="rgba(16,185,129,0.3)" stroke-width="0.8"/>
   <rect x="176" y="134" width="38" height="28" rx="3" fill="#1e2733" stroke="rgba(16,185,129,0.3)" stroke-width="0.8"/>
-  <!-- row 4 -->
   <rect x="80" y="176" width="38" height="28" rx="3" fill="#1e2733" stroke="rgba(16,185,129,0.3)" stroke-width="0.8"/>
   <rect x="128" y="176" width="38" height="28" rx="3" fill="#1e2733" stroke="rgba(16,185,129,0.3)" stroke-width="0.8"/>
   <rect x="176" y="176" width="38" height="28" rx="3" fill="#1e2733" stroke="rgba(16,185,129,0.3)" stroke-width="0.8"/>
-
-  <!-- Label residential -->
   <text x="99" y="215" font-family="Inter,sans-serif" font-size="8" fill="rgba(16,185,129,0.6)" text-anchor="middle">12 bloques res.</text>
-
-  <!-- Health center -->
   <rect x="238" y="50" width="52" height="44" rx="3" fill="rgba(239,68,68,0.1)" stroke="#ef4444" stroke-width="1"/>
   <text x="264" y="70" font-family="Inter,sans-serif" font-size="8" fill="#ef4444" text-anchor="middle" font-weight="600">Centro</text>
   <text x="264" y="81" font-family="Inter,sans-serif" font-size="8" fill="#ef4444" text-anchor="middle">salud</text>
   <text x="264" y="91" font-family="Inter,sans-serif" font-size="7" fill="rgba(239,68,68,0.6)" text-anchor="middle">CR&Iacute;TICO</text>
-
-  <!-- School -->
   <rect x="238" y="110" width="52" height="44" rx="3" fill="rgba(245,158,11,0.08)" stroke="#f59e0b" stroke-width="1"/>
   <text x="264" y="130" font-family="Inter,sans-serif" font-size="8" fill="#f59e0b" text-anchor="middle" font-weight="600">Colegio</text>
   <text x="264" y="142" font-family="Inter,sans-serif" font-size="8" fill="#f59e0b" text-anchor="middle">p&uacute;blico</text>
-
-  <!-- EMS / BESS -->
   <rect x="238" y="170" width="52" height="40" rx="3" fill="rgba(59,130,246,0.1)" stroke="#3b82f6" stroke-width="1"/>
   <text x="264" y="188" font-family="Inter,sans-serif" font-size="8" fill="#3b82f6" text-anchor="middle" font-weight="600">EMS + BESS</text>
-  <text x="264" y="200" font-family="Inter,sans-serif" font-size="7" fill="rgba(59,130,246,0.6)" text-anchor="middle">A06 · A02</text>
-
-  <!-- Internal bus line -->
+  <text x="264" y="200" font-family="Inter,sans-serif" font-size="7" fill="rgba(59,130,246,0.6)" text-anchor="middle">A06 &middot; A02</text>
   <line x1="224" y1="130" x2="238" y2="130" stroke="rgba(16,185,129,0.4)" stroke-width="1.5" stroke-dasharray="3 2"/>
   <line x1="224" y1="50" x2="224" y2="215" stroke="rgba(16,185,129,0.25)" stroke-width="1.5"/>
-
-  <!-- PAC node — activo interno A08 (verde = interno) -->
   <circle cx="350" cy="130" r="12" fill="rgba(16,185,129,0.12)" stroke="#10b981" stroke-width="1.2"/>
   <text x="350" y="127" font-family="Inter,sans-serif" font-size="8" fill="#10b981" text-anchor="middle" font-weight="600">PAC</text>
   <text x="350" y="137" font-family="Inter,sans-serif" font-size="7" fill="rgba(16,185,129,0.6)" text-anchor="middle">A08</text>
-
-  <!-- Line PED bus to PAC (internal) -->
   <line x1="340" y1="130" x2="297" y2="130" stroke="rgba(16,185,129,0.4)" stroke-width="1.5"/>
-
-  <!-- External interfaces -->
-  <!-- Iberdrola -->
   <rect x="380" y="44" width="66" height="30" rx="3" fill="rgba(245,158,11,0.06)" stroke="rgba(245,158,11,0.35)" stroke-width="0.8"/>
   <text x="413" y="56" font-family="Inter,sans-serif" font-size="8" fill="#f59e0b" text-anchor="middle" font-weight="600">Red Iberdrola</text>
   <text x="413" y="67" font-family="Inter,sans-serif" font-size="7" fill="rgba(245,158,11,0.5)" text-anchor="middle">el&eacute;ctrica BT</text>
-  <!-- dashed line from PAC to Iberdrola -->
   <line x1="362" y1="122" x2="380" y2="59" stroke="rgba(245,158,11,0.45)" stroke-width="1" stroke-dasharray="4 2"/>
-
-  <!-- OMIE -->
   <rect x="380" y="116" width="66" height="30" rx="3" fill="rgba(245,158,11,0.06)" stroke="rgba(245,158,11,0.35)" stroke-width="0.8"/>
   <text x="413" y="128" font-family="Inter,sans-serif" font-size="8" fill="#f59e0b" text-anchor="middle" font-weight="600">Mercado OMIE</text>
   <text x="413" y="139" font-family="Inter,sans-serif" font-size="7" fill="rgba(245,158,11,0.5)" text-anchor="middle">precio spot</text>
   <line x1="362" y1="131" x2="380" y2="131" stroke="rgba(245,158,11,0.45)" stroke-width="1" stroke-dasharray="4 2"/>
-
-  <!-- Agua -->
   <rect x="380" y="186" width="66" height="30" rx="3" fill="rgba(59,130,246,0.06)" stroke="rgba(59,130,246,0.35)" stroke-width="0.8"/>
   <text x="413" y="198" font-family="Inter,sans-serif" font-size="8" fill="#3b82f6" text-anchor="middle" font-weight="600">Red agua</text>
   <text x="413" y="209" font-family="Inter,sans-serif" font-size="7" fill="rgba(59,130,246,0.5)" text-anchor="middle">municipal</text>
   <line x1="362" y1="138" x2="380" y2="199" stroke="rgba(59,130,246,0.45)" stroke-width="1" stroke-dasharray="4 2"/>
-
-  <!-- Legend — 4 items clearly separated -->
   <rect x="22" y="240" width="9" height="8" rx="1" fill="none" stroke="rgba(16,185,129,0.3)" stroke-width="0.8"/>
   <text x="35" y="248" font-family="Inter,sans-serif" font-size="7.5" fill="rgba(255,255,255,0.45)">Bloques res.</text>
   <rect x="102" y="240" width="9" height="8" rx="1" fill="rgba(239,68,68,0.1)" stroke="#ef4444" stroke-width="0.8"/>
@@ -424,13 +396,16 @@ tr.dim td{opacity:.28}
 </svg>
 </div>
 
-<h3>Matriz de criticidad por contexto &mdash; Valle Verde</h3>
-<p>Selecciona el contexto operativo del escenario a analizar. La columna activa muestra el MTTI y nivel v&aacute;lido para ese contexto; las dem&aacute;s quedan en segundo plano como referencia.</p>
+<h3>Servicios seleccionados y MTTI &mdash; Valle Verde</h3>
+<p>El proyectista aplic&oacute; la biblioteca metodol&oacute;gica a las condiciones de Madrid. Selecciona el contexto activo; activa +V si hay poblaci&oacute;n vulnerable o calor extremo sostenido.</p>
 
-<div class="ctx-sel" id="ctx-sel">
-  <button class="cs inv active" onclick="setCtx('inv',this)">&#10052; Invierno</button>
-  <button class="cs vmod" onclick="setCtx('vmod',this)">&#9728; Verano moderado</button>
-  <button class="cs vext" onclick="setCtx('vext',this)">&#9888; Verano extremo + vulnerable</button>
+<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:12px 0 6px">
+  <div class="ctx-sel" id="ctx-sel" style="margin:0">
+    <button class="cs cf active" onclick="setCtx('cf',this)"><span style="color:#93c5fd">C-F</span>&nbsp; Fr&iacute;o</button>
+    <button class="cs cn" onclick="setCtx('cn',this)"><span style="color:#6ee7b7">C-N</span>&nbsp; Neutro</button>
+    <button class="cs cc" onclick="setCtx('cc',this)"><span style="color:#fca5a5">C-C</span>&nbsp; Calor</button>
+  </div>
+  <button id="vbtn" class="cs" onclick="toggleV(this)" style="border-style:dashed"><span style="color:#fcd34d">+V</span>&nbsp; Vulnerabilidad</button>
 </div>
 
 <div id="ctx-note" style="font-size:12px;padding:8px 12px;border-radius:5px;border:1px solid var(--b1);margin-bottom:10px;line-height:1.6;color:var(--t2)"></div>
@@ -440,67 +415,66 @@ tr.dim td{opacity:.28}
 <thead>
 <tr>
   <th>Servicio</th>
-  <th style="text-align:center" class="ctx-col col-inv">&#10052; Invierno</th>
-  <th style="text-align:center" class="ctx-col col-vmod">&#9728; Ver. moderado</th>
-  <th style="text-align:center" class="ctx-col col-vext">&#9888; Ver. extremo</th>
+  <th style="text-align:center" class="ctx-col col-cf"><span style="color:#93c5fd">C-F</span> Fr&iacute;o</th>
+  <th style="text-align:center" class="ctx-col col-cn"><span style="color:#6ee7b7">C-N</span> Neutro</th>
+  <th style="text-align:center" class="ctx-col col-cc"><span style="color:#fca5a5">C-C</span> Calor</th>
 </tr>
 </thead>
 <tbody>
 <tr>
   <td>Electricidad &mdash; c. de salud</td>
-  <td class="ctx-col col-inv" style="text-align:center"><span class="mtti">&lt;0,5 h</span><span class="cell-c">Cr&iacute;tico</span></td>
-  <td class="ctx-col col-vmod" style="text-align:center"><span class="mtti">&lt;0,5 h</span><span class="cell-c">Cr&iacute;tico</span></td>
-  <td class="ctx-col col-vext" style="text-align:center"><span class="mtti">&lt;0,5 h</span><span class="cell-c">Cr&iacute;tico</span></td>
+  <td class="ctx-col col-cf" style="text-align:center"><span class="mtti">&lt;0,5 h</span><span class="cell-c">Cr&iacute;tico</span></td>
+  <td class="ctx-col col-cn" style="text-align:center"><span class="mtti">&lt;0,5 h</span><span class="cell-c">Cr&iacute;tico</span></td>
+  <td class="ctx-col col-cc" style="text-align:center"><span class="mtti">&lt;0,5 h</span><span class="cell-c">Cr&iacute;tico</span></td>
 </tr>
 <tr>
   <td>Servicios digitales / EMS</td>
-  <td class="ctx-col col-inv" style="text-align:center"><span class="mtti">&lt;1 h</span><span class="cell-c">Cr&iacute;tico</span></td>
-  <td class="ctx-col col-vmod" style="text-align:center"><span class="mtti">&lt;1 h</span><span class="cell-c">Cr&iacute;tico</span></td>
-  <td class="ctx-col col-vext" style="text-align:center"><span class="mtti">&lt;1 h</span><span class="cell-c">Cr&iacute;tico</span></td>
+  <td class="ctx-col col-cf" style="text-align:center"><span class="mtti">&lt;1 h</span><span class="cell-c">Cr&iacute;tico</span></td>
+  <td class="ctx-col col-cn" style="text-align:center"><span class="mtti">&lt;1 h</span><span class="cell-c">Cr&iacute;tico</span></td>
+  <td class="ctx-col col-cc" style="text-align:center"><span class="mtti">&lt;1 h</span><span class="cell-c">Cr&iacute;tico</span></td>
 </tr>
 <tr>
   <td>Electricidad &mdash; residencial</td>
-  <td class="ctx-col col-inv" style="text-align:center"><span class="mtti">1&ndash;4 h</span><span class="cell-i">Importante</span></td>
-  <td class="ctx-col col-vmod" style="text-align:center"><span class="mtti">1&ndash;4 h</span><span class="cell-i">Importante</span></td>
-  <td class="ctx-col col-vext" style="text-align:center"><span class="mtti">1&ndash;2 h</span><span class="cell-i tight">Importante&thinsp;&darr;</span></td>
+  <td class="ctx-col col-cf" style="text-align:center" data-cf="1-4h|i" data-cfv="1-2h|iv"><span class="mtti">1&ndash;4 h</span><span class="cell-i">Importante</span></td>
+  <td class="ctx-col col-cn" style="text-align:center" data-cn="1-4h|i" data-cnv="1-4h|i"><span class="mtti">1&ndash;4 h</span><span class="cell-i">Importante</span></td>
+  <td class="ctx-col col-cc" style="text-align:center" data-cc="1-4h|i" data-ccv="1-2h|iv"><span class="mtti">1&ndash;4 h</span><span class="cell-i">Importante</span></td>
 </tr>
 <tr>
   <td>Calefacci&oacute;n</td>
-  <td class="ctx-col col-inv" style="text-align:center"><span class="mtti">2&ndash;6 h</span><span class="cell-i">Importante</span></td>
-  <td class="ctx-col col-vmod" style="text-align:center"><span class="mtti">&gt;8 h</span><span class="cell-s">Secundario</span></td>
-  <td class="ctx-col col-vext" style="text-align:center"><span class="mtti">&gt;8 h</span><span class="cell-s">Secundario</span></td>
+  <td class="ctx-col col-cf" style="text-align:center" data-cf="2-6h|i" data-cfv="1-3h|iv"><span class="mtti">2&ndash;6 h</span><span class="cell-i">Importante</span></td>
+  <td class="ctx-col col-cn" style="text-align:center"><span class="mtti">&gt;8 h</span><span class="cell-s">Secundario</span></td>
+  <td class="ctx-col col-cc" style="text-align:center"><span class="mtti">&gt;8 h</span><span class="cell-s">Secundario</span></td>
 </tr>
 <tr>
   <td>Climatizaci&oacute;n</td>
-  <td class="ctx-col col-inv" style="text-align:center"><span class="mtti">&gt;8 h</span><span class="cell-s">Secundario</span></td>
-  <td class="ctx-col col-vmod" style="text-align:center"><span class="mtti">&gt;8 h</span><span class="cell-s">Secundario</span></td>
-  <td class="ctx-col col-vext" style="text-align:center"><span class="mtti">1&ndash;4 h</span><span class="cell-i tight">Importante&thinsp;&darr;</span></td>
+  <td class="ctx-col col-cf" style="text-align:center"><span class="mtti">&gt;8 h</span><span class="cell-s">Secundario</span></td>
+  <td class="ctx-col col-cn" style="text-align:center"><span class="mtti">&gt;8 h</span><span class="cell-s">Secundario</span></td>
+  <td class="ctx-col col-cc" style="text-align:center" data-cc="1-4h|i" data-ccv="1-2h|iv"><span class="mtti">1&ndash;4 h</span><span class="cell-i">Importante</span></td>
 </tr>
 <tr>
   <td>ACS</td>
-  <td class="ctx-col col-inv" style="text-align:center"><span class="mtti">4&ndash;8 h</span><span class="cell-i">Importante</span></td>
-  <td class="ctx-col col-vmod" style="text-align:center"><span class="mtti">4&ndash;8 h</span><span class="cell-i">Importante</span></td>
-  <td class="ctx-col col-vext" style="text-align:center"><span class="mtti">4&ndash;8 h</span><span class="cell-i">Importante</span></td>
+  <td class="ctx-col col-cf" style="text-align:center"><span class="mtti">4&ndash;8 h</span><span class="cell-i">Importante</span></td>
+  <td class="ctx-col col-cn" style="text-align:center"><span class="mtti">4&ndash;8 h</span><span class="cell-i">Importante</span></td>
+  <td class="ctx-col col-cc" style="text-align:center"><span class="mtti">4&ndash;8 h</span><span class="cell-i">Importante</span></td>
 </tr>
 <tr>
   <td>Electricidad &mdash; terciario/colegio</td>
-  <td class="ctx-col col-inv" style="text-align:center"><span class="mtti">2&ndash;6 h</span><span class="cell-i">Importante</span></td>
-  <td class="ctx-col col-vmod" style="text-align:center"><span class="mtti">2&ndash;6 h</span><span class="cell-i">Importante</span></td>
-  <td class="ctx-col col-vext" style="text-align:center"><span class="mtti">2&ndash;3 h</span><span class="cell-i tight">Importante&thinsp;&darr;</span></td>
+  <td class="ctx-col col-cf" style="text-align:center" data-cf="2-6h|i" data-cfv="2-6h|i"><span class="mtti">2&ndash;6 h</span><span class="cell-i">Importante</span></td>
+  <td class="ctx-col col-cn" style="text-align:center" data-cn="2-6h|i" data-cnv="2-6h|i"><span class="mtti">2&ndash;6 h</span><span class="cell-i">Importante</span></td>
+  <td class="ctx-col col-cc" style="text-align:center" data-cc="2-6h|i" data-ccv="1-3h|iv"><span class="mtti">2&ndash;6 h</span><span class="cell-i">Importante</span></td>
 </tr>
 <tr>
   <td>Recarga VE</td>
-  <td class="ctx-col col-inv" style="text-align:center"><span class="mtti">&gt;8 h</span><span class="cell-s">Secundario</span></td>
-  <td class="ctx-col col-vmod" style="text-align:center"><span class="mtti">&gt;8 h</span><span class="cell-s">Secundario</span></td>
-  <td class="ctx-col col-vext" style="text-align:center"><span class="mtti">&gt;8 h</span><span class="cell-s">Secundario</span></td>
+  <td class="ctx-col col-cf" style="text-align:center"><span class="mtti">&gt;8 h</span><span class="cell-s">Secundario</span></td>
+  <td class="ctx-col col-cn" style="text-align:center"><span class="mtti">&gt;8 h</span><span class="cell-s">Secundario</span></td>
+  <td class="ctx-col col-cc" style="text-align:center"><span class="mtti">&gt;8 h</span><span class="cell-s">Secundario</span></td>
 </tr>
 </tbody>
 </table>
 </div>
-<p style="font-size:11px;color:var(--t3);margin-top:-6px">&darr; borde punteado = mismo nivel, MTTI ajustado al l&iacute;mite inferior (Regla B activa). Calefacci&oacute;n con Regla D activa (C_th=320 kWh/&deg;C): +2 h sobre el valor base mostrado.</p>
-
-<div class="co co-g"><strong>Nota &rarr; P5</strong>La calefacci&oacute;n cambia de Importante (invierno) a Secundario (verano moderado). El Policy Book debe incluir esta variaci&oacute;n como regla estacional expl&iacute;cita.</div>
-</div>
+<p style="font-size:11px;color:var(--t3);margin-top:-6px">Borde punteado (&darr;) = mismo nivel, MTTI ajustado al l&iacute;mite inferior por modificador +V activo. Regla D (C_th=320 kWh/&deg;C en A09): +2 h sobre MTTI base de calefacci&oacute;n en C-F.</p>
+<div class="co co-g"><strong>Nota &rarr; P5</strong>Calefacci&oacute;n cambia de Importante (C-F) a Secundario (C-N / C-C). Climatizaci&oacute;n cambia de Secundario (C-F / C-N) a Importante (C-C). El Policy Book debe incluir ambas transiciones como reglas estacionales expl&iacute;citas.</div>
+</div></div>
 
 <!-- ══ RIGHT T1.2 ══ -->
 <div class="sc" id="right-p1-t12">
@@ -625,7 +599,6 @@ Cada uno requiere per&iacute;odo, estado inicial y horizonte distintos.</div>
 </div><!-- /panels -->
 
 <script>
-// ── Step navigation ──
 function setStep(phase,step,el){
   document.querySelectorAll('.st').forEach(t=>t.classList.remove('active'));
   el.classList.add('active');
@@ -638,113 +611,83 @@ function setStep(phase,step,el){
   document.getElementById('panel-right').scrollTop=0;
 }
 
-// ── Context data ──
+var currentCtx = 'cf';
+var vActive = false;
+
 var ctxNotes = {
-  inv:  '<strong>Invierno:</strong> Calefacci&oacute;n activa como Importante. Climatizaci&oacute;n no relevante. Regla A no aplica en Madrid (T_ext_m&iacute;n ~0&deg;C, no &lt; &minus;5&deg;C). Regla D activa en A09 (C_th=320 kWh/&deg;C &rarr; +2 h en calefacci&oacute;n).',
-  vmod: '<strong>Verano moderado:</strong> Calefacci&oacute;n pasa a Secundario. Climatizaci&oacute;n no supera el umbral. Ninguna regla de ajuste activa para este PED en este contexto.',
-  vext: '<strong>Verano extremo + vulnerable:</strong> Climatizaci&oacute;n asciende a Importante (menores en colegio, Regla B). Electricidad residencial y terciario con MTTI al l&iacute;mite inferior del rango (&darr;). Regla C activa en EMS: modo degradado disponible.' 
+  cf:  '<strong style="color:#93c5fd">C-F &mdash; Fr&iacute;o</strong> &nbsp;T_ext &lt; 18&thinsp;&deg;C. Calefacci&oacute;n activa como Importante. Climatizaci&oacute;n no relevante. Regla A no aplica en Madrid (T_ext_m&iacute;n ~0&deg;C). Regla D activa en A09 (C_th=320 kWh/&deg;C &rarr; +2 h en calefacci&oacute;n).',
+  cn:  '<strong style="color:#6ee7b7">C-N &mdash; Neutro</strong> &nbsp;18&thinsp;&deg;C &le; T_ext &le; 26&thinsp;&deg;C. Ni calefacci&oacute;n ni refrigeraci&oacute;n activas como Importantes. Solo ACS y electricidad mantienen su nivel base.',
+  cc:  '<strong style="color:#fca5a5">C-C &mdash; Calor</strong> &nbsp;T_ext &gt; 26&thinsp;&deg;C. Climatizaci&oacute;n asciende a Importante. Calefacci&oacute;n no relevante. +V activa si T_ext &gt; 33&thinsp;&deg;C sostenido &ge; 48 h (menores en colegio, Regla B).',
+  v:   ' &nbsp;&nbsp;<span style="color:#fcd34d">+V activo</span>: MTTI ajustado al l&iacute;mite inferior en servicios vulnerables (borde punteado).'
 };
 
-// criticidad activa por nodo seg&uacute;n contexto
-// format: [html_cell, service_label]
 var nodeCtx = {
-  A01: {
-    inv:  ['<span class="cell-i">Importante</span>', 'El&eacute;ctrico res.'],
-    vmod: ['<span class="cell-i">Importante</span>', 'El&eacute;ctrico res.'],
-    vext: ['<span class="cell-i tight">Importante&thinsp;&darr;</span>', 'El&eacute;ctrico res. (R.B)']
-  },
-  A02: {
-    inv:  ['<span class="cell-i">Importante</span>', 'El&eacute;ctrico res.'],
-    vmod: ['<span class="cell-i">Importante</span>', 'El&eacute;ctrico res.'],
-    vext: ['<span class="cell-i tight">Importante&thinsp;&darr;</span>', 'El&eacute;ctrico res. (R.B)']
-  },
-  A03: {
-    inv:  ['<span class="cell-i">Importante</span>', 'Conductor: Calefacci&oacute;n'],
-    vmod: ['<span class="cell-i">Importante</span>', 'Conductor: ACS'],
-    vext: ['<span class="cell-i">Importante</span>', 'Conductor: ACS']
-  },
-  A04: {
-    inv:  ['<span class="cell-i">Importante</span>', 'Conductor: Calefacci&oacute;n + ACS'],
-    vmod: ['<span class="cell-i">Importante</span>', 'Conductor: ACS'],
-    vext: ['<span class="cell-i">Importante</span>', 'Conductor: ACS']
-  },
-  A05: {
-    inv:  ['<span class="cell-c">Cr&iacute;tico</span>', 'Todos el&eacute;ctricos'],
-    vmod: ['<span class="cell-c">Cr&iacute;tico</span>', 'Todos el&eacute;ctricos'],
-    vext: ['<span class="cell-c">Cr&iacute;tico</span>', 'Todos el&eacute;ctricos']
-  },
-  A06: {
-    inv:  ['<span class="cell-c">Cr&iacute;tico</span>', 'EMS / F3 inamovible'],
-    vmod: ['<span class="cell-c">Cr&iacute;tico</span>', 'EMS / F3 inamovible'],
-    vext: ['<span class="cell-c">Cr&iacute;tico</span>', 'EMS / F3 inamovible']
-  },
-  A07: {
-    inv:  ['<span class="cell-c">Cr&iacute;tico</span>', 'EMS'],
-    vmod: ['<span class="cell-c">Cr&iacute;tico</span>', 'EMS'],
-    vext: ['<span class="cell-c">Cr&iacute;tico</span>', 'EMS']
-  },
-  A08: {
-    inv:  ['<span class="cell-i">Importante</span>', 'El&eacute;ctrico res.'],
-    vmod: ['<span class="cell-i">Importante</span>', 'El&eacute;ctrico res.'],
-    vext: ['<span class="cell-i tight">Importante&thinsp;&darr;</span>', 'El&eacute;ctrico res. (R.B)']
-  },
-  A09: {
-    inv:  ['<span class="cell-i">Importante</span>', 'El&eacute;ctrico + Calef. (R.D: +2h)'],
-    vmod: ['<span class="cell-i">Importante</span>', 'Conductor: El&eacute;ctrico'],
-    vext: ['<span class="cell-i tight">Importante&thinsp;&darr;</span>', 'El&eacute;ctrico (R.B &darr;)']
-  },
-  A10: {
-    inv:  ['<span class="cell-c">Cr&iacute;tico</span>', 'Elec. m&eacute;dica / F1'],
-    vmod: ['<span class="cell-c">Cr&iacute;tico</span>', 'Elec. m&eacute;dica / F1'],
-    vext: ['<span class="cell-c">Cr&iacute;tico</span>', 'Elec. m&eacute;dica / F1']
-  },
-  A11: {
-    inv:  ['<span class="cell-i">Importante</span>', 'El&eacute;ctrico + Calefacci&oacute;n'],
-    vmod: ['<span class="cell-i">Importante</span>', 'El&eacute;ctrico'],
-    vext: ['<span class="cell-i tight">Importante&thinsp;&darr;</span>', 'El&eacute;ctrico + Climat. (R.B)']
-  }
+  A01:{cf:['<span class="cell-i">Importante</span>','El&eacute;ctrico res.'],cn:['<span class="cell-i">Importante</span>','El&eacute;ctrico res.'],cc:['<span class="cell-i">Importante</span>','El&eacute;ctrico res.'],cfv:['<span class="cell-i tight">Importante&thinsp;&darr;</span>','El&eacute;ctrico res. (R.B)'],cnv:['<span class="cell-i">Importante</span>','El&eacute;ctrico res.'],ccv:['<span class="cell-i tight">Importante&thinsp;&darr;</span>','El&eacute;ctrico res. (R.B)']},
+  A02:{cf:['<span class="cell-i">Importante</span>','El&eacute;ctrico res.'],cn:['<span class="cell-i">Importante</span>','El&eacute;ctrico res.'],cc:['<span class="cell-i">Importante</span>','El&eacute;ctrico res.'],cfv:['<span class="cell-i tight">Importante&thinsp;&darr;</span>','El&eacute;ctrico res. (R.B)'],cnv:['<span class="cell-i">Importante</span>','El&eacute;ctrico res.'],ccv:['<span class="cell-i tight">Importante&thinsp;&darr;</span>','El&eacute;ctrico res. (R.B)']},
+  A03:{cf:['<span class="cell-i">Importante</span>','Conductor: Calefacci&oacute;n'],cn:['<span class="cell-i">Importante</span>','Conductor: ACS'],cc:['<span class="cell-i">Importante</span>','Conductor: ACS'],cfv:['<span class="cell-i tight">Importante&thinsp;&darr;</span>','Calef. (R.D +2h, R.B)'],cnv:['<span class="cell-i">Importante</span>','ACS'],ccv:['<span class="cell-i">Importante</span>','ACS']},
+  A04:{cf:['<span class="cell-i">Importante</span>','Calef. + ACS (R.D: +2h)'],cn:['<span class="cell-i">Importante</span>','Conductor: ACS'],cc:['<span class="cell-i">Importante</span>','Conductor: ACS'],cfv:['<span class="cell-i tight">Importante&thinsp;&darr;</span>','Calef.+ACS (R.D+R.B)'],cnv:['<span class="cell-i">Importante</span>','ACS'],ccv:['<span class="cell-i">Importante</span>','ACS']},
+  A05:{cf:['<span class="cell-c">Cr&iacute;tico</span>','Todos el&eacute;ctricos'],cn:['<span class="cell-c">Cr&iacute;tico</span>','Todos el&eacute;ctricos'],cc:['<span class="cell-c">Cr&iacute;tico</span>','Todos el&eacute;ctricos'],cfv:['<span class="cell-c">Cr&iacute;tico</span>','Todos el&eacute;ctricos'],cnv:['<span class="cell-c">Cr&iacute;tico</span>','Todos el&eacute;ctricos'],ccv:['<span class="cell-c">Cr&iacute;tico</span>','Todos el&eacute;ctricos']},
+  A06:{cf:['<span class="cell-c">Cr&iacute;tico</span>','EMS / F3'],cn:['<span class="cell-c">Cr&iacute;tico</span>','EMS / F3'],cc:['<span class="cell-c">Cr&iacute;tico</span>','EMS / F3'],cfv:['<span class="cell-c">Cr&iacute;tico</span>','EMS / F3'],cnv:['<span class="cell-c">Cr&iacute;tico</span>','EMS / F3'],ccv:['<span class="cell-c">Cr&iacute;tico</span>','EMS / F3']},
+  A07:{cf:['<span class="cell-c">Cr&iacute;tico</span>','EMS'],cn:['<span class="cell-c">Cr&iacute;tico</span>','EMS'],cc:['<span class="cell-c">Cr&iacute;tico</span>','EMS'],cfv:['<span class="cell-c">Cr&iacute;tico</span>','EMS'],cnv:['<span class="cell-c">Cr&iacute;tico</span>','EMS'],ccv:['<span class="cell-c">Cr&iacute;tico</span>','EMS']},
+  A08:{cf:['<span class="cell-i">Importante</span>','El&eacute;ctrico res.'],cn:['<span class="cell-i">Importante</span>','El&eacute;ctrico res.'],cc:['<span class="cell-i">Importante</span>','El&eacute;ctrico res.'],cfv:['<span class="cell-i tight">Importante&thinsp;&darr;</span>','El&eacute;ctrico res. (R.B)'],cnv:['<span class="cell-i">Importante</span>','El&eacute;ctrico res.'],ccv:['<span class="cell-i tight">Importante&thinsp;&darr;</span>','El&eacute;ctrico res. (R.B)']},
+  A09:{cf:['<span class="cell-i">Importante</span>','El&eacute;ctrico + Calef. (R.D: +2h)'],cn:['<span class="cell-i">Importante</span>','Conductor: El&eacute;ctrico'],cc:['<span class="cell-i">Importante</span>','El&eacute;ctrico'],cfv:['<span class="cell-i tight">Importante&thinsp;&darr;</span>','El&eacute;ctrico+Calef. (R.B+R.D)'],cnv:['<span class="cell-i">Importante</span>','El&eacute;ctrico'],ccv:['<span class="cell-i tight">Importante&thinsp;&darr;</span>','El&eacute;ctrico (R.B &darr;)']},
+  A10:{cf:['<span class="cell-c">Cr&iacute;tico</span>','Elec. m&eacute;d. / F1'],cn:['<span class="cell-c">Cr&iacute;tico</span>','Elec. m&eacute;d. / F1'],cc:['<span class="cell-c">Cr&iacute;tico</span>','Elec. m&eacute;d. / F1'],cfv:['<span class="cell-c">Cr&iacute;tico</span>','Elec. m&eacute;d. / F1'],cnv:['<span class="cell-c">Cr&iacute;tico</span>','Elec. m&eacute;d. / F1'],ccv:['<span class="cell-c">Cr&iacute;tico</span>','Elec. m&eacute;d. / F1']},
+  A11:{cf:['<span class="cell-i">Importante</span>','El&eacute;ctrico + Calefacci&oacute;n'],cn:['<span class="cell-i">Importante</span>','El&eacute;ctrico'],cc:['<span class="cell-i">Importante</span>','El&eacute;ctrico + Climat.'],cfv:['<span class="cell-i">Importante</span>','El&eacute;ctrico + Calef.'],cnv:['<span class="cell-i">Importante</span>','El&eacute;ctrico'],ccv:['<span class="cell-i tight">Importante&thinsp;&darr;</span>','El&eacute;ctrico+Climat. (R.B)']},
 };
 
-var currentCtx = 'inv';
-
-function setCtx(ctx, el) {
-  currentCtx = ctx;
-  // update selector buttons
-  document.querySelectorAll('.cs').forEach(b => b.classList.remove('active'));
-  el.classList.add('active');
-
-  // update heatmap column highlight
-  var cols = ['inv','vmod','vext'];
-  cols.forEach(c => {
-    document.querySelectorAll('.col-'+c).forEach(td => {
-      if(c===ctx){ td.classList.add('bright'); td.classList.remove('dim'); }
-      else { td.classList.add('dim'); td.classList.remove('bright'); }
+function applyHeatmap(){
+  var ctx = currentCtx;
+  var vk  = vActive ? ctx+'v' : ctx;
+  // column highlight
+  ['cf','cn','cc'].forEach(function(k){
+    document.querySelectorAll('.col-'+k).forEach(function(td){
+      td.classList.toggle('bright', k===ctx);
+      td.classList.toggle('dim',    k!==ctx);
     });
   });
-
-  // update context note
+  // note
   var note = document.getElementById('ctx-note');
-  if(note) note.innerHTML = ctxNotes[ctx];
-
+  if(note) note.innerHTML = ctxNotes[ctx] + (vActive ? ctxNotes['v'] : '');
+  // update +V cells in active column
+  document.querySelectorAll('#hm-table td.col-'+ctx+'[data-'+ctx+']').forEach(function(td){
+    var key = vActive ? 'data-'+ctx+'v' : 'data-'+ctx;
+    var val = td.getAttribute(key);
+    if(!val) return;
+    var parts = val.split('|');
+    var mtti = parts[0].replace(/-/g,'&ndash;');
+    var lvl  = parts[1];
+    var cell = lvl==='c' ? 'cell-c' : (lvl==='iv' ? 'cell-i tight' : (lvl==='s' ? 'cell-s' : 'cell-i'));
+    var lbl  = lvl==='c' ? 'Cr&iacute;tico' : (lvl==='s' ? 'Secundario' : ('iv'===lvl ? 'Importante&thinsp;&darr;' : 'Importante'));
+    td.innerHTML = '<span class="mtti">'+mtti+'</span><span class="'+cell+'">'+lbl+'</span>';
+  });
   // update T1.2 dual column
-  Object.keys(nodeCtx).forEach(id => {
+  Object.keys(nodeCtx).forEach(function(id){
     var cell = document.getElementById('dc-'+id);
     if(!cell) return;
-    var data = nodeCtx[id][ctx];
-    cell.innerHTML = data[0] + '<br><span class="svc-lbl">' + data[1] + '</span>';
+    var data = nodeCtx[id][vk] || nodeCtx[id][ctx];
+    cell.innerHTML = data[0]+'<br><span class="svc-lbl">'+data[1]+'</span>';
   });
 }
 
-// init on load
+function setCtx(ctx,el){
+  currentCtx = ctx;
+  document.querySelectorAll('.cs:not(#vbtn)').forEach(function(b){ b.classList.remove('active'); });
+  el.classList.add('active');
+  applyHeatmap();
+}
+
+function toggleV(el){
+  vActive = !vActive;
+  el.classList.toggle('vactive', vActive);
+  applyHeatmap();
+}
+
 window.addEventListener('DOMContentLoaded', function(){
-  // set initial column state
-  document.querySelectorAll('.col-inv').forEach(td => td.classList.add('bright'));
-  document.querySelectorAll('.col-vmod, .col-vext').forEach(td => td.classList.add('dim'));
-  // set initial note
+  document.querySelectorAll('.col-cn,.col-cc').forEach(function(td){ td.classList.add('dim'); });
+  document.querySelectorAll('.col-cf').forEach(function(td){ td.classList.add('bright'); });
   var note = document.getElementById('ctx-note');
-  if(note) note.innerHTML = ctxNotes['inv'];
-  // init T1.2
-  setCtx('inv', document.querySelector('.cs.inv'));
+  if(note) note.innerHTML = ctxNotes['cf'];
+  setCtx('cf', document.querySelector('.cs.cf'));
 });
 </script>
 </body>
