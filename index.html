@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RESPED &mdash; Metodolog&iacute;a de Resiliencia en PEDs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=DM+Mono&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg-base:#0d1117;--bg-surface:#161c24;--bg-raised:#1e2733;--bg-hover:#242f3d;
+  --border:#2a3848;--border-mid:#344757;
+  --teal:#2ec4b6;--teal-dim:#1a8a80;--teal-glow:rgba(46,196,182,0.1);
+  --amber:#f4a429;--amber-dim:rgba(244,164,41,0.13);
+  --green:#3dd68c;--green-dim:rgba(61,214,140,0.11);
+  --red:#f06e6e;--red-dim:rgba(240,110,110,0.11);
+  --text-1:#e6edf3;--text-2:#8b98a8;--text-3:#4d5f72;
+  --font-d:'DM Serif Display',Georgia,serif;
+  --font-b:'DM Sans',system-ui,sans-serif;
+  --font-m:'DM Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-b);background:var(--bg-base);color:var(--text-1);height:100vh;display:flex;flex-direction:column;overflow:hidden}
+header{background:var(--bg-surface);border-bottom:1px solid var(--border);padding:0 28px;height:50px;display:flex;align-items:center;gap:14px;flex-shrink:0}
+.logo{font-family:var(--font-d);font-size:12px;font-style:italic;color:var(--teal);background:var(--teal-glow);border:1px solid var(--teal-dim);padding:3px 10px;border-radius:4px;letter-spacing:.07em}
+.htitle{font-family:var(--font-d);font-size:15px;color:var(--text-1);font-weight:400}
+.hsub{font-size:12px;color:var(--text-3);font-weight:300}
+.hsep{color:var(--text-3);margin:0 2px}
+.ribbon{background:var(--bg-surface);border-bottom:1px solid var(--border);padding:0 28px;height:42px;display:flex;align-items:center;gap:3px;flex-shrink:0;overflow-x:auto}
+.ribbon::-webkit-scrollbar{height:0}
+.pb{display:flex;align-items:center;gap:8px;padding:5px 14px;border-radius:6px;border:1px solid transparent;background:transparent;color:var(--text-3);font-family:var(--font-b);font-size:12px;font-weight:500;cursor:pointer;white-space:nowrap;transition:all .15s}
+.pb:hover:not(.locked){background:var(--bg-hover);color:var(--text-2);border-color:var(--border)}
+.pb.active{background:var(--teal-glow);color:var(--teal);border-color:var(--teal-dim)}
+.pb.locked{opacity:.32;cursor:not-allowed}
+.pnum{width:17px;height:17px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;flex-shrink:0;background:var(--bg-hover);color:var(--text-3)}
+.pb.active .pnum{background:var(--teal-dim);color:#fff}
+.stabs{background:var(--bg-surface);border-bottom:1px solid var(--border);padding:0 28px;display:flex;align-items:flex-end;gap:2px;height:40px;flex-shrink:0}
+.st{display:flex;align-items:center;gap:8px;padding:6px 14px;border:1px solid transparent;border-bottom:none;border-radius:6px 6px 0 0;background:transparent;font-family:var(--font-b);font-size:12px;font-weight:400;color:var(--text-3);cursor:pointer;transition:all .15s;position:relative;top:1px}
+.st:hover{color:var(--text-2);background:var(--bg-hover)}
+.st.active{background:var(--bg-raised);border-color:var(--border);border-bottom-color:var(--bg-raised);color:var(--teal);font-weight:500}
+.sb{font-size:9px;padding:1px 5px;border-radius:3px;font-weight:600;letter-spacing:.05em;text-transform:uppercase}
+.sb-ok{background:var(--green-dim);color:var(--green)}
+.sb-nx{background:var(--bg-hover);color:var(--text-3)}
+.panels{display:grid;grid-template-columns:1fr 1fr;flex:1;overflow:hidden}
+.panel{overflow-y:auto;padding:24px 28px;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+.panel::-webkit-scrollbar{width:4px}
+.panel::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.pl{background:var(--bg-surface);border-right:1px solid var(--border)}
+.pr{background:var(--bg-raised)}
+.plabel{font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--text-3);margin-bottom:5px}
+.ptitle{font-family:var(--font-d);font-size:21px;color:var(--text-1);margin-bottom:8px;line-height:1.2}
+.pdesc{font-size:13px;color:var(--text-2);line-height:1.65;margin-bottom:20px;padding-bottom:18px;border-bottom:1px solid var(--border)}
+h3{font-family:var(--font-d);font-size:14px;color:var(--text-1);margin:22px 0 10px;display:flex;align-items:center;gap:8px}
+h3::before{content:'';display:inline-block;width:3px;height:14px;background:var(--teal);border-radius:2px;flex-shrink:0}
+h4{font-size:11.5px;font-weight:600;color:var(--text-2);margin:14px 0 8px;text-transform:uppercase;letter-spacing:.06em}
+p{font-size:13.5px;line-height:1.7;color:var(--text-2);margin-bottom:10px}
+.tw{overflow-x:auto;margin:10px 0 16px;border-radius:8px;border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+th{background:var(--bg-hover);color:var(--text-2);padding:8px 12px;text-align:left;font-weight:500;font-size:11px;letter-spacing:.04em;text-transform:uppercase;border-bottom:1px solid var(--border-mid)}
+td{padding:8px 12px;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.5;color:var(--text-2)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--bg-hover)}
+.co{border-left:2px solid var(--teal-dim);background:var(--teal-glow);padding:11px 15px;border-radius:0 6px 6px 0;margin:11px 0;font-size:13px;line-height:1.65;color:var(--text-2)}
+.co-w{border-left-color:var(--amber);background:var(--amber-dim)}
+.co-r{border-left-color:var(--border-mid);background:var(--bg-hover)}
+.co strong{display:block;margin-bottom:4px;color:var(--text-1);font-weight:600}
+.tag{display:inline-block;font-size:10px;padding:1px 6px;border-radius:3px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;vertical-align:middle}
+.tc{background:var(--red-dim);color:var(--red)}
+.ti{background:var(--amber-dim);color:var(--amber)}
+.ts{background:var(--green-dim);color:var(--green)}
+.tw2{background:var(--bg-hover);color:var(--text-3)}
+.tp{background:var(--amber-dim);color:var(--amber)}
+.sr{display:flex;gap:8px;align-items:flex-start;margin:7px 0;font-size:13px;line-height:1.6;color:var(--text-2)}
+.sr::before{content:'&#9658;';color:var(--teal);flex-shrink:0;margin-top:2px}
+.of{margin-top:24px;padding:14px;background:var(--bg-base);border:1px solid var(--border);border-radius:8px}
+.oft{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);margin-bottom:11px}
+.fr{display:flex;align-items:flex-start;gap:10px;margin-bottom:7px;font-size:12px;line-height:1.5}
+.fo{background:var(--bg-raised);border:1px solid var(--border-mid);padding:2px 8px;border-radius:4px;font-family:var(--font-m);font-size:11px;color:var(--teal);white-space:nowrap;flex-shrink:0}
+.fa{color:var(--text-3);font-size:13px;flex-shrink:0;margin-top:1px}
+.fd{color:var(--text-2);font-size:12px}
+.cb{background:var(--bg-base);border:1px solid var(--border);font-family:var(--font-m);font-size:12px;padding:13px 15px;border-radius:8px;margin:11px 0;line-height:1.8;overflow-x:auto;color:var(--text-2)}
+.ck{color:#79c0ff}.cv{color:#f4a429}.cc{color:var(--text-3);font-style:italic}
+.exh{display:flex;align-items:center;gap:12px;margin-bottom:18px;padding-bottom:15px;border-bottom:1px solid var(--border)}
+.vvb{background:var(--teal-glow);border:1px solid var(--teal-dim);color:var(--teal);font-size:11px;font-weight:600;padding:4px 10px;border-radius:4px;letter-spacing:.06em;white-space:nowrap}
+.sc{display:none}.sc.active{display:block}
+</style>
+</head>
+<body>
+<header>
+  <span class="logo">RESPED</span>
+  <span class="htitle">Evaluaci&oacute;n Integrada y Din&aacute;mica de la Resiliencia en PEDs</span>
+  <span class="hsep">&middot;</span>
+  <span class="hsub">Marco Metodol&oacute;gico</span>
+</header>
+<div class="ribbon">
+  <button class="pb active"><span class="pnum">1</span>Caracterizaci&oacute;n del Sistema</button>
+  <button class="pb locked"><span class="pnum">2</span>Dise&ntilde;o de Perturbaciones</button>
+  <button class="pb locked"><span class="pnum">3</span>Simulaci&oacute;n Din&aacute;mica</button>
+  <button class="pb locked"><span class="pnum">4</span>M&eacute;tricas de Resiliencia</button>
+  <button class="pb locked"><span class="pnum">5</span>Diagn&oacute;stico y Factibilidad</button>
+</div>
+<div class="stabs">
+  <button class="st active" onclick="setStep('p1','t11',this)">P1 &mdash; T1.1 <span class="sb sb-ok">Aprobado</span></button>
+  <button class="st" onclick="setStep('p1','t12',this)">P1 &mdash; T1.2 <span class="sb sb-ok">Aprobado</span></button>
+  <button class="st" onclick="setStep('p1','t13',this)">P1 &mdash; T1.3 <span class="sb sb-ok">Aprobado</span></button>
+  <button class="st" style="opacity:.35;pointer-events:none">P2 &mdash; T2.1 <span class="sb sb-nx">Pr&oacute;ximo</span></button>
+</div>
+<div class="panels">
+<div class="panel pl" id="panel-left">
+
+<!-- LEFT T1.1 -->
+<div class="sc active" id="left-p1-t11">
+<div class="plabel">Paso 1 &middot; Tarea 1.1 &middot; Metodolog&iacute;a</div>
+<div class="ptitle">Delimitaci&oacute;n del sistema y clasificaci&oacute;n de servicios</div>
+<div class="pdesc">Establecer los l&iacute;mites espaciales y funcionales del PED, identificando los servicios energ&eacute;ticos que debe garantizar y su nivel de criticidad funcional.</div>
+<h3>Sub-paso 1 &mdash; Per&iacute;metro</h3>
+<p>Definir el l&iacute;mite distinguiendo tres niveles: sistema interno (activos bajo control directo del EMS), interfaces externas (fuentes de dependencia operativa o perturbaci&oacute;n ex&oacute;gena) y contexto externo (factores regulatorios e institucionales).</p>
+<div class="co co-r"><strong>Regla &mdash; conflicto funcional vs. regulatorio</strong>Prevalece el criterio que maximiza la coherencia del balance energ&eacute;tico. Si el l&iacute;mite regulatorio divide una microrred que opera como unidad &rarr; ampliar y documentar. Si el l&iacute;mite funcional incluye activos sin control del operador &rarr; excluir y registrar como interfaz externa.</div>
+<div class="co co-r"><strong>Regla &mdash; inclusi&oacute;n de interfaces externas</strong>Incluir si cumple al menos uno de: (1) el PED no puede operar normalmente sin ella durante m&aacute;s de T_islanding, o (2) es fuente potencial de perturbaciones ex&oacute;genas que afectan activos internos directamente.</div>
+<h3>Sub-paso 2 &mdash; Identificaci&oacute;n de servicios</h3>
+<p>Inventariar todos los servicios que el PED debe garantizar: suministro el&eacute;ctrico por tipo de usuario, calefacci&oacute;n, refrigeraci&oacute;n, ACS, servicios digitales/EMS, movilidad el&eacute;ctrica.</p>
+<h3>Sub-paso 3 &mdash; Criticidad de servicios</h3>
+<p>El analista consulta la tabla y aplica las reglas de ajuste. No requiere b&uacute;squeda de fuentes externas.</p>
+<div class="tw"><table>
+<thead><tr><th>Servicio</th><th>Factor dominante</th><th>MTTI base</th><th>Nivel</th></tr></thead>
+<tbody>
+<tr><td>Electricidad &mdash; instalaciones m&eacute;dicas</td><td>F1 seguridad</td><td>&lt; 0,5 h</td><td><span class="tag tc">Cr&iacute;tico</span></td></tr>
+<tr><td>Servicios digitales / EMS / SCADA</td><td>F3 cascada</td><td>&lt; 1 h</td><td><span class="tag tc">Cr&iacute;tico</span></td></tr>
+<tr><td>Electricidad &mdash; residencial</td><td>F2 / F1</td><td>1&ndash;4 h</td><td><span class="tag ti">Importante</span></td></tr>
+<tr><td>Calefacci&oacute;n &mdash; invierno</td><td>F2 inercia</td><td>2&ndash;6 h</td><td><span class="tag ti">Importante</span></td></tr>
+<tr><td>Climatizaci&oacute;n &mdash; verano extremo</td><td>F2 inercia</td><td>1&ndash;4 h</td><td><span class="tag ti">Importante</span></td></tr>
+<tr><td>Climatizaci&oacute;n &mdash; verano moderado</td><td>F2 inercia</td><td>&gt; 8 h</td><td><span class="tag ts">Secundario</span></td></tr>
+<tr><td>ACS</td><td>F2 f&iacute;sico</td><td>4&ndash;8 h</td><td><span class="tag ti">Importante</span></td></tr>
+<tr><td>Electricidad &mdash; terciario / colegio</td><td>F2 / F3</td><td>2&ndash;6 h</td><td><span class="tag ti">Importante</span></td></tr>
+<tr><td>Recarga veh&iacute;culo el&eacute;ctrico</td><td>Ninguno cr&iacute;tico</td><td>&gt; 8 h</td><td><span class="tag ts">Secundario</span></td></tr>
+<tr><td>Iluminaci&oacute;n exterior</td><td>Ninguno cr&iacute;tico</td><td>&gt; 8 h</td><td><span class="tag ts">Secundario</span></td></tr>
+</tbody></table></div>
+<h4>Reglas de ajuste contextual</h4>
+<div class="sr"><strong>A &mdash; Clima:</strong>&nbsp;T_ext &lt; &minus;5&thinsp;&deg;C &rarr; MTTI calefacci&oacute;n al l&iacute;mite inferior del rango</div>
+<div class="sr"><strong>B &mdash; Poblaci&oacute;n vulnerable:</strong>&nbsp;&gt;20% usuarios mayores 70 o menores 5 a&ntilde;os &rarr; l&iacute;mite inferior en climatizaci&oacute;n y electricidad residencial</div>
+<div class="sr"><strong>C &mdash; Modo degradado EMS:</strong>&nbsp;Policy Book con modo degradado robusto &rarr; MTTI EMS extendible hasta 4&thinsp;h. Sin ese modo &rarr; mantener &lt;&thinsp;1&thinsp;h</div>
+<div class="sr"><strong>D &mdash; Inercia t&eacute;rmica:</strong>&nbsp;C_th alto documentado en T1.2 &rarr; MTTI calefacci&oacute;n/climatizaci&oacute;n +2&thinsp;h sobre el valor base</div>
+<div class="of">
+<div class="oft">Outputs &rarr; flujo hacia pasos posteriores</div>
+<div class="fr"><span class="fo">Per&iacute;metro geogr&aacute;fico</span><span class="fa">&rarr;</span><span class="fd">P2-T2.1 &mdash; identificar actores institucionales</span></div>
+<div class="fr"><span class="fo">Tabla de servicios</span><span class="fa">&rarr;</span><span class="fd">P3 (contingencias), P5 (Policy Book)</span></div>
+<div class="fr"><span class="fo">Criticidad de servicios</span><span class="fa">&rarr;</span><span class="fd">P5 (prioridades de control), P7 (ponderaci&oacute;n q(t)), P9, P10</span></div>
+</div>
+</div>
+
+<!-- LEFT T1.2 -->
+<div class="sc" id="left-p1-t12">
+<div class="plabel">Paso 1 &middot; Tarea 1.2 &middot; Metodolog&iacute;a</div>
+<div class="ptitle">Inventario de activos y portadores energ&eacute;ticos</div>
+<div class="pdesc">Identificar y caracterizar todos los activos del PED con sus par&aacute;metros operativos y criticidad de nodo. Proporciona los par&aacute;metros que se instanciar&aacute;n en las ecuaciones din&aacute;micas del Paso 2.</div>
+<h3>Sub-paso 1 &mdash; Clasificaci&oacute;n funcional</h3>
+<div class="tw"><table>
+<thead><tr><th>Categor&iacute;a</th><th>Ejemplos</th><th>Par&aacute;metros clave</th></tr></thead>
+<tbody>
+<tr><td>Generaci&oacute;n</td><td>FV, aerogenerador, cogeneraci&oacute;n</td><td>P_peak [kWp], CF(t), &eta;</td></tr>
+<tr><td>Almacenamiento el&eacute;ctrico</td><td>Bater&iacute;a Li-ion, BESS</td><td>E_max [kWh], &eta;_c, &eta;_d, SoC_min, P_max</td></tr>
+<tr><td>Almacenamiento t&eacute;rmico</td><td>Acumulador ACS, tanque PCM</td><td>E_max [kWh], T_min, T_max</td></tr>
+<tr><td>Conversi&oacute;n</td><td>Bomba de calor, chiller</td><td>COP/EER, P_nom, T_op_min</td></tr>
+<tr><td>Distribuci&oacute;n</td><td>Red BT interna, red de calor</td><td>Capacidad, p&eacute;rdidas, topolog&iacute;a</td></tr>
+<tr><td>Demanda</td><td>Edificios residenciales, terciario, cargas cr&iacute;ticas</td><td>P_dem,ref(t), C_th [kWh/&deg;C], UA [kW/&deg;C]</td></tr>
+<tr><td>Control</td><td>EMS, SCADA, medidores</td><td>Latencia, disponibilidad, modo degradado</td></tr>
+</tbody></table></div>
+<h3>Sub-paso 2 &mdash; Obtenci&oacute;n de par&aacute;metros</h3>
+<div class="tw"><table>
+<thead><tr><th>Par&aacute;metro</th><th>Fuente primaria</th><th>Alternativa</th><th>Default</th></tr></thead>
+<tbody>
+<tr><td>P_peak FV</td><td>Ficha t&eacute;cnica &times; n&ordm; m&oacute;dulos</td><td>Contrato conexi&oacute;n</td><td><span class="tag tp">Sin ficha: pendiente</span></td></tr>
+<tr><td>E_max bater&iacute;a</td><td>Ficha t&eacute;cnica BESS</td><td>Contrato instalaci&oacute;n</td><td><span class="tag tp">Sin ficha: pendiente</span></td></tr>
+<tr><td>&eta;_c / &eta;_d bater&iacute;a</td><td>Round-trip efficiency ficha</td><td>&eta;_c = &eta;_d = &radic;&eta;_rt</td><td>0.93 / 0.93 <span class="tag tw2">&#9888; orient.</span></td></tr>
+<tr><td>SoC_min</td><td>Especificaci&oacute;n fabricante / BMS</td><td>&mdash;</td><td>0.10 <span class="tag tw2">&#9888; orient.</span></td></tr>
+<tr><td>COP bomba calor</td><td>Ficha t&eacute;cnica nominal</td><td>Certificado ErP</td><td>3.0 <span class="tag tw2">&#9888; orient.</span></td></tr>
+<tr><td>C_th edificio</td><td>Simulaci&oacute;n energ&eacute;tica</td><td>ISO 52016-1</td><td>0.10 kWh/&deg;C&middot;m&sup2; <span class="tag tw2">&#9888; orient.</span></td></tr>
+<tr><td>UA edificio</td><td>Certificado energ&eacute;tico</td><td>C&aacute;lculo desde demanda + HDD</td><td><span class="tag tp">Sin certificado: pendiente</span></td></tr>
+<tr><td>P_dem,ref(t)</td><td>EMS hist&oacute;rico / smart meters</td><td>Perfil IDAE por tipolog&iacute;a</td><td>Perfil IDAE <span class="tag tw2">&#9888; orient.</span></td></tr>
+</tbody></table></div>
+<h3>Sub-paso 3 &mdash; Criticidad de nodo</h3>
+<div class="co co-r"><strong>Regla de derivaci&oacute;n</strong>El activo hereda la criticidad del servicio m&aacute;s cr&iacute;tico al que contribuye de forma no redundante:<br><br>&middot; &Uacute;nico proveedor de servicio Cr&iacute;tico &rarr; nodo <span class="tag tc">Cr&iacute;tico</span><br>&middot; Contribuye a servicio Cr&iacute;tico con alternativa disponible &rarr; nodo <span class="tag ti">Importante</span><br>&middot; Solo contribuye a servicios Importantes o Secundarios &rarr; hereda el nivel m&aacute;s alto</div>
+<h3>Sub-paso 4 &mdash; Formato est&aacute;ndar de registro</h3>
+<div class="cb"><span class="ck">ID</span> | <span class="ck">Nombre</span> | <span class="ck">Categor&iacute;a</span> | <span class="ck">Portador</span> | <span class="ck">P1</span> | <span class="ck">P2</span> | <span class="ck">P3</span> | <span class="ck">Fuente</span> | <span class="ck">Servicio</span> | <span class="ck">Criticidad_nodo</span></div>
+<div class="of">
+<div class="oft">Outputs &rarr; flujo hacia pasos posteriores</div>
+<div class="fr"><span class="fo">Inventario de activos</span><span class="fa">&rarr;</span><span class="fd">P2-T2.1 (nodos f&iacute;sicos), P2-T2.3 (instanciar ecuaciones)</span></div>
+<div class="fr"><span class="fo">Portadores energ&eacute;ticos</span><span class="fa">&rarr;</span><span class="fd">P2 (capas PH del modelo), P3 (contingencias f&iacute;sicas)</span></div>
+<div class="fr"><span class="fo">Criticidad de nodo</span><span class="fa">&rarr;</span><span class="fd">P3 (priorizaci&oacute;n), P5 (Policy Book), P10 (redise&ntilde;o)</span></div>
+</div>
+</div>
+
+<!-- LEFT T1.3 -->
+<div class="sc" id="left-p1-t13">
+<div class="plabel">Paso 1 &middot; Tarea 1.3 &middot; Metodolog&iacute;a</div>
+<div class="ptitle">Recolecci&oacute;n de datos brutos e identificaci&oacute;n de fuentes</div>
+<div class="pdesc">Reunir los datos necesarios para el estado de referencia del sistema e identificar sus fuentes. La formalizaci&oacute;n completa de B(t), S(t), &Delta;t y T_H definitivos ocurre en T2.3, una vez que el modelo din&aacute;mico est&aacute; definido.</div>
+<div class="co co-w"><strong>Decisi&oacute;n de dise&ntilde;o &mdash; por qu&eacute; B(t) y S(t) se formalizan en T2.3</strong>T1.3 no puede construir B(t) completo porque el conjunto formal de variables de S(t) no est&aacute; definido hasta T2.3. Construir B(t) antes implica un baseline potencialmente incompleto sin saberlo. T1.3 recoge los datos brutos y declara par&aacute;metros provisionales; T2.3 los organiza formalmente alineados con S(t).</div>
+<h3>Sub-paso 1 &mdash; Per&iacute;odo de referencia</h3>
+<p>Elegir el per&iacute;odo que representa la condici&oacute;n operativa m&aacute;s exigente: m&aacute;xima demanda combinada con m&iacute;nimo recurso renovable.</p>
+<div class="sr">Clima continental europeo (Madrid, Viena, Varsovia): semana de enero</div>
+<div class="sr">Clima mediterr&aacute;neo (Sevilla, Atenas, Roma): semana de julio</div>
+<div class="sr">En caso de incertidumbre: simular ambos y retener el de peor desempe&ntilde;o en P7</div>
+<h3>Sub-paso 2 &mdash; Par&aacute;metros temporales provisionales</h3>
+<h4>Criterio para &Delta;t</h4>
+<div class="tw"><table>
+<thead><tr><th>Condici&oacute;n del PED</th><th>&Delta;t recomendado</th></tr></thead>
+<tbody>
+<tr><td>Tiene bater&iacute;a el&eacute;ctrica</td><td>15 min</td></tr>
+<tr><td>Solo almacenamiento t&eacute;rmico</td><td>30 min</td></tr>
+<tr><td>Solo din&aacute;micas lentas, sin almacenamiento el&eacute;ctrico</td><td>1 h</td></tr>
+</tbody></table></div>
+<h4>Criterio para T_H tentativo</h4>
+<div class="tw"><table>
+<thead><tr><th>Composici&oacute;n del sistema</th><th>T_H tentativo</th></tr></thead>
+<tbody>
+<tr><td>Solo almacenamiento el&eacute;ctrico</td><td>48 h</td></tr>
+<tr><td>Almacenamiento el&eacute;ctrico + t&eacute;rmico</td><td>72 h</td></tr>
+<tr><td>Dependencia de red de gas o calor de distrito</td><td>96&ndash;168 h</td></tr>
+<tr><td>Incertidumbre</td><td>72 h (valor por defecto)</td></tr>
+</tbody></table></div>
+<div class="co">Ambos valores se confirman en T2.3 (tras definir S(t)) y en P4 (tras conocer la duraci&oacute;n del escenario m&aacute;s largo). Si T_H cambia en P4, debe actualizarse en P8 donde normaliza L_D,max.</div>
+<h3>Sub-paso 3 &mdash; Inventario de datos brutos</h3>
+<p>Para cada variable del sistema registrar: variable, fuente identificada, formato disponible, estado (disponible / derivable / pendiente).</p>
+<div class="of">
+<div class="oft">Outputs &rarr; flujo hacia pasos posteriores</div>
+<div class="fr"><span class="fo">Per&iacute;odo de referencia</span><span class="fa">&rarr;</span><span class="fd">T2.3 (construcci&oacute;n B(t)), P4 (escenarios)</span></div>
+<div class="fr"><span class="fo">&Delta;t provisional</span><span class="fa">&rarr;</span><span class="fd">T2.3 (confirmaci&oacute;n definitiva), P6 (motor de simulaci&oacute;n)</span></div>
+<div class="fr"><span class="fo">T_H tentativo</span><span class="fa">&rarr;</span><span class="fd">T2.3, P4 (confirmaci&oacute;n), P8 (normalizaci&oacute;n L_D,max)</span></div>
+<div class="fr"><span class="fo">Inventario datos brutos</span><span class="fa">&rarr;</span><span class="fd">T2.3 (construcci&oacute;n formal de B(t) y S(t))</span></div>
+</div>
+</div>
+
+</div><!-- /panel-left -->
+
+<div class="panel pr" id="panel-right">
+
+<!-- RIGHT T1.1 -->
+<div class="sc active" id="right-p1-t11">
+<div class="exh">
+  <span class="vvb">Valle Verde</span>
+  <div><div class="plabel">Caso aplicativo &middot; Madrid &ndash; Vallecas</div>
+  <div style="font-family:var(--font-d);font-size:19px;color:var(--text-1)">T1.1 &mdash; Delimitaci&oacute;n y criticidad</div></div>
+</div>
+<h3>Descripci&oacute;n del caso</h3>
+<p>Distrito de rehabilitaci&oacute;n energ&eacute;tica en Vallecas, Madrid. 12 bloques residenciales + centro de salud + colegio p&uacute;blico. Superficie ~8 ha, ~1.400 habitantes. EMS centralizado operado por comunidad energ&eacute;tica local.</p>
+<h3>Per&iacute;metro &mdash; decisi&oacute;n</h3>
+<p>L&iacute;mite funcional coincide con el l&iacute;mite regulatorio de la concesi&oacute;n. Sin conflicto &mdash; no se requiere ajuste.</p>
+<h4>Interfaces externas</h4>
+<div class="tw"><table>
+<thead><tr><th>Interfaz</th><th>Criterio aplicado</th><th>Decisi&oacute;n</th></tr></thead>
+<tbody>
+<tr><td>Red el&eacute;ctrica Iberdrola BT</td><td>Dependencia operativa + fuente de perturbaci&oacute;n</td><td>&#10003; Incluida</td></tr>
+<tr><td>Mercado OMIE (precio spot)</td><td>Dependencia econ&oacute;mica &mdash; afecta despacho EMS</td><td>&#10003; Incluida</td></tr>
+<tr><td>Red agua municipal</td><td>Dependencia operativa sistema de refrigeraci&oacute;n</td><td>&#10003; Incluida</td></tr>
+<tr><td>Red de gas natural</td><td>No hay activos de gas en el PED</td><td>&#10007; Excluida</td></tr>
+<tr><td>Telecom p&uacute;blica</td><td>EMS opera con fibra interna privada &mdash; red p&uacute;blica es redundancia, no dependencia</td><td>&#10007; Excluida</td></tr>
+</tbody></table></div>
+<h3>Tabla de servicios &mdash; Valle Verde</h3>
+<div class="tw"><table>
+<thead><tr><th>Servicio</th><th>MTTI</th><th>Reglas aplicadas</th><th>Nivel</th></tr></thead>
+<tbody>
+<tr><td>Electricidad &mdash; centro de salud</td><td>&lt; 0,5 h</td><td>Sin ajuste</td><td><span class="tag tc">Cr&iacute;tico</span></td></tr>
+<tr><td>Servicios digitales EMS</td><td>&lt; 1 h</td><td>C: modo degradado disponible &rarr; mantener Cr&iacute;tico</td><td><span class="tag tc">Cr&iacute;tico</span></td></tr>
+<tr><td>Electricidad &mdash; residencial</td><td>1&ndash;4 h</td><td>B no aplica (poblaci&oacute;n general)</td><td><span class="tag ti">Importante</span></td></tr>
+<tr><td>Calefacci&oacute;n &mdash; invierno</td><td>2&ndash;6 h</td><td>A: Madrid T_ext_m&iacute;n ~0&thinsp;&deg;C, no &lt; &minus;5&thinsp;&deg;C &rarr; valor medio</td><td><span class="tag ti">Importante</span></td></tr>
+<tr><td>Climatizaci&oacute;n &mdash; colegio, verano</td><td>1&ndash;4 h</td><td>B: menores &rarr; l&iacute;mite inferior en d&iacute;as &gt; 32&thinsp;&deg;C</td><td><span class="tag ti">Importante</span></td></tr>
+<tr><td>ACS</td><td>4&ndash;8 h</td><td>Sin ajuste</td><td><span class="tag ti">Importante</span></td></tr>
+<tr><td>Recarga veh&iacute;culo el&eacute;ctrico</td><td>&gt; 8 h</td><td>Sin ajuste</td><td><span class="tag ts">Secundario</span></td></tr>
+</tbody></table></div>
+<div class="co"><strong>Nota de consistencia &rarr; P5</strong>La calefacci&oacute;n tiene criticidad estacional (Importante en invierno / Secundario en verano moderado). Esta variaci&oacute;n debe propagarse al Policy Book del Paso 5 como regla estacional expl&iacute;cita.</div>
+</div>
+
+<!-- RIGHT T1.2 -->
+<div class="sc" id="right-p1-t12">
+<div class="exh">
+  <span class="vvb">Valle Verde</span>
+  <div><div class="plabel">Caso aplicativo &middot; Madrid &ndash; Vallecas</div>
+  <div style="font-family:var(--font-d);font-size:19px;color:var(--text-1)">T1.2 &mdash; Inventario de activos</div></div>
+</div>
+<h3>Inventario completo</h3>
+<div class="tw"><table>
+<thead><tr><th>ID</th><th>Nombre</th><th>Cat.</th><th>P1</th><th>P2</th><th>P3</th><th>Servicio</th><th>Criticidad nodo</th></tr></thead>
+<tbody>
+<tr><td>A01</td><td>FV cubiertas</td><td>Generaci&oacute;n</td><td>P_peak=280 kWp</td><td>CF_inv=0.09</td><td>CF_ver=0.19</td><td>El&eacute;ctrico residencial</td><td><span class="tag ti">Importante</span></td></tr>
+<tr><td>A02</td><td>BESS comunitaria</td><td>Almac. el&eacute;ct.</td><td>E_max=400 kWh</td><td>&eta;_c=&eta;_d=0.93</td><td>SoC_min=0.10</td><td>El&eacute;ctrico residencial</td><td><span class="tag ti">Importante</span></td></tr>
+<tr><td>A03</td><td>Bomba calor A/A</td><td>Conversi&oacute;n</td><td>COP=3.2</td><td>P_nom=120 kW</td><td>T_op=&minus;5&deg;C</td><td>Calefacci&oacute;n / ACS</td><td><span class="tag ti">Importante</span></td></tr>
+<tr><td>A04</td><td>Acumulador t&eacute;rmico</td><td>Almac. t&eacute;rmico</td><td>E_max=8 MWh</td><td>T_min=55&deg;C</td><td>T_max=80&deg;C</td><td>ACS / Calefacci&oacute;n</td><td><span class="tag ti">Importante</span></td></tr>
+<tr><td>A05</td><td>Red BT interna</td><td>Distribuci&oacute;n</td><td>Cap=400 kVA</td><td>P&eacute;rd=2%</td><td>Radial</td><td>Todos el&eacute;ctricos</td><td><span class="tag tc">Cr&iacute;tico</span> *</td></tr>
+<tr><td>A06</td><td>EMS centralizado</td><td>Control</td><td>Lat=1 s</td><td>Disp=99.5%</td><td>Modo_deg=s&iacute;</td><td>EMS / todos</td><td><span class="tag tc">Cr&iacute;tico</span></td></tr>
+<tr><td>A07</td><td>SCADA + medidores</td><td>Control</td><td>48 puntos</td><td>Modbus TCP</td><td>&mdash;</td><td>EMS</td><td><span class="tag tc">Cr&iacute;tico</span></td></tr>
+<tr><td>A08</td><td>PAC Iberdrola</td><td>Distribuci&oacute;n</td><td>Cap_imp=200 kW</td><td>Cap_exp=150 kW</td><td>&mdash;</td><td>El&eacute;ctrico residencial</td><td><span class="tag ti">Importante</span></td></tr>
+<tr><td>A09</td><td>Bloques res. &times;12</td><td>Demanda</td><td>P_dem=85 kW</td><td>C_th=320 kWh/&deg;C</td><td>UA=28 kW/&deg;C</td><td>El&eacute;ctrico / calefacci&oacute;n</td><td><span class="tag ti">Importante</span></td></tr>
+<tr><td>A10</td><td>Centro de salud</td><td>Demanda</td><td>P_dem=22 kW</td><td>Cr&iacute;t=8 kW</td><td>UPS=30 min</td><td>Electricidad m&eacute;dica</td><td><span class="tag tc">Cr&iacute;tico</span></td></tr>
+<tr><td>A11</td><td>Colegio p&uacute;blico</td><td>Demanda</td><td>P_dem=18 kW</td><td>C_th=45 kWh/&deg;C</td><td>UA=5 kW/&deg;C</td><td>El&eacute;ctrico / calefacci&oacute;n</td><td><span class="tag ti">Importante</span></td></tr>
+</tbody></table></div>
+<p style="font-size:11.5px;color:var(--text-3);margin-top:-10px">* A05 Cr&iacute;tico por ausencia de redundancia topol&oacute;gica. Todos los valores son orientativos &mdash; reemplazar con datos reales antes de evaluaci&oacute;n definitiva.</p>
+<h3>Portadores energ&eacute;ticos</h3>
+<div class="sr">Electricidad BT &mdash; 400 V, red interna radial</div>
+<div class="sr">Calor &mdash; agua caliente 55&ndash;80&thinsp;&deg;C, circuito cerrado</div>
+<div class="sr">Datos &mdash; Modbus TCP / fibra &oacute;ptica interna privada</div>
+<div class="co"><strong>Nota &rarr; T2.1</strong>Los IDs A01&ndash;A11 se convierten directamente en nodos del modelo multilayer. Activos de control (A06, A07) &rarr; capa ICT. Activos f&iacute;sicos (A01&ndash;A05, A08&ndash;A11) &rarr; capa PH.</div>
+</div>
+
+<!-- RIGHT T1.3 -->
+<div class="sc" id="right-p1-t13">
+<div class="exh">
+  <span class="vvb">Valle Verde</span>
+  <div><div class="plabel">Caso aplicativo &middot; Madrid &ndash; Vallecas</div>
+  <div style="font-family:var(--font-d);font-size:19px;color:var(--text-1)">T1.3 &mdash; Datos brutos e identificaci&oacute;n de fuentes</div></div>
+</div>
+<h3>Per&iacute;odo de referencia</h3>
+<p><strong style="color:var(--text-1)">Semana representativa de enero &mdash; TMY Madrid (AEMET).</strong> Justificaci&oacute;n: demanda m&aacute;xima (calefacci&oacute;n + cargas el&eacute;ctricas) + generaci&oacute;n FV m&iacute;nima &rarr; condici&oacute;n m&aacute;s exigente para Valle Verde.</p>
+<h3>Par&aacute;metros temporales provisionales</h3>
+<div class="tw"><table>
+<thead><tr><th>Par&aacute;metro</th><th>Valor</th><th>Criterio</th></tr></thead>
+<tbody>
+<tr><td>&Delta;t</td><td><strong style="color:var(--text-1)">15 min</strong></td><td>A02 (BESS) &mdash; din&aacute;mica m&aacute;s r&aacute;pida del sistema</td></tr>
+<tr><td>T_H tentativo</td><td><strong style="color:var(--text-1)">72 h</strong></td><td>Almacenamiento el&eacute;ctrico + t&eacute;rmico; sin gas &rarr; regla por defecto</td></tr>
+</tbody></table></div>
+<h3>Inventario de datos brutos</h3>
+<div class="tw"><table>
+<thead><tr><th>Variable</th><th>S&iacute;mbolo</th><th>Fuente identificada</th><th>Estado</th></tr></thead>
+<tbody>
+<tr><td>Generaci&oacute;n FV</td><td>P_gen,PV(t)</td><td>TMY Madrid + P_peak A01</td><td><span class="tag tw2">&#9888; orientativo</span></td></tr>
+<tr><td>Demanda el&eacute;ctrica</td><td>P_dem,elec(t)</td><td>Perfil IDAE residencial Madrid enero</td><td><span class="tag tw2">&#9888; orientativo</span></td></tr>
+<tr><td>Demanda t&eacute;rmica</td><td>P_dem,calor(t)</td><td>ISO 52016-1 + C_th/UA A09&ndash;A11 + T_ext TMY</td><td>Derivable en T2.3</td></tr>
+<tr><td>Temperatura exterior</td><td>T_ext(t)</td><td>AEMET &mdash; TMY Madrid</td><td>Disponible</td></tr>
+<tr><td>Precio electricidad</td><td>c_E(t)</td><td>OMIE hist&oacute;rico enero 2023 &mdash; PVPC Madrid</td><td><span class="tag tw2">&#9888; orientativo</span></td></tr>
+<tr><td>Factor emisi&oacute;n red</td><td>fe_red</td><td>REE &mdash; factor medio mensual enero 2023</td><td><span class="tag tw2">&#9888; orientativo</span></td></tr>
+<tr><td>Disponibilidad EMS</td><td>u_EMS(t)</td><td>Sin perturbaci&oacute;n &rarr; constante = 1.0</td><td>Trivial</td></tr>
+</tbody></table></div>
+<h3>Estado inicial provisional S&#8320;</h3>
+<p style="font-size:12px;color:var(--text-3);margin-bottom:8px">Condici&oacute;n: lunes 15 enero, 08:00&thinsp;h. Se formalizar&aacute; como vector S(t) en T2.3.</p>
+<div class="cb">
+<span class="cc">// S&#8320; provisional &mdash; Valle Verde, enero 08:00 h</span>
+<span class="ck">P_gen,PV</span>  = <span class="cv"> 28 kW</span>       <span class="cc">// amanecer, irradiancia baja</span>
+<span class="ck">P_dem,elec</span> = <span class="cv"> 72 kW</span>       <span class="cc">// punta matinal</span>
+<span class="ck">E_bat</span>      = <span class="cv">300 kWh</span>      <span class="cc">// 75% SoC &mdash; cargada en valle nocturno</span>
+<span class="ck">P_grid</span>     = <span class="cv">+44 kW</span>       <span class="cc">// importando &mdash; FV insuficiente</span>
+<span class="ck">T_int</span>      = <span class="cv"> 21.0 &deg;C</span>     <span class="cc">// confort nominal, calefacci&oacute;n activa</span>
+<span class="ck">T_ext</span>      = <span class="cv">  4.5 &deg;C</span>     <span class="cc">// TMY Madrid enero, ma&ntilde;ana</span>
+<span class="ck">c_E</span>        = <span class="cv">  0.09 &euro;/kWh</span>  <span class="cc">// hora valle</span>
+<span class="ck">GHG</span>        = <span class="cv"> 11 kgCO&#8322;/h</span>   <span class="cc">// alta dependencia red hora matinal</span>
+<span class="ck">u_EMS</span>      = <span class="cv">  1.0</span>          <span class="cc">// sistema de control operativo nominal</span>
+</div>
+<div class="co co-w"><strong>Pendiente de formalizaci&oacute;n en T2.3</strong>Este S&#8320; es provisional. T2.3 lo organizar&aacute; como vector S(t) con ecuaciones de evoluci&oacute;n temporal una vez que el modelo din&aacute;mico est&eacute; completo.</div>
+</div>
+
+</div><!-- /panel-right -->
+</div><!-- /panels -->
+<script>
+function setStep(phase,step,el){
+  document.querySelectorAll('.st').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.sc').forEach(c=>c.classList.remove('active'));
+  var l=document.getElementById('left-'+phase+'-'+step);
+  var r=document.getElementById('right-'+phase+'-'+step);
+  if(l)l.classList.add('active');
+  if(r)r.classList.add('active');
+  document.getElementById('panel-left').scrollTop=0;
+  document.getElementById('panel-right').scrollTop=0;
+}
+</script>
+</body>
+</html>
