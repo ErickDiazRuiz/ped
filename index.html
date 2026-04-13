@@ -1026,7 +1026,7 @@ S(t) = [<span class="cv">P_gen,PV</span>(t), <span class="cv">E_bat</span>(t), <
     <svg id="vv-svg" style="flex:1;min-width:0;display:block;background:#0d1117"></svg>
 
     <!-- right panel -->
-    <div id="vv-panel" style="width:240px;flex-shrink:0;background:#161b22;border-left:1px solid #30363d;overflow-y:auto;display:flex;flex-direction:column">
+    <div id="vv-panel" style="width:180px;flex-shrink:0;background:#161b22;border-left:1px solid #30363d;overflow-y:auto;display:flex;flex-direction:column">
 
       <!-- type legend -->
       <div style="padding:12px 14px;border-bottom:1px solid #30363d">
@@ -1435,7 +1435,7 @@ function vvBuild(){
     // outer dashed ring: r=26, fill:none, stroke:gc, stroke-width:1.5, stroke-dasharray:"4,2", opacity:0.6
     var outerRing = document.createElementNS('http://www.w3.org/2000/svg','circle');
     outerRing.setAttribute('class','vring');
-    outerRing.setAttribute('r','26');
+    outerRing.setAttribute('r','30');
     outerRing.setAttribute('fill','none');
     outerRing.setAttribute('stroke', gc);
     outerRing.setAttribute('stroke-width','1.5');
@@ -1446,7 +1446,7 @@ function vvBuild(){
     // inner circle: r=22, fill:gc+"18", stroke:gc, stroke-width:2, filter:node-glow
     var inner = document.createElementNS('http://www.w3.org/2000/svg','circle');
     inner.setAttribute('class','vinner');
-    inner.setAttribute('r','22');
+    inner.setAttribute('r','26');
     inner.setAttribute('fill', gc+'18');
     inner.setAttribute('stroke', gc);
     inner.setAttribute('stroke-width','2');
@@ -1459,7 +1459,7 @@ function vvBuild(){
     var tInner = document.createElementNS('http://www.w3.org/2000/svg','text');
     tInner.setAttribute('text-anchor','middle');
     tInner.setAttribute('dy','0.35em');  // exact JSX
-    tInner.setAttribute('font-size','10');
+    tInner.setAttribute('font-size','11');
     tInner.setAttribute('font-family','"Courier New",monospace');
     tInner.setAttribute('font-weight','bold');
     tInner.setAttribute('fill', gc);
@@ -1553,7 +1553,7 @@ function vvTick(){
     a.vx=(a.vx+fx)*0.78; a.vy=(a.vy+fy)*0.78;
     a.x+=a.vx; a.y+=a.vy;
     // collide radius 52
-    a.x=Math.max(52,Math.min(W-52,a.x)); a.y=Math.max(52,Math.min(H-52,a.y));
+    a.x=Math.max(62,Math.min(W-62,a.x)); a.y=Math.max(52,Math.min(H-62,a.y));
   });
   nodes.forEach(function(n){ if(n.pinned&&n!==VV.drag) n.pinned=false; });
 
@@ -1569,7 +1569,7 @@ function vvTick(){
     if(ring){  ring.setAttribute('cx',x);  ring.setAttribute('cy',y);  }
     if(inner){ inner.setAttribute('cx',x); inner.setAttribute('cy',y); }
     if(abbr){  abbr.setAttribute('x',x);   abbr.setAttribute('y',y);   }
-    if(lbls){  lbls.setAttribute('transform','translate('+x+','+(y+32)+')'); }  // exact JSX
+    if(lbls){  lbls.setAttribute('transform','translate('+x+','+(y+38)+')'); }  // exact JSX
   });
 
   // render edges + K labels
@@ -1580,7 +1580,7 @@ function vvTick(){
     var a=e.a, b=e.b;
     var dx=b.x-a.x, dy=b.y-a.y, d=Math.sqrt(dx*dx+dy*dy)+0.01;
     // offset endpoint by r=22+arrowhead clearance
-    var ex=b.x-dx/d*28, ey=b.y-dy/d*28;
+    var ex=b.x-dx/d*32, ey=b.y-dy/d*28;
     line.setAttribute('x1',a.x); line.setAttribute('y1',a.y);
     line.setAttribute('x2',ex);  line.setAttribute('y2',ey);
     // visibility from filters
