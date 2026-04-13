@@ -169,17 +169,48 @@ tr.dim td{opacity:.28}
 <div class="co co-b"><strong>Criterio &mdash; conflicto funcional vs. regulatorio</strong>Prevalece el criterio que maximiza la coherencia del balance energ&eacute;tico. Si el l&iacute;mite regulatorio divide una microrred que opera como unidad &rarr; ampliar y documentar. Si incluye activos sin control del operador &rarr; excluir y registrar como interfaz.</div>
 <div class="co co-b"><strong>Criterio &mdash; inclusi&oacute;n de interfaces externas</strong>Incluir si: (1) el PED no puede operar sin ella m&aacute;s de T_islanding, o (2) es vector de perturbaciones ex&oacute;genas sobre activos internos.</div>
 
-<h3>Contextos operativos formales</h3>
-<p>Un contexto operativo es la combinaci&oacute;n de condiciones que determina qu&eacute; servicios est&aacute;n bajo presi&oacute;n y cu&aacute;les no. La criticidad de un servicio no es un valor fijo &mdash; es una funci&oacute;n del contexto activo. Se definen tres contextos base m&aacute;s un modificador transversal:</p>
+<h3>Contextos operativos &mdash; formalizaci&oacute;n</h3>
+<p>La criticidad de un servicio no es un valor fijo: depende de las condiciones bajo las que opera el sistema. Para capturar esto de forma sistem&aacute;tica, la metodolog&iacute;a define una funci&oacute;n de activaci&oacute;n de contexto &theta;(t) y una funci&oacute;n de criticidad contextual &kappa;(s,&theta;).</p>
+
+<div class="slabel">Funci&oacute;n de activaci&oacute;n de contexto &theta;(t)</div>
+<p>En cada instante t, el contexto activo &theta;(t) se determina por T_ext(t) y dos umbrales calibrables por el analista:</p>
+<div class="cb" style="font-size:12px">
+&theta;(t) = <span class="tag" style="background:rgba(59,130,246,0.12);color:#93c5fd;border:1px solid rgba(59,130,246,0.3)">C-F</span> &nbsp;si T_ext(t) &lt; T_h<br>
+&theta;(t) = <span class="tag" style="background:rgba(16,185,129,0.1);color:#6ee7b7;border:1px solid rgba(16,185,129,0.25)">C-N</span> &nbsp;si T_h &le; T_ext(t) &le; T_c<br>
+&theta;(t) = <span class="tag" style="background:rgba(239,68,68,0.1);color:#fca5a5;border:1px solid rgba(239,68,68,0.25)">C-C</span> &nbsp;si T_ext(t) &gt; T_c
+</div>
+<p><strong style="color:var(--t1)">T_h y T_c son par&aacute;metros del analista.</strong> Valor por defecto: T_h&thinsp;=&thinsp;18&thinsp;&deg;C, T_c&thinsp;=&thinsp;26&thinsp;&deg;C (EN 16798-1 Categor&iacute;a II). El analista los modifica si la normativa nacional, el clima local o el stock de edificios del PED lo justifican, y lo documenta. Esta misma regla opera en P6: en cada &Delta;t, &theta;(t) se eval&uacute;a sobre T_ext(t) del baseline B(t), de modo que el contexto activo cambia din&aacute;micamente durante una contingencia.</p>
+
+<div class="slabel">Modificador de vulnerabilidad +V</div>
+<p>+V se activa si se cumple al menos una condici&oacute;n: (a) &gt;20% de usuarios son vulnerables, o (b) T_ext extremo sostenido &ge; 48&thinsp;h. No es un contexto independiente &mdash; se combina con el contexto base: C-F+V, C-N+V, C-C+V. Su efecto es reducir el MTTI de los servicios afectados hacia el l&iacute;mite inferior del rango orientativo.</p>
+
+<div class="slabel">Funci&oacute;n de criticidad contextual &kappa;(s,&theta;)</div>
+<p>&kappa;(s,&theta;) asigna un nivel de criticidad a cada servicio s bajo el contexto &theta; activo:</p>
+<div class="cb" style="font-size:12px">&kappa;(s, &theta;) &rarr; {Cr&iacute;tico, Importante, Secundario}</div>
+<p>La tabla de criticidad que el analista construye en esta tarea es la instanciaci&oacute;n de &kappa; para su PED espec&iacute;fico. No es universal. El analista la elabora usando la biblioteca de servicios como referencia y justifica los casos que se des&iacute;van del rango orientativo.</p>
+
+<div class="slabel">MTTI contextual</div>
+<p>MTTI(s, &theta;, +V) = m&iacute;n(t<sub>F1</sub>, t<sub>F2</sub>, t<sub>F3</sub>, t<sub>F4</sub>) evaluado bajo las condiciones del contexto activo. El valor cambia entre contextos porque los factores f&iacute;sicos que lo determinan son sensibles a T_ext y a la presencia de vulnerables.</p>
+
+<div class="slabel">Conexi&oacute;n con pasos posteriores</div>
+<div class="tw"><table>
+<thead><tr><th>Funci&oacute;n</th><th>Uso en pasos siguientes</th></tr></thead>
+<tbody>
+<tr><td><strong>&theta;(t)</strong></td><td>P5: el Policy Book define prioridades de despacho seg&uacute;n el contexto activo en cada ciclo</td></tr>
+<tr><td><strong>&kappa;(s, &theta;)</strong></td><td>P7: el umbral de performance q_D por dimensi&oacute;n R_D se deriva de &kappa;</td></tr>
+<tr><td><strong>T_h, T_c</strong></td><td>T2.3c: f_SO usa los mismos umbrales &mdash; coherencia garantizada por dise&ntilde;o</td></tr>
+</tbody></table></div>
+
+<div class="slabel">Tabla de referencia &theta;(t) &mdash; tres contextos base</div>
 <div class="tw"><table>
 <thead><tr><th>C&oacute;digo</th><th>Nombre</th><th>Condici&oacute;n de activaci&oacute;n</th><th>Servicio que cambia de nivel</th></tr></thead>
 <tbody>
-<tr><td><span class="tag" style="background:rgba(59,130,246,0.12);color:#93c5fd;border:1px solid rgba(59,130,246,0.3)">C-F</span></td><td>Fr&iacute;o</td><td>T_ext &lt; umbral inferior de confort (~18&thinsp;&deg;C)</td><td>Calefacci&oacute;n: Secundario &rarr; Importante</td></tr>
-<tr><td><span class="tag" style="background:rgba(16,185,129,0.1);color:#6ee7b7;border:1px solid rgba(16,185,129,0.25)">C-N</span></td><td>Neutro</td><td>Umbral inferior &lt; T_ext &lt; umbral superior</td><td>Ni calefacci&oacute;n ni refrigeraci&oacute;n activas como Importantes</td></tr>
-<tr><td><span class="tag" style="background:rgba(239,68,68,0.1);color:#fca5a5;border:1px solid rgba(239,68,68,0.25)">C-C</span></td><td>Calor</td><td>T_ext &gt; umbral superior de confort (~26&thinsp;&deg;C)</td><td>Refrigeraci&oacute;n: Secundario &rarr; Importante</td></tr>
-<tr><td><span class="tag" style="background:rgba(245,158,11,0.1);color:#fcd34d;border:1px solid rgba(245,158,11,0.25)">+V</span></td><td>Vulnerabilidad activa</td><td>&gt;20% usuarios vulnerables O T_ext extremo sostenido &ge; 48 h</td><td>MTTI al l&iacute;mite inferior en servicios afectados (se combina con C-F, C-N o C-C)</td></tr>
+<tr><td><span class="tag" style="background:rgba(59,130,246,0.12);color:#93c5fd;border:1px solid rgba(59,130,246,0.3)">C-F</span></td><td>Fr&iacute;o</td><td>T_ext &lt; T_h (default 18&thinsp;&deg;C)</td><td>Calefacci&oacute;n: Secundario &rarr; Importante</td></tr>
+<tr><td><span class="tag" style="background:rgba(16,185,129,0.1);color:#6ee7b7;border:1px solid rgba(16,185,129,0.25)">C-N</span></td><td>Neutro</td><td>T_h &le; T_ext &le; T_c</td><td>Ni calefacci&oacute;n ni refrigeraci&oacute;n activas como Importantes</td></tr>
+<tr><td><span class="tag" style="background:rgba(239,68,68,0.1);color:#fca5a5;border:1px solid rgba(239,68,68,0.25)">C-C</span></td><td>Calor</td><td>T_ext &gt; T_c (default 26&thinsp;&deg;C)</td><td>Refrigeraci&oacute;n: Secundario &rarr; Importante</td></tr>
+<tr><td><span class="tag" style="background:rgba(245,158,11,0.1);color:#fcd34d;border:1px solid rgba(245,158,11,0.25)">+V</span></td><td>Vulnerabilidad activa</td><td>&gt;20% usuarios vulnerables O T_ext extremo &ge; 48&thinsp;h</td><td>MTTI al l&iacute;mite inferior (se combina con C-F, C-N o C-C)</td></tr>
 </tbody></table></div>
-<p style="font-size:11.5px;color:var(--t3)">Los umbrales de confort corresponden a EN 16798-1 Categor&iacute;a II. +V es un modificador, no un contexto independiente: C-F+V (invierno severo con vulnerables), C-C+V (ola de calor con vulnerables).</p>
+<p style="font-size:11.5px;color:var(--t3)">T_h = 18&thinsp;&deg;C y T_c = 26&thinsp;&deg;C son los valores por defecto (EN 16798-1 Cat. II). El analista los calibra si el contexto del PED lo requiere y lo documenta.</p>
 
 <h3>Factores determinantes del MTTI</h3>
 <p>El MTTI de un servicio es el tiempo hasta el primer efecto adverso no tolerable: MTTI = m&iacute;n(t<sub>F1</sub>, t<sub>F2</sub>, t<sub>F3</sub>, t<sub>F4</sub>).</p>
@@ -547,19 +578,40 @@ f_SO(t) = 1 + &gamma;_h &times; max(0, T_h &minus; T_ext) + &gamma;_c &times; ma
 <div class="sc" id="left-p2-t24">
 <div class="plabel">Paso 2 &middot; Tarea 2.4 &middot; Metodolog&iacute;a</div>
 <div class="ptitle">Verificaci&oacute;n de coherencia del modelo</div>
-<div class="pdesc">Auditor&iacute;a estructurada del modelo completo antes de su uso en fases siguientes. No produce contenido nuevo &mdash; garantiza consistencia interna. Un modelo con nodos aislados, variables faltantes en S(t) o inconsistencias entre tripletas y matrices producir&aacute; resultados inv&aacute;lidos en P6.</div>
-<h3>Los 6 criterios</h3>
-<div class="tw"><table>
-<thead><tr><th>Criterio</th><th>Qu&eacute; se verifica</th><th>Si falla</th></tr></thead>
+<div class="pdesc">Auditor&iacute;a estructurada del modelo completo antes de su uso en fases siguientes. No produce contenido nuevo &mdash; garantiza consistencia interna. Un modelo con nodos aislados, variables faltantes en S(t) o inconsistencias entre tripletas y matrices producir&aacute; resultados inv&aacute;lidos en P6 — errores silenciosos que solo se detectan al interpretar resultados.</div>
+
+<h3>Los 6 criterios &mdash; qu&eacute; se verifica y por qu&eacute; importa</h3>
+
+<div class="co co-b" style="margin-bottom:8px"><strong>C1 &mdash; Consistencia de nodos</strong>
+<p style="margin:6px 0 0">Verificar que todo nodo referenciado en una tripleta de T2.2 existe en la lista de nodos de T2.1. <strong style="color:var(--t1)">Por qu&eacute; puede fallar:</strong> durante T2.2 el analista puede usar abreviaciones inconsistentes (N_bat vs N_BESS) o a&ntilde;adir nodos sobre la marcha sin registrarlos en T2.1. <strong style="color:var(--t1)">Consecuencia:</strong> la ecuaci&oacute;n de nivel 2 referencia un nodo sin par&aacute;metros — P6 no puede calcular &phi;_i(t) y produce resultados indefinidos. <strong style="color:var(--t1)">Acci&oacute;n:</strong> alinear nomenclatura; si el nodo falta en T2.1, a&ntilde;adirlo con todos sus atributos.</p></div>
+
+<div class="co co-b" style="margin-bottom:8px"><strong>C2 &mdash; Consistencia de capas</strong>
+<p style="margin:6px 0 0">Verificar que el tipo de relaci&oacute;n de cada tripleta (flujo f&iacute;sico, se&ntilde;al de control, precio, restricci&oacute;n regulatoria, comportamiento) corresponde exactamente a la capa declarada. <strong style="color:var(--t1)">Por qu&eacute; puede fallar:</strong> la relaci&oacute;n N_EMS&rarr;N_PV existe tanto en ICT (control) como en PH (alimentaci&oacute;n el&eacute;ctrica del inversor) — puede registrarse en la capa incorrecta. <strong style="color:var(--t1)">Consecuencia:</strong> el modelo aplica la ecuaci&oacute;n de nivel 2 (propagaci&oacute;n de degradaci&oacute;n) a relaciones que deber&iacute;an tratarse como moduladores de nivel 3, o viceversa. <strong style="color:var(--t1)">Acci&oacute;n:</strong> usar la capa que determina la ecuaci&oacute;n de nivel 1 del nodo origen (capa principal de T2.1).</p></div>
+
+<div class="co co-b" style="margin-bottom:8px"><strong>C3 &mdash; Consistencia de pesos</strong>
+<p style="margin:6px 0 0">Verificar que los w_ij registrados en cada tripleta coinciden con los elementos de las matrices W_L. Las tripletas son la fuente de verdad; las matrices son su representaci&oacute;n organizada. <strong style="color:var(--t1)">Por qu&eacute; puede fallar:</strong> correcciones parciales durante el an&aacute;lisis actualizan las tripletas pero no las matrices, o al rev&eacute;s. <strong style="color:var(--t1)">Consecuencia:</strong> la ecuaci&oacute;n x_j,ef usa un w_ij distinto al justificado &mdash; la propagaci&oacute;n es sistem&aacute;ticamente incorrecta sin aviso.</p></div>
+
+<div class="co co-b" style="margin-bottom:8px"><strong>C4 &mdash; Cobertura de nodos Cr&iacute;ticos</strong>
+<p style="margin:6px 0 0">Verificar que ning&uacute;n nodo clasificado como Cr&iacute;tico en T1.2 queda completamente aislado (cero tripletas en ambas direcciones). Un nodo terminal de demanda (como N_dem,cs) puede tener cero tripletas como origen — eso es correcto si tiene al menos una como destino. <strong style="color:var(--t1)">Por qu&eacute; puede fallar:</strong> omisi&oacute;n involuntaria durante T2.2 de las dependencias de un activo cr&iacute;tico (p.ej. olvidar modelar que el centro de salud depende de N_BT). <strong style="color:var(--t1)">Consecuencia:</strong> P6 propaga la perturbaci&oacute;n pero nunca la recibe el nodo cr&iacute;tico &mdash; el impacto en R_S queda artificialmente subestimado.</p></div>
+
+<div class="co co-b" style="margin-bottom:8px"><strong>C5 &mdash; Cobertura del vector S(t)</strong>
+<p style="margin:6px 0 0">Verificar que al menos una variable de S(t) cubre cada una de las 5 dimensiones de resiliencia R_D. <strong style="color:var(--t1)">Por qu&eacute; puede fallar:</strong> un modelo centrado en la dimensi&oacute;n energ&eacute;tica puede omitir variables de R_S (temperatura interior) o R_Env (emisiones). <strong style="color:var(--t1)">Consecuencia:</strong> P7 no puede calcular la m&eacute;trica q_D para la dimensi&oacute;n descubierta &mdash; el vector R queda incompleto y el IRI no es comparable con otros PEDs.</p></div>
+
+<div class="co co-b" style="margin-bottom:8px"><strong>C6 &mdash; Consistencia de plantillas nivel 1</strong>
+<p style="margin:6px 0 0">Verificar que cada nodo f&iacute;sico tiene exactamente una plantilla de nivel 1 asignada (o dos, si representa demanda t&eacute;rmica + el&eacute;ctrica simult&aacute;neamente). <strong style="color:var(--t1)">Por qu&eacute; puede fallar:</strong> nodos de demanda mixta como N_dem,res pueden quedar sin plantilla t&eacute;rmica si el analista se centra solo en la parte el&eacute;ctrica. <strong style="color:var(--t1)">Consecuencia:</strong> P6 propaga perturbaciones el&eacute;ctricas pero no t&eacute;rmicas &mdash; R_S queda subestimado en contingencias de invierno.</p></div>
+
+<div class="tw" style="margin-top:14px"><table>
+<thead><tr><th>Criterio</th><th>Falla si&hellip;</th><th>Acci&oacute;n correctiva</th></tr></thead>
 <tbody>
-<tr><td>1 &mdash; Consistencia de nodos</td><td>Todos los nodos de tripletas existen en T2.1</td><td>Corregir T2.1 o tripletas</td></tr>
-<tr><td>2 &mdash; Consistencia de capas</td><td>Cada tripleta est&aacute; en la matriz W correcta</td><td>Corregir asignaci&oacute;n de capa</td></tr>
-<tr><td>3 &mdash; Consistencia de pesos</td><td>w_ij en tripletas = valores en matrices W</td><td>Corregir discrepancia</td></tr>
-<tr><td>4 &mdash; Cobertura de Cr&iacute;ticos</td><td>Ning&uacute;n nodo Cr&iacute;tico aislado</td><td>Revisar omisi&oacute;n</td></tr>
-<tr><td>5 &mdash; Cobertura de S(t)</td><td>Al menos una variable por dimensi&oacute;n R_D</td><td>A&ntilde;adir variable faltante</td></tr>
-<tr><td>6 &mdash; Consistencia de plantillas</td><td>Cada nodo f&iacute;sico tiene ecuaci&oacute;n nivel 1</td><td>Asignar plantilla faltante</td></tr>
+<tr><td>C1 &mdash; Nodos</td><td>Un ID en tripleta no existe en T2.1</td><td>Alinear nomenclatura; completar T2.1</td></tr>
+<tr><td>C2 &mdash; Capas</td><td>Tipo de relaci&oacute;n no corresponde a la capa</td><td>Corregir asignaci&oacute;n; verificar ecuaci&oacute;n aplicable</td></tr>
+<tr><td>C3 &mdash; Pesos</td><td>w_ij en tripleta &ne; elemento en W_L</td><td>Corregir discrepancia; resincronizar</td></tr>
+<tr><td>C4 &mdash; Cr&iacute;ticos</td><td>Nodo Cr&iacute;tico con 0 tripletas en ambas direcciones</td><td>Revisar T2.2; a&ntilde;adir tripletas omitidas</td></tr>
+<tr><td>C5 &mdash; S(t)</td><td>Alg&uacute;n R_D sin variable en S(t)</td><td>A&ntilde;adir variable; asignar ecuaci&oacute;n nivel 1</td></tr>
+<tr><td>C6 &mdash; Plantillas</td><td>Nodo f&iacute;sico sin ecuaci&oacute;n nivel 1</td><td>Asignar plantilla correcta de T2.3</td></tr>
 </tbody></table></div>
-<div class="co co-a"><strong>Regla de cierre de la Fase 1</strong>El analista no puede avanzar a la Fase 2 (P3) hasta que T2.4 confirme los 6 criterios sin excepci&oacute;n.</div>
+
+<div class="co co-a"><strong>Regla de cierre de la Fase 1</strong>El analista no puede avanzar a P3 hasta que los 6 criterios pasen sin excepci&oacute;n. Un fallo en cualquiera invalida el modelo completo para P6, no solo la parte afectada.</div>
 </div>
 
 <!-- ══ LEFT F1 OUTPUT ══ -->
@@ -974,6 +1026,64 @@ S(t) = [<span class="cv">P_gen,PV</span>(t), <span class="cv">E_bat</span>(t), <
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cv">c_E</span>(t), <span class="cv">&phi;_EMS</span>(t), <span class="cv">GHG</span>(t)]
 </div>
 <p style="font-size:11px;color:var(--t3)">Cobertura: R_E (P_gen,PV, E_bat, P_grid) &middot; R_S (T_int, P_dem,cs, T_TES) &middot; R_Ec (c_E, P_grid) &middot; R_Env (GHG, P_gen,PV) &middot; R_Op (&phi;_EMS, E_bat) &mdash; todas las dimensiones cubiertas &#10003;</p>
+
+<h3>Nivel 2 &mdash; Propagaci&oacute;n instanciada</h3>
+<p style="font-size:12.5px;color:var(--t2)">La ecuaci&oacute;n de acoplamiento <span style="font-family:monospace;font-size:11px;color:var(--green)">x_j,ef = x_j,nom &times; [1 &minus; w_ij &times; (1 &minus; &phi;_i)]</span> se aplica a cada par (N_i, N_j) en capas PH e ICT en cada paso &Delta;t. Tres casos cr&iacute;ticos de Valle Verde:</p>
+<div class="tw"><table>
+<thead><tr><th>Par (capa)</th><th>w_ij</th><th>&phi;_i(t)</th><th>x_j,ef / x_j,nom</th><th>Interpretaci&oacute;n</th></tr></thead>
+<tbody>
+<tr>
+  <td>N_BT &rarr; N_EMS [PH]</td><td>0.60</td><td>1.0 (normal)</td>
+  <td><span style="color:var(--green);font-family:monospace">1.0</span></td>
+  <td>Red BT sana &rarr; EMS opera al 100%</td>
+</tr>
+<tr>
+  <td>N_BT &rarr; N_EMS [PH]</td><td>0.60</td><td>0.0 (corte total)</td>
+  <td><span style="color:var(--red);font-family:monospace">0.40</span></td>
+  <td>Corte de BT &rarr; EMS cae al 40% (alimentaci&oacute;n auxiliar SAI); &phi;_EMS = 0.40</td>
+</tr>
+<tr>
+  <td>N_EMS &rarr; N_bat [ICT]</td><td>1.00</td><td>0.40 (degradado)</td>
+  <td><span style="color:var(--amber);font-family:monospace">0.60</span></td>
+  <td>EMS degradado + dependencia total &rarr; BESS opera al 60% de su capacidad de despacho &oacute;ptimo</td>
+</tr>
+<tr>
+  <td>N_EMS &rarr; N_HP [ICT]</td><td>1.00</td><td>0.40 (degradado)</td>
+  <td><span style="color:var(--amber);font-family:monospace">0.60</span></td>
+  <td>Bomba de calor sigue consignas degradadas del EMS; Q_HP eficaz = 0.60 &times; Q_HP,nom</td>
+</tr>
+</tbody></table></div>
+<div class="co co-a"><strong>Efecto en cadena &mdash; corte de red BT</strong>
+Corte N_BT: &phi;_BT = 0 &rarr; &phi;_EMS = 0.40 [nivel 2, w=0.60] &rarr; capacidad despacho BESS = 0.60 [nivel 2, w=1.0] &rarr; Q_HP eficaz = 0.60 [nivel 2, w=1.0]. El colapso parcial de un nodo se propaga a trav&eacute;s de m&uacute;ltiples capas en el mismo &Delta;t.</div>
+
+<h3>Nivel 3 &mdash; Moduladores instanciados</h3>
+<p style="font-size:12.5px;color:var(--t2)">Los moduladores EC, GV y SO no degradan capacidades &mdash; ajustan par&aacute;metros operativos. Instanciados para Valle Verde (Madrid):</p>
+<div class="tw"><table>
+<thead><tr><th>Modulador</th><th>Ecuaci&oacute;n instanciada</th><th>Par&aacute;metros Valle Verde</th><th>Referencia</th></tr></thead>
+<tbody>
+<tr>
+  <td><strong>f_EC(t)</strong><br><span style="font-size:10px;color:var(--t3)">Capa EC &rarr; Tipo 5</span></td>
+  <td><div class="cb" style="font-size:10.5px;margin:4px 0">f_EC = 1 + (&minus;0.10) &times; (c_E &minus; 0.12) / 0.12</div>
+  Ejemplo: c_E = 0.24 €/kWh (pico &times;2) &rarr; f_EC = 0.90 &rarr; demanda &minus;10%</td>
+  <td>&epsilon; = &minus;0.10 (auto-elasticidad precio residencial)<br>c_E,ref = 0.12 €/kWh (PVPC Madrid hist&oacute;rico)</td>
+  <td style="font-size:10px">Aalami et al. (2010) EPSR 80(4) Ec.12</td>
+</tr>
+<tr>
+  <td><strong>f_SO(t)</strong><br><span style="font-size:10px;color:var(--t3)">Capa SO &rarr; Tipo 5</span></td>
+  <td><div class="cb" style="font-size:10.5px;margin:4px 0">f_SO = 1 + &gamma;_h&middot;max(0,18&minus;T_ext) + &gamma;_c&middot;max(0,T_ext&minus;26)</div>
+  Ejemplo C-C: T_ext=35°C &rarr; f_SO = 1 + 0.02&middot;9 = 1.18 &rarr; demanda +18%</td>
+  <td>&gamma;_h = 0.015 °C&minus;1 (calef.)<br>&gamma;_c = 0.020 °C&minus;1 (refrig.)<br>T_h=18°C, T_c=26°C (EN 16798-1)</td>
+  <td style="font-size:10px">Staffell et al. (2023) NE 8 Ecs.(7)(8)(11)<br>Fazeli et al. (2016) §2.2</td>
+</tr>
+<tr>
+  <td><strong>&delta;_GV(t)</strong><br><span style="font-size:10px;color:var(--t3)">Capa GV &rarr; P_grid,max</span></td>
+  <td><div class="cb" style="font-size:10.5px;margin:4px 0">P_grid,max,ef = 150 &times; &delta;_GV(t) kW</div>
+  Normal: &delta;_GV=1.0 &rarr; 150 kW exportaci&oacute;n<br>Restricci&oacute;n regulatoria: &delta;_GV=0.5 &rarr; 75 kW</td>
+  <td>P_grid,max = 150 kW (contrato PAC A08)<br>&delta;_GV definido por regulaci&oacute;n nacional aplicable</td>
+  <td style="font-size:10px">ENTSO-E Network Codes; Dir. UE 2019/944 art.59</td>
+</tr>
+</tbody></table></div>
+<div class="co co-b"><strong>Coherencia niveles 2 y 3 con T2.3c (metodolog&iacute;a)</strong>T_h=18°C y T_c=26°C de f_SO son exactamente los umbrales de activaci&oacute;n de contextos C-F y C-C de T1.1 &mdash; la misma temperatura que activa el contexto tambi&eacute;n amplifica la demanda en la simulaci&oacute;n. Las dos representaciones son consistentes por dise&ntilde;o.</div>
 </div>
 
 <!-- ══ RIGHT P2 T2.4 ══ -->
@@ -981,19 +1091,81 @@ S(t) = [<span class="cv">P_gen,PV</span>(t), <span class="cv">E_bat</span>(t), <
 <div class="exh">
   <span class="vvb">Valle Verde</span>
   <div><div class="plabel">Caso aplicativo &middot; Auditor&iacute;a de cierre</div>
-  <div style="font-size:17px;font-weight:600;color:var(--t1)">T2.4 &mdash; Verificaci&oacute;n de coherencia</div></div>
+  <div style="font-size:17px;font-weight:600;color:var(--t1)">T2.4 &mdash; Proceso de verificaci&oacute;n</div></div>
 </div>
+
+<div class="slabel">C1 &mdash; Consistencia de nodos</div>
+<p style="font-size:12.5px;color:var(--t2)">Se extraen todos los IDs que aparecen en las tripletas de T2.2 y se contrastan con la lista de T2.1:</p>
+<div class="cb" style="font-size:11px">
+<span class="cc">// IDs en tripletas T2.2 (22 tripletas, 13 IDs &uacute;nicos):</span><br>
+N_PV, N_bat, N_HP, N_TES, N_BT, N_EMS, N_grid,<br>
+N_dem,res, N_dem,cs, N_dem,col, N_mkt, N_reg, N_soc<br><br>
+<span class="cc">// Presentes en T2.1: 13/13 &rarr; coincidencia exacta</span><br>
+<span class="ck">resultado</span>: <span class="cv">PASA &mdash; cero discrepancias</span>
+</div>
+
+<div class="slabel" style="margin-top:14px">C2 &mdash; Consistencia de capas</div>
+<p style="font-size:12.5px;color:var(--t2)">Para cada tripleta se verifica que el tipo de relaci&oacute;n es compatible con la capa declarada:</p>
 <div class="tw"><table>
-<thead><tr><th>Criterio</th><th>Resultado</th><th>Nota</th></tr></thead>
+<thead><tr><th>Capa</th><th>Tipo de relaci&oacute;n esperado</th><th>Ejemplo revisado</th><th>Veredicto</th></tr></thead>
 <tbody>
-<tr><td>1 &mdash; Consistencia de nodos</td><td><span class="tag ts">&#10003; PASA</span></td><td>Los 13 nodos de tripletas existen en T2.1</td></tr>
-<tr><td>2 &mdash; Consistencia de capas</td><td><span class="tag ts">&#10003; PASA</span></td><td>PH: flujos f&iacute;sicos &middot; ICT: se&ntilde;ales control &middot; EC/GV/SO: moduladores</td></tr>
-<tr><td>3 &mdash; Consistencia de pesos</td><td><span class="tag ts">&#10003; PASA</span></td><td>w_ij en tripletas = valores en matrices W verificados</td></tr>
-<tr><td>4 &mdash; Cobertura Cr&iacute;ticos</td><td><span class="tag ts">&#10003; PASA</span></td><td>N_BT: 7 conexiones &middot; N_EMS: 7 conexiones &middot; N_dem,cs: 1 entrada (terminal, justificado)</td></tr>
-<tr><td>5 &mdash; Cobertura S(t)</td><td><span class="tag ts">&#10003; PASA</span></td><td>R_E, R_S, R_Ec, R_Env, R_Op &mdash; todas con al menos una variable</td></tr>
-<tr><td>6 &mdash; Plantillas nivel 1</td><td><span class="tag ts">&#10003; PASA</span></td><td>Nodos demanda con Tipo 3+5: dos variables de estado distintas (T_int, P_dem,el)</td></tr>
+<tr><td>PH</td><td>Flujo de potencia o energ&iacute;a f&iacute;sica</td><td>N_PV&rarr;N_BT: flujo el&eacute;ctrico FV &rarr; red BT ✓</td><td><span class="tag ts">✓</span></td></tr>
+<tr><td>ICT</td><td>Se&ntilde;al de control o datos</td><td>N_EMS&rarr;N_bat: consigna de despacho ✓</td><td><span class="tag ts">✓</span></td></tr>
+<tr><td>EC</td><td>Se&ntilde;al de precio o incentivo econ&oacute;mico</td><td>N_mkt&rarr;N_EMS: precio spot OMIE ✓</td><td><span class="tag ts">✓</span></td></tr>
+<tr><td>GV</td><td>Restricci&oacute;n regulatoria o normativa</td><td>N_reg&rarr;N_grid: l&iacute;mite inyecci&oacute;n ✓</td><td><span class="tag ts">✓</span></td></tr>
+<tr><td>SO</td><td>Comportamiento o respuesta de usuarios</td><td>N_soc&rarr;N_dem,res: modificaci&oacute;n demanda por calor extremo ✓</td><td><span class="tag ts">✓</span></td></tr>
 </tbody></table></div>
-<div class="co co-g" style="margin-top:16px"><strong>&#10003; Regla de cierre satisfecha &mdash; 6/6 criterios cumplidos</strong>El modelo es internamente consistente. La Fase 1 est&aacute; cerrada. El sistema puede avanzar a la Fase 2 &mdash; Dise&ntilde;o de escenarios de perturbaci&oacute;n (Paso 3).</div>
+<p style="font-size:11px;color:var(--t3)">Caso dudoso revisado: N_EMS&rarr;N_PV es ICT (se&ntilde;al de monitorizaci&oacute;n) y no PH (FV opera aut&oacute;nomamente). w=0.30 refleja dependencia d&eacute;bil &mdash; asignaci&oacute;n correcta.</p>
+
+<div class="slabel" style="margin-top:14px">C3 &mdash; Consistencia de pesos</div>
+<p style="font-size:12.5px;color:var(--t2)">Muestreo cruzado tripleta &harr; matriz W para los 5 pares de mayor K_dep:</p>
+<div class="cb" style="font-size:11px">
+N_BT &rarr; N_EMS [PH]: &nbsp;tripleta w=0.60 &nbsp;&harr;&nbsp; W_PH[N_BT,N_EMS]=0.60 <span class="ck">✓</span><br>
+N_EMS &rarr; N_bat [ICT]: tripleta w=1.00 &nbsp;&harr;&nbsp; W_ICT[N_EMS,N_bat]=1.00 <span class="ck">✓</span><br>
+N_EMS &rarr; N_HP [ICT]: &nbsp;tripleta w=1.00 &nbsp;&harr;&nbsp; W_ICT[N_EMS,N_HP]=1.00 &nbsp;<span class="ck">✓</span><br>
+N_BT &rarr; N_dem,res [PH]: w=1.00 &harr; W_PH[N_BT,N_dem,res]=1.00 <span class="ck">✓</span><br>
+N_mkt &rarr; N_EMS [EC]: &nbsp;tripleta w=0.60 &nbsp;&harr;&nbsp; W_EC[N_mkt,N_EMS]=0.60 &nbsp;<span class="ck">✓</span><br>
+<span class="cc">// 22/22 pares verificados &mdash; cero discrepancias</span>
+</div>
+
+<div class="slabel" style="margin-top:14px">C4 &mdash; Cobertura de nodos Cr&iacute;ticos</div>
+<div class="tw"><table>
+<thead><tr><th>Nodo Cr&iacute;tico</th><th>Tripletas como origen</th><th>Tripletas como destino</th><th>Aislado?</th></tr></thead>
+<tbody>
+<tr><td>N_BT</td><td>4 tripletas (→N_dem,res, →N_dem,cs, →N_dem,col, →N_EMS)</td><td>3 tripletas (N_PV→, N_bat→, N_grid→)</td><td><span class="tag ts">No</span></td></tr>
+<tr><td>N_EMS</td><td>4 tripletas (→N_bat, →N_HP, →N_grid, →N_PV)</td><td>3 tripletas (N_BT→PH, N_mkt→EC, N_reg→GV)</td><td><span class="tag ts">No</span></td></tr>
+<tr><td>N_dem,cs</td><td>0 tripletas (nodo terminal &mdash; solo consume)</td><td>1 tripleta (N_BT→)</td><td><span class="tag ts">No *</span></td></tr>
+</tbody></table></div>
+<p style="font-size:11px;color:var(--t3)">* N_dem,cs con 0 tripletas como origen es correcto: es carga cr&iacute;tica pura &mdash; no genera ni controla. Su ausencia como origen NO es aislamiento; tiene dependencia de entrada de N_BT que es suficiente para que P6 propague perturbaciones hacia &eacute;l.</p>
+
+<div class="slabel" style="margin-top:14px">C5 &mdash; Cobertura del vector S(t)</div>
+<div class="tw"><table>
+<thead><tr><th>Dimensi&oacute;n R_D</th><th>Variable(s) en S(t)</th><th>Ecuaci&oacute;n que la define</th><th>Cobertura</th></tr></thead>
+<tbody>
+<tr><td>R_E &mdash; Energ&eacute;tica</td><td>P_gen,PV · E_bat · P_grid</td><td>Tipo 1, Tipo 2, Tipo 6</td><td><span class="tag ts">✓</span></td></tr>
+<tr><td>R_S &mdash; Social</td><td>T_int · P_dem,cs · T_TES</td><td>Tipo 3, Tipo 5, Tipo 4</td><td><span class="tag ts">✓</span></td></tr>
+<tr><td>R_Ec &mdash; Econ&oacute;mica</td><td>c_E · P_grid</td><td>f_EC (L3), Tipo 6</td><td><span class="tag ts">✓</span></td></tr>
+<tr><td>R_Env &mdash; Ambiental</td><td>GHG · P_gen,PV</td><td>Derivada de balance</td><td><span class="tag ts">✓</span></td></tr>
+<tr><td>R_Op &mdash; Operativa</td><td>&phi;_EMS · E_bat</td><td>Tipo 7, Tipo 2</td><td><span class="tag ts">✓</span></td></tr>
+</tbody></table></div>
+
+<div class="slabel" style="margin-top:14px">C6 &mdash; Consistencia de plantillas nivel 1</div>
+<div class="tw"><table>
+<thead><tr><th>Nodo</th><th>Plantilla(s)</th><th>Variables de estado</th><th>Observaci&oacute;n</th></tr></thead>
+<tbody>
+<tr><td>N_PV</td><td>Tipo 1</td><td>P_gen,PV(t)</td><td>&mdash;</td></tr>
+<tr><td>N_bat</td><td>Tipo 2</td><td>E_bat(t)</td><td>&mdash;</td></tr>
+<tr><td>N_HP</td><td>Tipo 7 + Tipo 3 indirecto</td><td>&phi;_HP(t); Q_HP &rarr; T_TES</td><td>HP controla carga de TES</td></tr>
+<tr><td>N_TES</td><td>Tipo 4</td><td>T_TES(t)</td><td>&mdash;</td></tr>
+<tr><td>N_BT</td><td>Tipo 6</td><td>P_grid(t)</td><td>&mdash;</td></tr>
+<tr><td>N_EMS</td><td>Tipo 7</td><td>&phi;_EMS(t)</td><td>&mdash;</td></tr>
+<tr><td>N_grid</td><td>Tipo 6</td><td>P_grid(t)</td><td>&mdash;</td></tr>
+<tr><td>N_dem,res</td><td>Tipo 3 + Tipo 5</td><td>T_int(t); P_dem,el(t)</td><td>Dos estados distintos: t&eacute;rmico y el&eacute;ctrico</td></tr>
+<tr><td>N_dem,cs</td><td>Tipo 5</td><td>P_dem,cs(t)</td><td>&mdash;</td></tr>
+<tr><td>N_dem,col</td><td>Tipo 3 + Tipo 5</td><td>T_int,col(t); P_dem,el,col(t)</td><td>&Iacute;dem N_dem,res</td></tr>
+</tbody></table></div>
+
+<div class="co co-g" style="margin-top:16px"><strong>&#10003; Regla de cierre satisfecha &mdash; 6/6 criterios cumplidos</strong>El modelo es internamente consistente. Ninguna de las combinaciones nodo&harr;tripleta&harr;matriz&harr;ecuaci&oacute;n produce inconsistencias. La Fase 1 est&aacute; cerrada.</div>
 <div class="of" style="margin-top:16px"><div class="oft">Output integrador &rarr; Fase 2</div>
 <div class="fr"><span class="fo">Arquitectura Funcional del PED</span><span class="fa">&rarr;</span><span class="fd">P3 (contingencias), P5 (Policy Book), P6 (simulaci&oacute;n), P7 (m&eacute;tricas), P9 (diagn&oacute;stico), P10 (redise&ntilde;o)</span></div>
 </div>
