@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Resiliencia en PEDs</title>
+<title>RESPED &mdash; Resiliencia en PEDs</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -38,12 +38,12 @@ header{background:var(--s1);border-bottom:1px solid var(--b1);height:48px;paddin
 .sb{font-size:9px;padding:1px 5px;border-radius:3px;font-weight:600;letter-spacing:.04em;text-transform:uppercase}
 .sb-ok{background:var(--gbg);color:var(--green);border:1px solid var(--gbd)}
 .sb-nx{background:var(--s3);color:var(--t3)}
-.panels{display:grid;grid-template-columns:1fr 1fr;flex:1;overflow:hidden}
-.panel{overflow-y:auto;padding:24px;scrollbar-width:thin;scrollbar-color:var(--s4) transparent}
+.panels{display:flex;flex-direction:row;flex:1;height:0;min-height:0;overflow:hidden}
+.panel{width:50%;height:100%;overflow-y:auto;padding:24px;scrollbar-width:thin;scrollbar-color:var(--s4) transparent;box-sizing:border-box}
 .panel::-webkit-scrollbar{width:4px}
 .panel::-webkit-scrollbar-thumb{background:var(--s4);border-radius:2px}
 .pl{background:var(--s1);border-right:1px solid var(--b1)}
-.pr{background:var(--s2)}
+.pr{background:var(--s2)}.pr#panel-right{overflow:hidden}
 .plabel{font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:6px}
 .ptitle{font-size:18px;font-weight:600;color:var(--t1);margin-bottom:8px;line-height:1.25}
 .pdesc{font-size:13px;color:var(--t2);line-height:1.6;margin-bottom:20px;padding-bottom:18px;border-bottom:1px solid var(--b1)}
@@ -96,7 +96,7 @@ tr.hl td{background:rgba(59,130,246,0.07);color:var(--t1)}
 tr.dim td{opacity:.28}
 /* MAP SVG */
 .map-wrap{margin:14px 0;border-radius:6px;border:1px solid var(--b1);background:var(--s2);padding:4px;overflow:hidden}
-.sc{display:none}.sc.active{display:block}
+.sc{display:none}.sc.active{display:block}#right-f1-out.active{display:flex!important;flex-direction:column;height:100%;overflow:hidden}
 /* HEATMAP */
 .ctx-sel{display:flex;gap:6px;margin:14px 0 10px;flex-wrap:wrap}
 .cs{padding:5px 14px;border-radius:5px;border:1px solid var(--b1);background:transparent;color:var(--t3);font-family:var(--f);font-size:12px;font-weight:500;cursor:pointer;transition:all .12s;white-space:nowrap}
@@ -384,13 +384,23 @@ tr.dim td{opacity:.28}
 
 <h3>Cuantificaci&oacute;n de w_ij</h3>
 <div class="tw"><table>
-<thead><tr><th>Capa</th><th>M&eacute;todo</th><th>Referencia</th></tr></thead>
+<thead><tr><th>Capa</th><th>M&eacute;todo de cuantificaci&oacute;n</th><th>Referencia</th></tr></thead>
 <tbody>
-<tr><td>PH</td><td>w = flujo de potencia N_i&rarr;N_j / capacidad total disponible de N_i</td><td>Ouyang (2014)</td></tr>
-<tr><td>ICT</td><td>w = fracci&oacute;n de funci&oacute;n perdida si N_i falla completamente</td><td>Ouyang (2014)</td></tr>
-<tr><td>EC, GV, SO</td><td>Escala ordinal experta: 0.3 (d&eacute;bil) / 0.6 (moderada) / 1.0 (total)</td><td>Ouyang (2014)</td></tr>
+<tr><td>PH</td><td>w<sub>ij</sub> = flujo de potencia o energ&iacute;a N_i&rarr;N_j / capacidad total disponible de N_i. Valor entre 0 y 1.</td><td>Ouyang (2014)</td></tr>
+<tr><td>ICT</td><td>w<sub>ij</sub> = fracci&oacute;n de funci&oacute;n perdida en N_j si N_i falla completamente. Requiere an&aacute;lisis de modo de fallo.</td><td>Ouyang (2014)</td></tr>
+<tr><td>EC, GV, SO</td><td>Escala ordinal experta con criterio de decisi&oacute;n (tabla adjunta). Valores: 0.3 / 0.6 / 1.0.</td><td>Ouyang (2014)</td></tr>
 </tbody></table></div>
-<p style="font-size:11.5px;color:var(--t3)">Calibraci&oacute;n por simulaci&oacute;n: en PEDs con datos hist&oacute;ricos, los pesos pueden ajustarse iterativamente comparando comportamiento simulado con observado.</p>
+
+<div class="slabel">Criterio de decisi&oacute;n para escala ordinal (capas EC, GV, SO)</div>
+<div class="tw"><table>
+<thead><tr><th>Valor</th><th>Criterio operativo</th></tr></thead>
+<tbody>
+<tr><td><strong>1.0 &mdash; Dependencia total</strong></td><td>Si N_i falla completamente, N_j pierde su funci&oacute;n completamente. Sin alternativa posible.</td></tr>
+<tr><td><strong>0.6 &mdash; Dependencia moderada</strong></td><td>Si N_i falla, N_j opera en modo degradado. Existe alternativa parcial o compensaci&oacute;n posible.</td></tr>
+<tr><td><strong>0.3 &mdash; Dependencia d&eacute;bil</strong></td><td>Si N_i falla, N_j experimenta p&eacute;rdida menor. Existen alternativas que cubren la mayor parte de la funci&oacute;n.</td></tr>
+<tr><td><strong>0.0 &mdash; Sin dependencia</strong></td><td>N_i y N_j son operativamente independientes en esta capa. No se crea tripleta.</td></tr>
+</tbody></table></div>
+<p style="font-size:11.5px;color:var(--t3)">Para PH e ICT: si los datos permiten c&aacute;lculo directo, usar el m&eacute;todo cuantitativo. La escala ordinal es una aproximaci&oacute;n v&aacute;lida para an&aacute;lisis preliminar o cuando no se dispone de datos de flujo. Ref: Ouyang (2014) Reliability Engineering &amp; System Safety, 121.</p>
 
 <h3>&Iacute;ndice de criticidad K_dep = I + E + P</h3>
 <p>El &iacute;ndice K_dep no es una medida probabil&iacute;stica de riesgo &mdash; es un indicador ordinal de importancia estructural de cada dependencia. Se calcula como la suma de tres componentes:</p>
@@ -544,6 +554,7 @@ f_SO(t) = 1 + &gamma;_h &times; max(0, T_h &minus; T_ext) + &gamma;_c &times; ma
 <tr><td>6 &mdash; Consistencia de plantillas</td><td>Cada nodo f&iacute;sico tiene ecuaci&oacute;n nivel 1</td><td>Asignar plantilla faltante</td></tr>
 </tbody></table></div>
 <div class="co co-a"><strong>Regla de cierre de la Fase 1</strong>El analista no puede avanzar a la Fase 2 (P3) hasta que T2.4 confirme los 6 criterios sin excepci&oacute;n.</div>
+</div>
 
 <!-- ══ LEFT F1 OUTPUT ══ -->
 <div class="sc" id="left-f1-out">
@@ -851,21 +862,21 @@ Cada uno requiere per&iacute;odo, estado inicial y horizonte distintos.</div>
   <div style="font-size:17px;font-weight:600;color:var(--t1)">T2.1 &mdash; Inventario de nodos</div></div>
 </div>
 <div class="tw"><table>
-<thead><tr><th>ID</th><th>Nombre</th><th>Tipo</th><th>Activos</th><th>Capa</th><th>Crit.</th><th>Ecuaci&oacute;n L1</th></tr></thead>
+<thead><tr><th>ID</th><th>Nombre</th><th>Tipo</th><th>Activos</th><th>Capa</th><th>Crit. base</th><th>Crit. contextual</th><th>Ec. L1</th></tr></thead>
 <tbody>
-<tr><td>N_PV</td><td>Generaci&oacute;n FV</td><td>F&iacute;s.</td><td>A01</td><td>PH</td><td><span class="tag ti">I</span></td><td>Tipo 1 — FV</td></tr>
-<tr><td>N_bat</td><td>BESS comunit.</td><td>F&iacute;s.</td><td>A02</td><td>PH</td><td><span class="tag ti">I</span></td><td>Tipo 2 — BESS</td></tr>
-<tr><td>N_HP</td><td>Bomba calor A/A</td><td>F&iacute;s.</td><td>A03</td><td>PH</td><td><span class="tag ti">I</span></td><td>Tipo 7 — Control</td></tr>
-<tr><td>N_TES</td><td>Acum. t&eacute;rmico</td><td>F&iacute;s.</td><td>A04</td><td>PH</td><td><span class="tag ti">I</span></td><td>Tipo 4 — TES</td></tr>
-<tr><td>N_BT</td><td>Red BT interna</td><td>F&iacute;s.</td><td>A05</td><td>PH</td><td><span class="tag tc">C</span></td><td>Tipo 6 — Balance</td></tr>
-<tr><td>N_EMS</td><td>EMS + SCADA</td><td>F&iacute;s.</td><td>A06+A07</td><td>ICT</td><td><span class="tag tc">C</span></td><td>Tipo 7 — Control</td></tr>
-<tr><td>N_grid</td><td>PAC Iberdrola</td><td>F&iacute;s.</td><td>A08</td><td>PH</td><td><span class="tag ti">I</span></td><td>Tipo 6 — Balance</td></tr>
-<tr><td>N_dem,res</td><td>Bloques res. &times;12</td><td>F&iacute;s.</td><td>A09</td><td>PH</td><td><span class="tag ti">I</span></td><td>Tipo 3+5</td></tr>
-<tr><td>N_dem,cs</td><td>Centro de salud</td><td>F&iacute;s.</td><td>A10</td><td>PH</td><td><span class="tag tc">C</span></td><td>Tipo 5 — Demanda</td></tr>
-<tr><td>N_dem,col</td><td>Colegio p&uacute;blico</td><td>F&iacute;s.</td><td>A11</td><td>PH</td><td><span class="tag ti">I</span></td><td>Tipo 3+5</td></tr>
-<tr style="opacity:.7"><td>N_mkt</td><td>Mercado OMIE</td><td>No-f&iacute;s.</td><td>&mdash;</td><td>EC</td><td>&mdash;</td><td>f_EC modulador</td></tr>
-<tr style="opacity:.7"><td>N_reg</td><td>Regulador</td><td>No-f&iacute;s.</td><td>&mdash;</td><td>GV</td><td>&mdash;</td><td>&delta;_GV modulador</td></tr>
-<tr style="opacity:.7"><td>N_soc</td><td>Usuarios</td><td>No-f&iacute;s.</td><td>&mdash;</td><td>SO</td><td>&mdash;</td><td>f_SO modulador</td></tr>
+<tr><td>N_PV</td><td>Generaci&oacute;n FV</td><td>F&iacute;s.</td><td>A01</td><td>PH</td><td><span class="tag ti">I</span></td><td>Importante (todos contextos)</td><td>Tipo 1</td></tr>
+<tr><td>N_bat</td><td>BESS comunit.</td><td>F&iacute;s.</td><td>A02</td><td>PH</td><td><span class="tag ti">I</span></td><td>Importante (todos contextos)</td><td>Tipo 2</td></tr>
+<tr><td>N_HP</td><td>Bomba calor A/A</td><td>F&iacute;s.</td><td>A03</td><td>PH</td><td><span class="tag ti">I</span></td><td>C-F: Importante (calef.) &middot; C-N/C-C: Imp. (ACS)</td><td>Tipo 7</td></tr>
+<tr><td>N_TES</td><td>Acum. t&eacute;rmico</td><td>F&iacute;s.</td><td>A04</td><td>PH</td><td><span class="tag ti">I</span></td><td>C-F: Importante &middot; C-N/C-C: Imp. (ACS)</td><td>Tipo 4</td></tr>
+<tr><td>N_BT</td><td>Red BT interna</td><td>F&iacute;s.</td><td>A05</td><td>PH</td><td><span class="tag tc">C</span></td><td>Cr&iacute;tico (todos contextos)</td><td>Tipo 6</td></tr>
+<tr><td>N_EMS</td><td>EMS + SCADA</td><td>F&iacute;s.</td><td>A06+A07</td><td>ICT</td><td><span class="tag tc">C</span></td><td>Cr&iacute;tico (todos contextos)</td><td>Tipo 7</td></tr>
+<tr><td>N_grid</td><td>PAC Iberdrola</td><td>F&iacute;s.</td><td>A08</td><td>PH</td><td><span class="tag ti">I</span></td><td>Importante &middot; +V: l&iacute;mite inferior</td><td>Tipo 6</td></tr>
+<tr><td>N_dem,res</td><td>Bloques res. &times;12</td><td>F&iacute;s.</td><td>A09</td><td>PH</td><td><span class="tag ti">I</span></td><td>C-F: Importante+Calef. &middot; C-C+V: l&iacute;mite inferior</td><td>Tipo 3+5</td></tr>
+<tr><td>N_dem,cs</td><td>Centro de salud</td><td>F&iacute;s.</td><td>A10</td><td>PH</td><td><span class="tag tc">C</span></td><td>Cr&iacute;tico (todos contextos)</td><td>Tipo 5</td></tr>
+<tr><td>N_dem,col</td><td>Colegio p&uacute;blico</td><td>F&iacute;s.</td><td>A11</td><td>PH</td><td><span class="tag ti">I</span></td><td>C-C+V: l&iacute;mite inferior</td><td>Tipo 3+5</td></tr>
+<tr style="opacity:.6"><td>N_mkt</td><td>Mercado OMIE</td><td>No-f&iacute;s.</td><td>&mdash;</td><td>EC</td><td>&mdash;</td><td>Activo en todos los contextos</td><td>f_EC</td></tr>
+<tr style="opacity:.6"><td>N_reg</td><td>Regulador</td><td>No-f&iacute;s.</td><td>&mdash;</td><td>GV</td><td>&mdash;</td><td>Activo en todos los contextos</td><td>&delta;_GV</td></tr>
+<tr style="opacity:.6"><td>N_soc</td><td>Usuarios</td><td>No-f&iacute;s.</td><td>&mdash;</td><td>SO</td><td>&mdash;</td><td>Se activa con modificador +V</td><td>f_SO</td></tr>
 </tbody></table></div>
 <div class="co co-g"><strong>Decisi&oacute;n de agrupaci&oacute;n clave</strong>A06+A07 (EMS+SCADA) &rarr; nodo &uacute;nico N_EMS: misma funci&oacute;n de control, fallan conjuntamente ante ciberataque, comparten ecuaci&oacute;n &phi;<sub>EMS</sub>. A09 (12 bloques) &rarr; nodo &uacute;nico N_dem,res: demanda RC sumable, respuesta homog&eacute;nea a corte de red.</div>
 </div>
@@ -979,30 +990,91 @@ S(t) = [<span class="cv">P_gen,PV</span>(t), <span class="cv">E_bat</span>(t), <
 <div class="co co-g" style="margin-top:16px"><strong>&#10003; Regla de cierre satisfecha &mdash; 6/6 criterios cumplidos</strong>El modelo es internamente consistente. La Fase 1 est&aacute; cerrada. El sistema puede avanzar a la Fase 2 &mdash; Dise&ntilde;o de escenarios de perturbaci&oacute;n (Paso 3).</div>
 <div class="of" style="margin-top:16px"><div class="oft">Output integrador &rarr; Fase 2</div>
 <div class="fr"><span class="fo">Arquitectura Funcional del PED</span><span class="fa">&rarr;</span><span class="fd">P3 (contingencias), P5 (Policy Book), P6 (simulaci&oacute;n), P7 (m&eacute;tricas), P9 (diagn&oacute;stico), P10 (redise&ntilde;o)</span></div>
+</div>
+</div>
 
 <!-- ══ RIGHT F1 OUTPUT ══ -->
-<div class="sc" id="right-f1-out">
-<div class="exh">
-  <span class="vvb">Valle Verde</span>
-  <div><div class="plabel">Arquitectura Funcional &middot; 13 nodos &middot; 20 aristas &middot; 5 capas</div>
-  <div style="font-size:17px;font-weight:600;color:var(--t1)">Modelo de interdependencias</div></div>
-</div>
-<div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px" id="layer-filters-out">
-  <button class="lf-btn lf-active" data-layer="PH"  onclick="toggleLayerOut('PH',this)"  style="background:rgba(16,185,129,0.12);color:#6ee7b7;border:1px solid rgba(16,185,129,0.3);padding:4px 11px;border-radius:5px;font-family:var(--f);font-size:11px;font-weight:600;cursor:pointer;transition:all .15s">PH</button>
-  <button class="lf-btn lf-active" data-layer="ICT" onclick="toggleLayerOut('ICT',this)" style="background:rgba(59,130,246,0.12);color:#93c5fd;border:1px solid rgba(59,130,246,0.3);padding:4px 11px;border-radius:5px;font-family:var(--f);font-size:11px;font-weight:600;cursor:pointer;transition:all .15s">ICT</button>
-  <button class="lf-btn lf-active" data-layer="EC"  onclick="toggleLayerOut('EC',this)"  style="background:rgba(245,158,11,0.12);color:#fcd34d;border:1px solid rgba(245,158,11,0.3);padding:4px 11px;border-radius:5px;font-family:var(--f);font-size:11px;font-weight:600;cursor:pointer;transition:all .15s">EC</button>
-  <button class="lf-btn lf-active" data-layer="GV"  onclick="toggleLayerOut('GV',this)"  style="background:rgba(167,139,250,0.12);color:#c4b5fd;border:1px solid rgba(167,139,250,0.3);padding:4px 11px;border-radius:5px;font-family:var(--f);font-size:11px;font-weight:600;cursor:pointer;transition:all .15s">GV</button>
-  <button class="lf-btn lf-active" data-layer="SO"  onclick="toggleLayerOut('SO',this)"  style="background:rgba(244,114,182,0.12);color:#f9a8d4;border:1px solid rgba(244,114,182,0.3);padding:4px 11px;border-radius:5px;font-family:var(--f);font-size:11px;font-weight:600;cursor:pointer;transition:all .15s">SO</button>
-  <span style="margin-left:auto;font-size:11px;color:var(--t3);align-self:center">Arrastra &middot; clic para info</span>
-</div>
-<div style="position:relative;border:1px solid rgba(16,185,129,0.15);border-radius:8px;background:radial-gradient(ellipse at center, #0f1a14 0%, #080808 100%);overflow:hidden">
-  <svg id="net-svg-out" width="100%" viewBox="0 0 600 480" style="display:block"></svg>
-</div>
-<div id="net-info-out" style="margin-top:8px;padding:10px 14px;background:rgba(16,185,129,0.04);border:1px solid rgba(16,185,129,0.12);border-radius:6px;font-size:12px;color:var(--t2);min-height:48px;line-height:1.7">
-  <span style="color:var(--t3);font-size:11px">&#9654; Selecciona un nodo o arista</span>
-</div>
-</div>
+<div class="sc" id="right-f1-out" style="padding:0;height:100%;overflow:hidden">
+<div id="vv-wrap" style="width:100%;height:100%;display:flex;flex-direction:column;font-family:'Courier New',monospace;background:#0d1117;color:#f0f6fc">
 
+  <!-- header + filters -->
+  <div style="padding:8px 16px;border-bottom:1px solid #30363d;background:#161b22;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px">
+    <div>
+      <div style="font-size:9px;letter-spacing:3px;color:#8b949e;text-transform:uppercase">VALLE VERDE — FASE 1</div>
+      <div style="font-size:14px;font-weight:bold;color:#f0f6fc;letter-spacing:.5px">Mapa de Interdependencias</div>
+    </div>
+    <div style="display:flex;gap:5px;align-items:center;flex-wrap:wrap">
+      <span style="font-size:9px;color:#8b949e">TIPO:</span>
+      <button id="vvf-ALL" onclick="vvFilter('ALL')" style="padding:3px 9px;border-radius:3px;border:1px solid #e2e8f0;background:#f1f5f9;color:#c9d1d9;cursor:pointer;font-family:inherit;font-size:9px">ALL</button>
+      <button id="vvf-PH"  onclick="vvFilter('PH')"  style="padding:3px 9px;border-radius:3px;border:1px solid #e2e8f0;background:#1c2128;color:#c2410c;cursor:pointer;font-family:inherit;font-size:9px">PH</button>
+      <button id="vvf-ICT" onclick="vvFilter('ICT')" style="padding:3px 9px;border-radius:3px;border:1px solid #e2e8f0;background:#1c2128;color:#0369a1;cursor:pointer;font-family:inherit;font-size:9px">ICT</button>
+      <button id="vvf-EC"  onclick="vvFilter('EC')"  style="padding:3px 9px;border-radius:3px;border:1px solid #e2e8f0;background:#1c2128;color:#4d7c0f;cursor:pointer;font-family:inherit;font-size:9px">EC</button>
+      <button id="vvf-GV"  onclick="vvFilter('GV')"  style="padding:3px 9px;border-radius:3px;border:1px solid #e2e8f0;background:#1c2128;color:#7c3aed;cursor:pointer;font-family:inherit;font-size:9px">GV</button>
+      <button id="vvf-SO"  onclick="vvFilter('SO')"  style="padding:3px 9px;border-radius:3px;border:1px solid #e2e8f0;background:#1c2128;color:#be123c;cursor:pointer;font-family:inherit;font-size:9px">SO</button>
+      <span style="font-size:9px;color:#8b949e;margin-left:6px">K≥</span>
+      <button id="vvk-0" onclick="vvKFilter(0)" style="padding:3px 7px;border-radius:3px;border:1px solid #c2410c;background:#c2410c15;color:#c2410c;cursor:pointer;font-family:inherit;font-size:9px">0</button>
+      <button id="vvk-4" onclick="vvKFilter(4)" style="padding:3px 7px;border-radius:3px;border:1px solid #e2e8f0;background:#1c2128;color:#8b949e;cursor:pointer;font-family:inherit;font-size:9px">4</button>
+      <button id="vvk-6" onclick="vvKFilter(6)" style="padding:3px 7px;border-radius:3px;border:1px solid #e2e8f0;background:#1c2128;color:#8b949e;cursor:pointer;font-family:inherit;font-size:9px">6</button>
+      <button id="vvk-7" onclick="vvKFilter(7)" style="padding:3px 7px;border-radius:3px;border:1px solid #e2e8f0;background:#1c2128;color:#8b949e;cursor:pointer;font-family:inherit;font-size:9px">7</button>
+    </div>
+  </div>
+
+  <!-- main area: SVG + right panel -->
+  <div style="display:flex;flex:1;min-height:0;overflow:hidden">
+
+    <!-- SVG -->
+    <svg id="vv-svg" style="flex:1;min-width:0;display:block;background:#0d1117"></svg>
+
+    <!-- right panel -->
+    <div id="vv-panel" style="width:240px;flex-shrink:0;background:#161b22;border-left:1px solid #30363d;overflow-y:auto;display:flex;flex-direction:column">
+
+      <!-- type legend -->
+      <div style="padding:12px 14px;border-bottom:1px solid #30363d">
+        <div style="font-size:9px;letter-spacing:2px;color:#8b949e;margin-bottom:8px">TIPOS DE DEPENDENCIA</div>
+        <div style="display:flex;align-items:center;gap:7px;margin-bottom:5px"><div style="width:10px;height:10px;border-radius:50%;background:#c2410c;flex-shrink:0"></div><span style="font-size:9px;color:#c9d1d9"><strong style="color:#c2410c">PH</strong> — Física / Energética</span></div>
+        <div style="display:flex;align-items:center;gap:7px;margin-bottom:5px"><div style="width:10px;height:10px;border-radius:50%;background:#0369a1;flex-shrink:0"></div><span style="font-size:9px;color:#c9d1d9"><strong style="color:#0369a1">ICT</strong> — Informacional / Control</span></div>
+        <div style="display:flex;align-items:center;gap:7px;margin-bottom:5px"><div style="width:10px;height:10px;border-radius:50%;background:#4d7c0f;flex-shrink:0"></div><span style="font-size:9px;color:#c9d1d9"><strong style="color:#4d7c0f">EC</strong> — Económica / Mercado</span></div>
+        <div style="display:flex;align-items:center;gap:7px;margin-bottom:5px"><div style="width:10px;height:10px;border-radius:50%;background:#7c3aed;flex-shrink:0"></div><span style="font-size:9px;color:#c9d1d9"><strong style="color:#7c3aed">GV</strong> — Gobernanza</span></div>
+        <div style="display:flex;align-items:center;gap:7px"><div style="width:10px;height:10px;border-radius:50%;background:#be123c;flex-shrink:0"></div><span style="font-size:9px;color:#c9d1d9"><strong style="color:#be123c">SO</strong> — Humana / Social</span></div>
+      </div>
+
+      <!-- group legend -->
+      <div style="padding:12px 14px;border-bottom:1px solid #30363d">
+        <div style="font-size:9px;letter-spacing:2px;color:#8b949e;margin-bottom:8px">NODOS FUNCIONALES</div>
+        <div style="display:flex;align-items:center;gap:7px;margin-bottom:4px"><div style="width:8px;height:8px;border-radius:2px;background:#475569"></div><span style="font-size:9px;color:#c9d1d9">infraestructura</span></div>
+        <div style="display:flex;align-items:center;gap:7px;margin-bottom:4px"><div style="width:8px;height:8px;border-radius:2px;background:#b45309"></div><span style="font-size:9px;color:#c9d1d9">generación</span></div>
+        <div style="display:flex;align-items:center;gap:7px;margin-bottom:4px"><div style="width:8px;height:8px;border-radius:2px;background:#059669"></div><span style="font-size:9px;color:#c9d1d9">almacenamiento</span></div>
+        <div style="display:flex;align-items:center;gap:7px;margin-bottom:4px"><div style="width:8px;height:8px;border-radius:2px;background:#2563eb"></div><span style="font-size:9px;color:#c9d1d9">consumo</span></div>
+        <div style="display:flex;align-items:center;gap:7px;margin-bottom:4px"><div style="width:8px;height:8px;border-radius:2px;background:#0369a1"></div><span style="font-size:9px;color:#c9d1d9">control</span></div>
+        <div style="display:flex;align-items:center;gap:7px;margin-bottom:4px"><div style="width:8px;height:8px;border-radius:2px;background:#4d7c0f"></div><span style="font-size:9px;color:#c9d1d9">mercado</span></div>
+        <div style="display:flex;align-items:center;gap:7px;margin-bottom:4px"><div style="width:8px;height:8px;border-radius:2px;background:#7c3aed"></div><span style="font-size:9px;color:#c9d1d9">gobernanza</span></div>
+        <div style="display:flex;align-items:center;gap:7px"><div style="width:8px;height:8px;border-radius:2px;background:#be123c"></div><span style="font-size:9px;color:#c9d1d9">social</span></div>
+      </div>
+
+      <!-- info panel (hover/click) -->
+      <div id="vv-info" style="padding:12px 14px;border-bottom:1px solid #30363d;flex:1">
+        <div style="font-size:9px;letter-spacing:2px;color:#8b949e;margin-bottom:8px">SELECCIÓN</div>
+        <div style="font-size:9px;color:#8b949e">Haz clic en un nodo o arista para ver sus propiedades.</div>
+      </div>
+
+      <!-- critical links -->
+      <div style="padding:12px 14px">
+        <div style="font-size:9px;letter-spacing:2px;color:#8b949e;margin-bottom:8px">TOP CRÍTICAS (K≥6)</div>
+        <div id="vv-crit"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- bottom bar -->
+  <div style="padding:5px 20px;border-top:1px solid #30363d;background:#161b22;display:flex;gap:20px;font-size:9px;color:#8b949e;flex-shrink:0">
+    <span>13 nodos funcionales</span><span>20 interdependencias</span><span>12 críticas (K≥6)</span>
+    <span>· Arrastra nodos · Click en aristas/nodos</span>
+  </div>
+
+</div>
+</div>
+</div>
 </div><!-- /panel-right -->
 </div><!-- /panels -->
 
@@ -1101,173 +1173,7 @@ window.addEventListener('DOMContentLoaded', function(){
 // ══════════════════════════════════════════
 // NETWORK DIAGRAM — Valle Verde T2
 // ══════════════════════════════════════════
-var NET = {
-  nodes: {
-    'N_PV':      {label:'N_PV',      sub:'FV cubiertas',       type:'phy', crit:'I', cx:90,  cy:60,  eq:'Tipo 1 — Generaci\u00f3n FV',      assets:'A01',        layer:'PH'},
-    'N_bat':     {label:'N_bat',     sub:'BESS comunit.',      type:'phy', crit:'I', cx:90,  cy:140, eq:'Tipo 2 — Almac. el\u00e9ctrico',   assets:'A02',        layer:'PH'},
-    'N_HP':      {label:'N_HP',      sub:'Bomba calor',        type:'phy', crit:'I', cx:90,  cy:220, eq:'Tipo 7 — Control/estado',           assets:'A03',        layer:'PH'},
-    'N_TES':     {label:'N_TES',     sub:'Acum. t\u00e9rmico', type:'phy', crit:'I', cx:90,  cy:300, eq:'Tipo 4 — Almac. t\u00e9rmico',     assets:'A04',        layer:'PH'},
-    'N_BT':      {label:'N_BT',      sub:'Red BT interna',     type:'phy', crit:'C', cx:270, cy:90,  eq:'Tipo 6 — Balance potencia',         assets:'A05',        layer:'PH'},
-    'N_EMS':     {label:'N_EMS',     sub:'EMS + SCADA',        type:'phy', crit:'C', cx:270, cy:220, eq:'Tipo 7 — Control EMS',              assets:'A06+A07',    layer:'ICT'},
-    'N_grid':    {label:'N_grid',    sub:'PAC Iberdrola',      type:'phy', crit:'I', cx:270, cy:310, eq:'Tipo 6 — Interfaz red ext.',        assets:'A08',        layer:'PH'},
-    'N_dem_cs':  {label:'N_dem,cs',  sub:'Centro salud',       type:'phy', crit:'C', cx:460, cy:60,  eq:'Tipo 5 — Demanda el\u00e9ctrica',  assets:'A10',        layer:'PH'},
-    'N_dem_res': {label:'N_dem,res', sub:'Bloques res. \u00d712', type:'phy', crit:'I', cx:460, cy:170, eq:'Tipo 3+5 — Dem. RC + el\u00e9ct.', assets:'A09',   layer:'PH'},
-    'N_dem_col': {label:'N_dem,col', sub:'Colegio p\u00fablico', type:'phy', crit:'I', cx:460, cy:280, eq:'Tipo 3+5 — Dem. RC + el\u00e9ct.', assets:'A11',   layer:'PH'},
-    'N_mkt':     {label:'N_mkt',     sub:'Mercado OMIE',       type:'nph', crit:'-', cx:130, cy:390, eq:'No-f\u00edsico — f_EC modulador',  assets:'\u2014', layer:'EC'},
-    'N_reg':     {label:'N_reg',     sub:'Regulador',          type:'nph', crit:'-', cx:270, cy:390, eq:'No-f\u00edsico — \u03b4_GV modulador', assets:'\u2014', layer:'GV'},
-    'N_soc':     {label:'N_soc',     sub:'Usuarios',           type:'nph', crit:'-', cx:410, cy:390, eq:'No-f\u00edsico — f_SO modulador',  assets:'\u2014', layer:'SO'}
-  },
-  edges: [
-    {from:'N_PV',     to:'N_BT',      layer:'PH',  wij:0.70, I:2,E:2,P:3, K:7,  just:'FV aporta ~70% generaci\u00f3n local; fallo propaga a toda la demanda'},
-    {from:'N_bat',    to:'N_BT',      layer:'PH',  wij:0.60, I:2,E:2,P:3, K:7,  just:'Bater\u00eda cubre d\u00e9ficit FV; fallo nocturno fuerza dependencia total de red'},
-    {from:'N_HP',     to:'N_TES',     layer:'PH',  wij:0.80, I:3,E:2,P:2, K:7,  just:'Bomba de calor es \u00fanica fuente de carga del acumulador t\u00e9rmico'},
-    {from:'N_TES',    to:'N_dem_res', layer:'PH',  wij:0.50, I:2,E:2,P:2, K:6,  just:'Acumulador suministra calefacci\u00f3n/ACS a residencial'},
-    {from:'N_TES',    to:'N_dem_col', layer:'PH',  wij:0.50, I:2,E:2,P:1, K:5,  just:'Acumulador suministra calefacci\u00f3n/ACS al colegio'},
-    {from:'N_BT',     to:'N_dem_res', layer:'PH',  wij:1.00, I:3,E:3,P:2, K:8,  just:'Red BT \u00fanico camino de distribuci\u00f3n el\u00e9ctrica — sin redundancia'},
-    {from:'N_BT',     to:'N_dem_cs',  layer:'PH',  wij:1.00, I:3,E:3,P:1, K:7,  just:'Red BT \u00fanico camino al centro de salud (carga cr\u00edtica F1)'},
-    {from:'N_BT',     to:'N_dem_col', layer:'PH',  wij:1.00, I:3,E:3,P:1, K:7,  just:'Red BT \u00fanico camino al colegio'},
-    {from:'N_BT',     to:'N_EMS',     layer:'PH',  wij:0.60, I:3,E:3,P:3, K:9,  just:'EMS requiere alimentaci\u00f3n el\u00e9ctrica; fallo red BT apaga EMS \u2192 cascada total'},
-    {from:'N_grid',   to:'N_BT',      layer:'PH',  wij:0.60, I:2,E:2,P:3, K:7,  just:'Red Iberdrola cubre d\u00e9ficit FV+bat; corte fuerza operaci\u00f3n en isla'},
-    {from:'N_EMS',    to:'N_bat',     layer:'ICT', wij:1.00, I:3,E:3,P:3, K:9,  just:'EMS controla despacho de bater\u00eda; sin EMS opera en modo pasivo sin optimizaci\u00f3n'},
-    {from:'N_EMS',    to:'N_HP',      layer:'ICT', wij:1.00, I:3,E:3,P:2, K:8,  just:'EMS controla arranque/parada de bomba de calor'},
-    {from:'N_EMS',    to:'N_grid',    layer:'ICT', wij:0.60, I:2,E:3,P:2, K:7,  just:'EMS gestiona importaci\u00f3n/exportaci\u00f3n; sin EMS el PAC opera sin gesti\u00f3n activa'},
-    {from:'N_EMS',    to:'N_PV',      layer:'ICT', wij:0.30, I:1,E:3,P:1, K:5,  just:'EMS monitoriza FV pero FV opera aut\u00f3nomamente ante fallo de EMS'},
-    {from:'N_mkt',    to:'N_EMS',     layer:'EC',  wij:0.60, I:2,E:1,P:2, K:5,  just:'Precio spot OMIE modula decisi\u00f3n de carga/descarga bater\u00eda y despacho'},
-    {from:'N_mkt',    to:'N_dem_res', layer:'EC',  wij:0.30, I:1,E:1,P:1, K:3,  just:'Se\u00f1al de precio influye en respuesta de demanda residencial (efecto d\u00e9bil)'},
-    {from:'N_reg',    to:'N_grid',    layer:'GV',  wij:0.60, I:2,E:1,P:2, K:5,  just:'Regulador limita capacidad m\u00e1xima de inyecci\u00f3n — restringe exportaci\u00f3n excedente FV'},
-    {from:'N_reg',    to:'N_EMS',     layer:'GV',  wij:0.30, I:1,E:1,P:1, K:3,  just:'Cambios regulatorios pueden requerir ajuste de reglas del Policy Book'},
-    {from:'N_soc',    to:'N_dem_res', layer:'SO',  wij:0.60, I:2,E:1,P:2, K:5,  just:'Comportamiento extremo (ola de calor) amplifica demanda residencial sobre perfil de referencia'},
-    {from:'N_soc',    to:'N_dem_col', layer:'SO',  wij:0.60, I:2,E:1,P:1, K:4,  just:'Idem colegio — efecto local sin cascada significativa'}
-  ]
-};
-
-var LAYER_COLORS = {PH:'#10b981', ICT:'#3b82f6', EC:'#f59e0b', GV:'#a78bfa', SO:'#f472b6'};
-var CRIT_COLORS  = {C:'#ef4444', I:'#f59e0b', '-':'#6ee7b7'};
 var activeLayers = {PH:true, ICT:true, EC:true, GV:true, SO:true};
-
-function buildNet() {
-  var svg = document.getElementById('net-svg');
-  if(!svg) return;
-  svg.innerHTML = '';
-
-  var defs = document.createElementNS('http://www.w3.org/2000/svg','defs');
-  // arrowhead markers per layer
-  Object.keys(LAYER_COLORS).forEach(function(lyr){
-    var col = LAYER_COLORS[lyr];
-    ['norm','crit'].forEach(function(t){
-      var m = document.createElementNS('http://www.w3.org/2000/svg','marker');
-      m.setAttribute('id','arr-'+lyr+'-'+t);
-      m.setAttribute('markerWidth','7'); m.setAttribute('markerHeight','7');
-      m.setAttribute('refX','6'); m.setAttribute('refY','3');
-      m.setAttribute('orient','auto');
-      var poly = document.createElementNS('http://www.w3.org/2000/svg','polygon');
-      poly.setAttribute('points','0 0, 7 3, 0 6');
-      poly.setAttribute('fill', t==='crit' ? col : col.replace(')',',0.6)').replace('rgb','rgba'));
-      poly.setAttribute('fill', col);
-      m.appendChild(poly);
-      defs.appendChild(m);
-    });
-  });
-  svg.appendChild(defs);
-
-  var edgeG = document.createElementNS('http://www.w3.org/2000/svg','g');
-  edgeG.setAttribute('id','edge-group');
-  var nodeG = document.createElementNS('http://www.w3.org/2000/svg','g');
-  nodeG.setAttribute('id','node-group');
-  svg.appendChild(edgeG);
-  svg.appendChild(nodeG);
-
-  // Draw edges
-  NET.edges.forEach(function(e,idx){
-    var lyr = e.layer;
-    var col = LAYER_COLORS[lyr];
-    var n1 = NET.nodes[e.from];
-    var n2 = NET.nodes[e.to];
-    if(!n1||!n2) return;
-    var vis = activeLayers[lyr];
-    var isCrit = e.K >= 6;
-    var sw = isCrit ? (e.wij*3+1.5) : (e.wij*2+0.5);
-
-    // slight curve to avoid overlap
-    var mx = (n1.cx+n2.cx)/2 + (idx%2===0 ? 12 : -12);
-    var my = (n1.cy+n2.cy)/2;
-
-    var path = document.createElementNS('http://www.w3.org/2000/svg','path');
-    var dx = n2.cx-n1.cx, dy = n2.cy-n1.cy;
-    var len = Math.sqrt(dx*dx+dy*dy);
-    var r = n2.type==='nph' ? 14 : 18;
-    var ex = n2.cx - dx/len*r;
-    var ey = n2.cy - dy/len*r;
-    path.setAttribute('d','M '+n1.cx+' '+n1.cy+' Q '+mx+' '+my+' '+ex+' '+ey);
-    path.setAttribute('fill','none');
-    path.setAttribute('stroke', col);
-    path.setAttribute('stroke-width', sw);
-    path.setAttribute('stroke-opacity', isCrit ? '0.85' : '0.45');
-    path.setAttribute('stroke-dasharray', isCrit ? 'none' : '');
-    path.setAttribute('marker-end','url(#arr-'+lyr+'-norm)');
-    path.setAttribute('data-edge', idx);
-    path.setAttribute('class','net-edge edge-'+lyr);
-    if(!vis) path.style.display='none';
-    path.style.cursor='pointer';
-    path.addEventListener('click', function(){ showEdgeInfo(idx); });
-    path.addEventListener('mouseenter', function(){ this.setAttribute('stroke-opacity','1'); });
-    path.addEventListener('mouseleave', function(){ this.setAttribute('stroke-opacity', isCrit?'0.85':'0.45'); });
-    edgeG.appendChild(path);
-  });
-
-  // Draw nodes
-  Object.keys(NET.nodes).forEach(function(id){
-    var n = NET.nodes[id];
-    var col = CRIT_COLORS[n.crit];
-    var g = document.createElementNS('http://www.w3.org/2000/svg','g');
-    g.style.cursor='pointer';
-    g.setAttribute('data-node',id);
-    g.addEventListener('click', function(){ showNodeInfo(id); });
-
-    if(n.type==='nph'){
-      // diamond
-      var pts = [n.cx+','+( n.cy-14), (n.cx+14)+','+n.cy, n.cx+','+(n.cy+14), (n.cx-14)+','+n.cy].join(' ');
-      var shape = document.createElementNS('http://www.w3.org/2000/svg','polygon');
-      shape.setAttribute('points', pts);
-      shape.setAttribute('fill', col.replace('#','').length===6 ? hexToRgba(col,0.15) : 'rgba(0,0,0,0.1)');
-      shape.setAttribute('stroke', col);
-      shape.setAttribute('stroke-width','1.5');
-      g.appendChild(shape);
-    } else {
-      var circle = document.createElementNS('http://www.w3.org/2000/svg','circle');
-      circle.setAttribute('cx', n.cx); circle.setAttribute('cy', n.cy);
-      circle.setAttribute('r', n.crit==='C' ? 20 : 17);
-      circle.setAttribute('fill', hexToRgba(col, 0.15));
-      circle.setAttribute('stroke', col);
-      circle.setAttribute('stroke-width', n.crit==='C' ? '2' : '1.2');
-      g.appendChild(circle);
-    }
-
-    // label
-    var txt = document.createElementNS('http://www.w3.org/2000/svg','text');
-    txt.setAttribute('x', n.cx); txt.setAttribute('y', n.cy+1);
-    txt.setAttribute('text-anchor','middle'); txt.setAttribute('dominant-baseline','middle');
-    txt.setAttribute('font-family','Inter,sans-serif');
-    txt.setAttribute('font-size', n.type==='nph' ? '8' : (n.crit==='C' ? '9' : '8.5'));
-    txt.setAttribute('font-weight','600');
-    txt.setAttribute('fill', col);
-    txt.setAttribute('pointer-events','none');
-    txt.textContent = n.label;
-    g.appendChild(txt);
-
-    // sub-label
-    var sub = document.createElementNS('http://www.w3.org/2000/svg','text');
-    sub.setAttribute('x', n.cx); sub.setAttribute('y', n.cy + (n.type==='nph'?20:24));
-    sub.setAttribute('text-anchor','middle');
-    sub.setAttribute('font-family','Inter,sans-serif');
-    sub.setAttribute('font-size','7'); sub.setAttribute('fill','rgba(255,255,255,0.35)');
-    sub.setAttribute('pointer-events','none');
-    sub.textContent = n.sub;
-    g.appendChild(sub);
-
-    nodeG.appendChild(g);
-  });
-}
 
 function hexToRgba(hex,a){
   var r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
@@ -1310,406 +1216,493 @@ function toggleLayer(lyr, btn, svgId){
 }
 
 // init diagram when P2 tab is first shown
-var netBuilt = false;
-var _origSetStep = window.setStep;
-window.setStep = function(phase, step, el){
-  _origSetStep(phase, step, el);
-  if(phase==='p2' && !netBuilt){ buildNet(); netBuilt=true; }
+
+
+
+// ═══════════════════════════════════════════════════════════
+// MAPA DE INTERDEPENDENCIAS — Valle Verde (JSX-faithful port)
+// ═══════════════════════════════════════════════════════════
+
+var VV_TYPE = {
+  PH:  {label:"Física / Energética",       color:"#c2410c"},
+  ICT: {label:"Informacional / Control",   color:"#0369a1"},
+  EC:  {label:"Económica / Mercado",       color:"#4d7c0f"},
+  GV:  {label:"Institucional / Gobernanza",color:"#7c3aed"},
+  SO:  {label:"Humana / Social",           color:"#be123c"}
+};
+var VV_GC = {
+  infraestructura:"#475569", generacion:"#b45309", almacenamiento:"#059669",
+  consumo:"#2563eb", control:"#0369a1", mercado:"#4d7c0f",
+  gobernanza:"#7c3aed", social:"#be123c"
 };
 
+var VV_NODES = [
+  {id:"N_BT",     label:"N_BT\nRed BT",      group:"infraestructura"},
+  {id:"N_grid",   label:"N_grid\nPAC",        group:"infraestructura"},
+  {id:"N_PV",     label:"N_PV\nFV Solar",     group:"generacion"},
+  {id:"N_HP",     label:"N_HP\nBomba Calor",  group:"generacion"},
+  {id:"N_bat",    label:"N_bat\nBESS",         group:"almacenamiento"},
+  {id:"N_TES",    label:"N_TES\nAcum.Térm.",  group:"almacenamiento"},
+  {id:"N_dem_res",label:"N_dem,res\nRes.×12",  group:"consumo"},
+  {id:"N_dem_cs", label:"N_dem,cs\nC.Salud",  group:"consumo"},
+  {id:"N_dem_col",label:"N_dem,col\nColegio",  group:"consumo"},
+  {id:"N_EMS",    label:"N_EMS\nEMS+SCADA",   group:"control"},
+  {id:"N_mkt",    label:"N_mkt\nOMIE",         group:"mercado"},
+  {id:"N_reg",    label:"N_reg\nRegulador",    group:"gobernanza"},
+  {id:"N_soc",    label:"N_soc\nUsuarios",     group:"social"}
+];
+var VV_LINKS = [
+  {id:"E01",s:"N_PV",    t:"N_BT",      type:"PH", mode:"habilita",  w:0.70,I:2,E:2,P:3,K:7,  just:"FV aporta ~70% generación local"},
+  {id:"E02",s:"N_bat",   t:"N_BT",      type:"PH", mode:"habilita",  w:0.60,I:2,E:2,P:3,K:7,  just:"Batería cubre déficit FV"},
+  {id:"E03",s:"N_HP",    t:"N_TES",     type:"PH", mode:"habilita",  w:0.80,I:3,E:2,P:2,K:7,  just:"HP única fuente de carga TES"},
+  {id:"E04",s:"N_TES",   t:"N_dem_res", type:"PH", mode:"habilita",  w:0.50,I:2,E:2,P:2,K:6,  just:"TES → calef./ACS residencial"},
+  {id:"E05",s:"N_TES",   t:"N_dem_col", type:"PH", mode:"habilita",  w:0.50,I:2,E:2,P:1,K:5,  just:"TES → calef./ACS colegio"},
+  {id:"E06",s:"N_BT",    t:"N_dem_res", type:"PH", mode:"habilita",  w:1.00,I:3,E:3,P:2,K:8,  just:"BT único camino eléctrico"},
+  {id:"E07",s:"N_BT",    t:"N_dem_cs",  type:"PH", mode:"habilita",  w:1.00,I:3,E:3,P:1,K:7,  just:"BT → centro salud (crítico F1)"},
+  {id:"E08",s:"N_BT",    t:"N_dem_col", type:"PH", mode:"habilita",  w:1.00,I:3,E:3,P:1,K:7,  just:"BT → colegio"},
+  {id:"E09",s:"N_BT",    t:"N_EMS",     type:"PH", mode:"habilita",  w:0.60,I:3,E:3,P:3,K:9,  just:"Fallo BT apaga EMS → cascada"},
+  {id:"E10",s:"N_grid",  t:"N_BT",      type:"PH", mode:"habilita",  w:0.60,I:2,E:2,P:3,K:7,  just:"Red externa cubre déficit"},
+  {id:"E11",s:"N_EMS",   t:"N_bat",     type:"ICT",mode:"controla",  w:1.00,I:3,E:3,P:3,K:9,  just:"EMS controla despacho BESS"},
+  {id:"E12",s:"N_EMS",   t:"N_HP",      type:"ICT",mode:"controla",  w:1.00,I:3,E:3,P:2,K:8,  just:"EMS controla arranque HP"},
+  {id:"E13",s:"N_EMS",   t:"N_grid",    type:"ICT",mode:"controla",  w:0.60,I:2,E:3,P:2,K:7,  just:"EMS gestiona importación/exportación"},
+  {id:"E14",s:"N_EMS",   t:"N_PV",      type:"ICT",mode:"controla",  w:0.30,I:1,E:3,P:1,K:5,  just:"EMS monitoriza FV"},
+  {id:"E15",s:"N_mkt",   t:"N_EMS",     type:"EC", mode:"modula",    w:0.60,I:2,E:1,P:2,K:5,  just:"Precio OMIE modula despacho"},
+  {id:"E16",s:"N_mkt",   t:"N_dem_res", type:"EC", mode:"modula",    w:0.30,I:1,E:1,P:1,K:3,  just:"Precio influye demanda residencial"},
+  {id:"E17",s:"N_reg",   t:"N_grid",    type:"GV", mode:"restringe", w:0.60,I:2,E:1,P:2,K:5,  just:"Regulador limita inyección red"},
+  {id:"E18",s:"N_reg",   t:"N_EMS",     type:"GV", mode:"restringe", w:0.30,I:1,E:1,P:1,K:3,  just:"Cambios reg. → Policy Book"},
+  {id:"E19",s:"N_soc",   t:"N_dem_res", type:"SO", mode:"modula",    w:0.60,I:2,E:1,P:2,K:5,  just:"Ola calor amplifica demanda res."},
+  {id:"E20",s:"N_soc",   t:"N_dem_col", type:"SO", mode:"modula",    w:0.60,I:2,E:1,P:1,K:4,  just:"Ídem colegio"}
+];
 
-// ═══════════════════════════════════════════════
-// FORCE-DIRECTED NETWORK — Valle Verde T2.2
-// ═══════════════════════════════════════════════
-var FD = {
-  W: 580, H: 480,
-  nodes: [
-    {id:'N_PV',    lbl:'N_PV',     sub:'FV cubiertas',    crit:'I', layer:'PH',  eq:'Tipo 1 — Gen. FV', assets:'A01'},
-    {id:'N_bat',   lbl:'N_bat',    sub:'BESS comunit.',   crit:'I', layer:'PH',  eq:'Tipo 2 — BESS',    assets:'A02'},
-    {id:'N_HP',    lbl:'N_HP',     sub:'Bomba calor',     crit:'I', layer:'PH',  eq:'Tipo 7 — Control', assets:'A03'},
-    {id:'N_TES',   lbl:'N_TES',    sub:'Acum. térmico',   crit:'I', layer:'PH',  eq:'Tipo 4 — TES',     assets:'A04'},
-    {id:'N_BT',    lbl:'N_BT',     sub:'Red BT interna',  crit:'C', layer:'PH',  eq:'Tipo 6 — Balance', assets:'A05'},
-    {id:'N_EMS',   lbl:'N_EMS',    sub:'EMS + SCADA',     crit:'C', layer:'ICT', eq:'Tipo 7 — Control', assets:'A06+A07'},
-    {id:'N_grid',  lbl:'N_grid',   sub:'PAC Iberdrola',   crit:'I', layer:'PH',  eq:'Tipo 6 — Balance', assets:'A08'},
-    {id:'N_dem_cs',lbl:'N_dem,cs', sub:'Centro salud',    crit:'C', layer:'PH',  eq:'Tipo 5 — Demanda', assets:'A10'},
-    {id:'N_dem_res',lbl:'N_dem,res',sub:'Bloques res.×12',crit:'I', layer:'PH',  eq:'Tipo 3+5',         assets:'A09'},
-    {id:'N_dem_col',lbl:'N_dem,col',sub:'Colegio público',crit:'I', layer:'PH',  eq:'Tipo 3+5',         assets:'A11'},
-    {id:'N_mkt',   lbl:'N_mkt',    sub:'Mercado OMIE',    crit:'-', layer:'EC',  eq:'f_EC modulador',   assets:'—'},
-    {id:'N_reg',   lbl:'N_reg',    sub:'Regulador',       crit:'-', layer:'GV',  eq:'δ_GV modulador',   assets:'—'},
-    {id:'N_soc',   lbl:'N_soc',    sub:'Usuarios',        crit:'-', layer:'SO',  eq:'f_SO modulador',   assets:'—'}
-  ],
-  edges: [
-    {s:'N_PV',    t:'N_BT',      layer:'PH',  w:0.70,K:7, just:'FV aporta ~70% de generación local'},
-    {s:'N_bat',   t:'N_BT',      layer:'PH',  w:0.60,K:7, just:'Batería cubre déficit FV; fallo nocturno→dependencia total de red'},
-    {s:'N_HP',    t:'N_TES',     layer:'PH',  w:0.80,K:7, just:'Bomba de calor es única fuente de carga del acumulador térmico'},
-    {s:'N_TES',   t:'N_dem_res', layer:'PH',  w:0.50,K:6, just:'Acumulador suministra calefacción/ACS a residencial'},
-    {s:'N_TES',   t:'N_dem_col', layer:'PH',  w:0.50,K:5, just:'Acumulador suministra calefacción/ACS al colegio'},
-    {s:'N_BT',    t:'N_dem_res', layer:'PH',  w:1.00,K:8, just:'Red BT único camino de distribución eléctrica — sin redundancia'},
-    {s:'N_BT',    t:'N_dem_cs',  layer:'PH',  w:1.00,K:7, just:'Red BT único camino al centro de salud (carga crítica F1)'},
-    {s:'N_BT',    t:'N_dem_col', layer:'PH',  w:1.00,K:7, just:'Red BT único camino al colegio'},
-    {s:'N_BT',    t:'N_EMS',     layer:'PH',  w:0.60,K:9, just:'Fallo red BT apaga EMS → cascada total (K=9 máximo)'},
-    {s:'N_grid',  t:'N_BT',      layer:'PH',  w:0.60,K:7, just:'Red Iberdrola cubre déficit; corte fuerza operación en isla'},
-    {s:'N_EMS',   t:'N_bat',     layer:'ICT', w:1.00,K:9, just:'EMS controla despacho de batería; sin EMS→modo pasivo (K=9)'},
-    {s:'N_EMS',   t:'N_HP',      layer:'ICT', w:1.00,K:8, just:'EMS controla arranque/parada de bomba de calor'},
-    {s:'N_EMS',   t:'N_grid',    layer:'ICT', w:0.60,K:7, just:'EMS gestiona importación/exportación por PAC'},
-    {s:'N_EMS',   t:'N_PV',      layer:'ICT', w:0.30,K:5, just:'EMS monitoriza FV; FV opera autónomamente si EMS falla'},
-    {s:'N_mkt',   t:'N_EMS',     layer:'EC',  w:0.60,K:5, just:'Precio spot OMIE modula decisión de carga/descarga batería'},
-    {s:'N_mkt',   t:'N_dem_res', layer:'EC',  w:0.30,K:3, just:'Señal de precio influye en demanda residencial (efecto débil)'},
-    {s:'N_reg',   t:'N_grid',    layer:'GV',  w:0.60,K:5, just:'Regulador limita capacidad máxima de inyección a red'},
-    {s:'N_reg',   t:'N_EMS',     layer:'GV',  w:0.30,K:3, just:'Cambios regulatorios pueden requerir ajuste del Policy Book'},
-    {s:'N_soc',   t:'N_dem_res', layer:'SO',  w:0.60,K:5, just:'Ola de calor amplifica demanda residencial sobre perfil de referencia'},
-    {s:'N_soc',   t:'N_dem_col', layer:'SO',  w:0.60,K:4, just:'Idem colegio — efecto local sin cascada significativa'}
-  ]
+// ── runtime state ────────────────────────────────────────────
+var VV = {
+  nodes:[], edges:[],
+  filterType:'ALL', filterK:0,
+  hoveredEdge:null, selectedEdge:null, selectedNode:null,
+  running:false, built:false,
+  drag:null, dragOff:{x:0,y:0}
 };
 
-var LC = {PH:'#10b981',ICT:'#3b82f6',EC:'#f59e0b',GV:'#a78bfa',SO:'#f472b6'};
-var CC = {C:'#ef4444',I:'#f59e0b','-':'#6ee7b7'};
-var activeLayers = {PH:true,ICT:true,EC:true,GV:true,SO:true};
-var fdNodes = [];
-var fdRunning = false;
-var fdBuilt = false;
-var dragNode = null, dragOff = {x:0,y:0};
-
-function fdInit(svgId, infoId, filterId){
-  if(!svgId) svgId='net-svg-out';
-  if(!infoId) infoId='net-info-out';
-  var svg = document.getElementById(svgId);
+function vvBuild(){
+  var svg = document.getElementById('vv-svg');
   if(!svg) return;
-  svg._infoId = infoId;
-  var W = FD.W, H = FD.H;
-
-  // init node positions — spiral layout for natural start
-  fdNodes = FD.nodes.map(function(n,i){
-    var angle = i * 2.4;
-    var r = 60 + i * 15;
-    return {
-      id: n.id, data: n,
-      x: W/2 + r*Math.cos(angle),
-      y: H/2 + r*Math.sin(angle),
-      vx: 0, vy: 0,
-      r: n.crit==='C' ? 22 : (n.layer==='PH'||n.layer==='ICT' ? 18 : 14),
-      shape: (n.layer==='EC'||n.layer==='GV'||n.layer==='SO') ? 'diamond' : 'circle'
-    };
-  });
-
-  buildSVG(svg, W, H, infoId);
-  fdRunning = true;
-  requestAnimationFrame(fdTick);
-}
-
-function buildSVG(svg, W, H, infoId){
+  var W = svg.clientWidth || 680;
+  var H = svg.clientHeight || 480;
+  svg.setAttribute('viewBox','0 0 '+W+' '+H);
   svg.innerHTML = '';
+
+  // ── DEFS ────────────────────────────────────────────────────
   var defs = document.createElementNS('http://www.w3.org/2000/svg','defs');
 
-  // glow filters per criticality
-  [['glowC','#ef4444'],['glowI','#f59e0b'],['glowN','#10b981']].forEach(function(g){
+  // glow filters — exact copy of JSX (stdDeviation=3 for links, 5 for nodes)
+  Object.keys(VV_TYPE).forEach(function(key){
+    var col = VV_TYPE[key].color;
     var f = document.createElementNS('http://www.w3.org/2000/svg','filter');
-    f.setAttribute('id',g[0]); f.setAttribute('x','-50%'); f.setAttribute('y','-50%');
+    f.setAttribute('id','vgf-'+key);
+    f.setAttribute('x','-50%'); f.setAttribute('y','-50%');
     f.setAttribute('width','200%'); f.setAttribute('height','200%');
-    var fe = document.createElementNS('http://www.w3.org/2000/svg','feGaussianBlur');
-    fe.setAttribute('in','SourceGraphic'); fe.setAttribute('stdDeviation','4');
-    fe.setAttribute('result','blur');
-    var cm = document.createElementNS('http://www.w3.org/2000/svg','feColorMatrix');
-    cm.setAttribute('in','blur'); cm.setAttribute('type','matrix');
-    cm.setAttribute('values','0 0 0 0 '+hexF(g[1],0)+' 0 0 0 0 '+hexF(g[1],1)+' 0 0 0 0 '+hexF(g[1],2)+' 0 0 0 3 0');
+    var blur = document.createElementNS('http://www.w3.org/2000/svg','feGaussianBlur');
+    blur.setAttribute('stdDeviation','3'); blur.setAttribute('result','blur');
     var merge = document.createElementNS('http://www.w3.org/2000/svg','feMerge');
-    var m1 = document.createElementNS('http://www.w3.org/2000/svg','feMergeNode');
-    var m2 = document.createElementNS('http://www.w3.org/2000/svg','feMergeNode');
-    m2.setAttribute('in','SourceGraphic');
+    var m1 = document.createElementNS('http://www.w3.org/2000/svg','feMergeNode'); m1.setAttribute('in','blur');
+    var m2 = document.createElementNS('http://www.w3.org/2000/svg','feMergeNode'); m2.setAttribute('in','SourceGraphic');
     merge.appendChild(m1); merge.appendChild(m2);
-    f.appendChild(fe); f.appendChild(cm); f.appendChild(merge);
-    defs.appendChild(f);
+    f.appendChild(blur); f.appendChild(merge); defs.appendChild(f);
   });
+  // node glow (stdDeviation=5)
+  var nf = document.createElementNS('http://www.w3.org/2000/svg','filter');
+  nf.setAttribute('id','vgf-node');
+  nf.setAttribute('x','-60%'); nf.setAttribute('y','-60%');
+  nf.setAttribute('width','220%'); nf.setAttribute('height','220%');
+  var nb = document.createElementNS('http://www.w3.org/2000/svg','feGaussianBlur');
+  nb.setAttribute('stdDeviation','5'); nb.setAttribute('result','blur');
+  var nm = document.createElementNS('http://www.w3.org/2000/svg','feMerge');
+  var nm1 = document.createElementNS('http://www.w3.org/2000/svg','feMergeNode'); nm1.setAttribute('in','blur');
+  var nm2 = document.createElementNS('http://www.w3.org/2000/svg','feMergeNode'); nm2.setAttribute('in','SourceGraphic');
+  nm.appendChild(nm1); nm.appendChild(nm2); nf.appendChild(nb); nf.appendChild(nm); defs.appendChild(nf);
 
-  // gradient edge definitions
-  Object.keys(LC).forEach(function(lyr){
-    var col = LC[lyr];
-    // arrowhead
+  // arrow markers — exact JSX: viewBox "0 -5 10 10", refX:22, 6×6, path M0,-5L10,0L0,5
+  Object.keys(VV_TYPE).forEach(function(key){
+    var col = VV_TYPE[key].color;
     var m = document.createElementNS('http://www.w3.org/2000/svg','marker');
-    m.setAttribute('id','arr-out-'+lyr); m.setAttribute('markerWidth','8'); m.setAttribute('markerHeight','8');
-    m.setAttribute('refX','7'); m.setAttribute('refY','3'); m.setAttribute('orient','auto');
-    var p = document.createElementNS('http://www.w3.org/2000/svg','polygon');
-    p.setAttribute('points','0 0,8 3,0 6'); p.setAttribute('fill',col); p.setAttribute('fill-opacity','0.9');
+    m.setAttribute('id','varr-'+key);
+    m.setAttribute('viewBox','0 -5 10 10');
+    m.setAttribute('refX','22'); m.setAttribute('refY','0');
+    m.setAttribute('markerWidth','6'); m.setAttribute('markerHeight','6');
+    m.setAttribute('orient','auto');
+    var p = document.createElementNS('http://www.w3.org/2000/svg','path');
+    p.setAttribute('d','M0,-5L10,0L0,5');
+    p.setAttribute('fill',col); p.setAttribute('opacity','0.9');
     m.appendChild(p); defs.appendChild(m);
   });
-
   svg.appendChild(defs);
 
-  // CSS animation for critical nodes
-  var style = document.createElementNS('http://www.w3.org/2000/svg','style');
-  style.textContent = '@keyframes pulse{0%,100%{opacity:0.6;r:24}50%{opacity:1;r:26}} .pulse-ring{animation:pulse 2.5s ease-in-out infinite;}';
-  svg.appendChild(style);
+  // ── GRID (exact JSX: stroke #ffffff08) ───────────────────────
+  var gGrid = document.createElementNS('http://www.w3.org/2000/svg','g');
+  for(var gx=0;gx<W;gx+=40){
+    var gl=document.createElementNS('http://www.w3.org/2000/svg','line');
+    gl.setAttribute('x1',gx); gl.setAttribute('y1',0);
+    gl.setAttribute('x2',gx); gl.setAttribute('y2',H);
+    gl.setAttribute('stroke','#ffffff08'); gl.setAttribute('stroke-width','1');
+    gGrid.appendChild(gl);
+  }
+  for(var gy=0;gy<H;gy+=40){
+    var gl2=document.createElementNS('http://www.w3.org/2000/svg','line');
+    gl2.setAttribute('x1',0); gl2.setAttribute('y1',gy);
+    gl2.setAttribute('x2',W); gl2.setAttribute('y2',gy);
+    gl2.setAttribute('stroke','#ffffff08'); gl2.setAttribute('stroke-width','1');
+    gGrid.appendChild(gl2);
+  }
+  svg.appendChild(gGrid);
 
-  var gEdge = document.createElementNS('http://www.w3.org/2000/svg','g');
-  gEdge.setAttribute('id','fd-edges-out'); svg.appendChild(gEdge);
-  var gNode = document.createElementNS('http://www.w3.org/2000/svg','g');
-  gNode.setAttribute('id','fd-nodes-out'); svg.appendChild(gNode);
-
-  // Draw edges
-  FD.edges.forEach(function(e,i){
-    var col = LC[e.layer];
-    var isCrit = e.K >= 6;
-    var sw = isCrit ? e.w*4+2.5 : e.w*2+0.8;
-    var path = document.createElementNS('http://www.w3.org/2000/svg','path');
-    path.setAttribute('id','feo'+i);
-    path.setAttribute('class','fd-edge edge-'+e.layer);
-    path.setAttribute('fill','none');
-    path.setAttribute('stroke', col);
-    path.setAttribute('stroke-width', sw);
-    path.setAttribute('stroke-opacity', isCrit ? '0.75' : '0.28');
-    path.setAttribute('stroke-linecap','round');
-    path.setAttribute('marker-end','url(#arr-out-'+e.layer+')');
-    path.style.cursor='pointer';
-    path.style.transition='stroke-opacity 0.2s';
-    if(!activeLayers[e.layer]) path.style.display='none';
-    path.addEventListener('click',function(ev){ ev.stopPropagation(); showEdge(i, infoId); });
-    path.addEventListener('mouseenter',function(){ this.setAttribute('stroke-opacity','1'); });
-    path.addEventListener('mouseleave',function(){ this.setAttribute('stroke-opacity', e.K>=6?'0.75':'0.28'); });
-    gEdge.appendChild(path);
+  // ── INIT NODES (circular layout) ────────────────────────────
+  VV.nodes = VV_NODES.map(function(n,i){
+    var ang = i * (2*Math.PI / VV_NODES.length) - Math.PI/2;
+    var r = Math.min(W,H)*0.30;
+    return {d:n, x:W/2+r*Math.cos(ang), y:H/2+r*Math.sin(ang), vx:0, vy:0, pinned:false};
   });
-
-  // Draw nodes
-  fdNodes.forEach(function(nd){
-    var col = CC[nd.data.crit];
-    var glowId = nd.data.crit==='C'?'glowC':(nd.data.crit==='I'?'glowI':'glowN');
-    var g = document.createElementNS('http://www.w3.org/2000/svg','g');
-    g.setAttribute('id','fno'+nd.id);
-    g.style.cursor='grab';
-    g.style.transition='transform 0.05s';
-
-    if(nd.shape==='diamond'){
-      // outer glow ring
-      var gr = document.createElementNS('http://www.w3.org/2000/svg','polygon');
-      gr.setAttribute('class','nd-glow');
-      gr.setAttribute('fill',hexRgba(col,0.08));
-      gr.setAttribute('stroke',col); gr.setAttribute('stroke-width','0.5');
-      gr.setAttribute('stroke-opacity','0.3');
-      gr.setAttribute('filter','url(#'+glowId+')');
-      g.appendChild(gr);
-
-      var shape = document.createElementNS('http://www.w3.org/2000/svg','polygon');
-      shape.setAttribute('class','nd-shape');
-      shape.setAttribute('fill',hexRgba(col,0.18));
-      shape.setAttribute('stroke',col); shape.setAttribute('stroke-width','1.5');
-      shape.setAttribute('stroke-opacity','0.9');
-      g.appendChild(shape);
-    } else {
-      // pulse ring for critical nodes
-      if(nd.data.crit==='C'){
-        var ring = document.createElementNS('http://www.w3.org/2000/svg','circle');
-        ring.setAttribute('class','nd-ring pulse-ring');
-        ring.setAttribute('r', nd.r+6);
-        ring.setAttribute('fill','none');
-        ring.setAttribute('stroke',col); ring.setAttribute('stroke-width','1');
-        ring.setAttribute('stroke-opacity','0.4');
-        g.appendChild(ring);
-      }
-      // glow bg
-      var gbg = document.createElementNS('http://www.w3.org/2000/svg','circle');
-      gbg.setAttribute('class','nd-gbg');
-      gbg.setAttribute('r', nd.r+4);
-      gbg.setAttribute('fill',hexRgba(col,0.06));
-      gbg.setAttribute('filter','url(#'+glowId+')');
-      g.appendChild(gbg);
-
-      var shape = document.createElementNS('http://www.w3.org/2000/svg','circle');
-      shape.setAttribute('class','nd-shape');
-      shape.setAttribute('r', nd.r);
-      shape.setAttribute('fill', 'radial-gradient' in {} ? hexRgba(col,0.2) : hexRgba(col,0.2));
-      shape.setAttribute('stroke', col);
-      shape.setAttribute('stroke-width', nd.data.crit==='C'?'2.5':'1.5');
-      g.appendChild(shape);
-    }
-
-    var txt = document.createElementNS('http://www.w3.org/2000/svg','text');
-    txt.setAttribute('class','nd-lbl');
-    txt.setAttribute('text-anchor','middle'); txt.setAttribute('dominant-baseline','middle');
-    txt.setAttribute('font-family','Inter,sans-serif');
-    txt.setAttribute('font-size', nd.data.crit==='C'?'9.5':'8.5');
-    txt.setAttribute('font-weight','700'); txt.setAttribute('fill',col);
-    txt.setAttribute('pointer-events','none');
-    txt.setAttribute('letter-spacing','0.02em');
-    txt.textContent = nd.data.lbl;
-    g.appendChild(txt);
-
-    var sub = document.createElementNS('http://www.w3.org/2000/svg','text');
-    sub.setAttribute('class','nd-sub');
-    sub.setAttribute('text-anchor','middle');
-    sub.setAttribute('font-family','Inter,sans-serif');
-    sub.setAttribute('font-size','7'); sub.setAttribute('fill','rgba(255,255,255,0.35)');
-    sub.setAttribute('pointer-events','none');
-    sub.textContent = nd.data.sub;
-    g.appendChild(sub);
-
-    g.addEventListener('mousedown',function(ev){
-      ev.stopPropagation();
-      dragNode = nd;
-      var rect = svg.getBoundingClientRect();
-      dragOff.x = ev.clientX*(FD.W/rect.width) - nd.x;
-      dragOff.y = (ev.clientY-rect.top)*(FD.H/rect.height) - nd.y;
-      nd.pinned = true;
-      svg.style.cursor='grabbing';
-    });
-    g.addEventListener('click',function(ev){ ev.stopPropagation(); showNode(nd.id, infoId); });
-    gNode.appendChild(g);
-  });
-
-  svg.addEventListener('mousemove',function(ev){
-    if(!dragNode) return;
-    var rect = svg.getBoundingClientRect();
-    dragNode.x = ev.clientX*(FD.W/rect.width) - dragOff.x;
-    dragNode.y = (ev.clientY-rect.top)*(FD.H/rect.height) - dragOff.y;
-    dragNode.vx=0; dragNode.vy=0;
-  });
-  svg.addEventListener('mouseup',function(){ dragNode=null; svg.style.cursor='grab'; });
-  svg.addEventListener('mouseleave',function(){ dragNode=null; });
-}
-
-function hexF(hex,ch){
-  // extract r,g,b channel as 0-1 for feColorMatrix
-  var r=parseInt(hex.slice(1,3),16)/255;
-  var g=parseInt(hex.slice(3,5),16)/255;
-  var b=parseInt(hex.slice(5,7),16)/255;
-  return [r,g,b][ch].toFixed(2);
-}
-
-function fdTick(){
-  if(!fdRunning) return;
-  var nodes = fdNodes;
-  var edges = FD.edges;
-  var W = FD.W, H = FD.H;
   var nodeMap = {};
-  nodes.forEach(function(n){ nodeMap[n.id]=n; });
+  VV.nodes.forEach(function(n){ nodeMap[n.d.id]=n; });
+  VV.edges = VV_LINKS.map(function(e){
+    return {d:e, a:nodeMap[e.s], b:nodeMap[e.t]};
+  });
 
-  // forces
+  // ── DRAW GROUPS (layers) ─────────────────────────────────────
+  var gLinks  = document.createElementNS('http://www.w3.org/2000/svg','g');
+  var gKlbls  = document.createElementNS('http://www.w3.org/2000/svg','g');
+  var gNodes  = document.createElementNS('http://www.w3.org/2000/svg','g');
+  svg.appendChild(gLinks); svg.appendChild(gKlbls); svg.appendChild(gNodes);
+
+  // ── DRAW LINKS (exact JSX style) ────────────────────────────
+  VV.edges.forEach(function(e,i){
+    var col = VV_TYPE[e.d.type].color;
+    var sw  = 1.5 + e.d.w * 3;   // exact JSX: 1.5 + strength*3
+    var isCrit = e.d.K >= 6;
+    var isDash = (e.d.mode==='restringe') ? '6,3' : (e.d.mode==='bloquea') ? '2,2' : null;
+
+    var line = document.createElementNS('http://www.w3.org/2000/svg','line');
+    line.setAttribute('id','vl-'+i);
+    line.setAttribute('stroke', col);
+    line.setAttribute('stroke-width', sw);
+    line.setAttribute('stroke-opacity', '0.75');
+    if(isDash) line.setAttribute('stroke-dasharray', isDash);
+    line.setAttribute('marker-end','url(#varr-'+e.d.type+')');
+    line.setAttribute('filter','url(#vgf-'+e.d.type+')');
+    line.style.cursor = 'pointer';
+
+    // hover — exact JSX: opacity→1, width 2+strength*4
+    line.addEventListener('mouseover', (function(idx,strength){
+      return function(){
+        this.setAttribute('stroke-opacity','1');
+        this.setAttribute('stroke-width', 2+strength*4);
+        vvShowHover(idx);
+      };
+    })(i, e.d.w));
+    line.addEventListener('mouseout', (function(idx,sw2,isCrit2){
+      return function(){
+        var vis = vvEdgeVisible(idx);
+        this.setAttribute('stroke-opacity', vis ? '0.75' : '0.05');
+        this.setAttribute('stroke-width', sw2);
+        if(!VV.selectedEdge) vvClearHover();
+      };
+    })(i, sw, isCrit));
+    line.addEventListener('click', (function(idx){ return function(ev){ ev.stopPropagation(); vvSelectEdge(idx); }; })(i));
+
+    gLinks.appendChild(line);
+
+    // K label — exact JSX: font-size 9px, Courier New, opacity 0.85 if K>=6 else 0.25
+    var klbl = document.createElementNS('http://www.w3.org/2000/svg','text');
+    klbl.setAttribute('id','vk-'+i);
+    klbl.setAttribute('text-anchor','middle');
+    klbl.setAttribute('font-size','9');
+    klbl.setAttribute('font-family','"Courier New",monospace');
+    klbl.setAttribute('fill', col);
+    klbl.setAttribute('opacity', isCrit ? '0.85' : '0.25');
+    klbl.setAttribute('pointer-events','none');
+    klbl.textContent = 'K'+e.d.K;
+    gKlbls.appendChild(klbl);
+  });
+
+  // ── DRAW NODES (exact JSX style) ────────────────────────────
+  VV.nodes.forEach(function(nd,i){
+    var gc = VV_GC[nd.d.group];  // group color (like JSX)
+    var lines = nd.d.label.split('\n');
+
+    var g = document.createElementNS('http://www.w3.org/2000/svg','g');
+    g.setAttribute('id','vn-'+nd.d.id);
+    g.style.cursor = 'pointer';
+
+    // outer dashed ring: r=26, fill:none, stroke:gc, stroke-width:1.5, stroke-dasharray:"4,2", opacity:0.6
+    var outerRing = document.createElementNS('http://www.w3.org/2000/svg','circle');
+    outerRing.setAttribute('class','vring');
+    outerRing.setAttribute('r','26');
+    outerRing.setAttribute('fill','none');
+    outerRing.setAttribute('stroke', gc);
+    outerRing.setAttribute('stroke-width','1.5');
+    outerRing.setAttribute('stroke-dasharray','4,2');
+    outerRing.setAttribute('opacity','0.6');
+    g.appendChild(outerRing);
+
+    // inner circle: r=22, fill:gc+"18", stroke:gc, stroke-width:2, filter:node-glow
+    var inner = document.createElementNS('http://www.w3.org/2000/svg','circle');
+    inner.setAttribute('class','vinner');
+    inner.setAttribute('r','22');
+    inner.setAttribute('fill', gc+'18');
+    inner.setAttribute('stroke', gc);
+    inner.setAttribute('stroke-width','2');
+    inner.setAttribute('filter','url(#vgf-node)');
+    g.appendChild(inner);
+
+    // text inside: id.split("_")[0] or first 4 chars — exact JSX approach
+    // JSX: d.id.split("_")[0].slice(0,4), font-size:10px, Courier New, bold
+    var abbr = nd.d.id.split('_').pop().replace(',','').slice(0,5);
+    var tInner = document.createElementNS('http://www.w3.org/2000/svg','text');
+    tInner.setAttribute('text-anchor','middle');
+    tInner.setAttribute('dy','0.35em');  // exact JSX
+    tInner.setAttribute('font-size','10');
+    tInner.setAttribute('font-family','"Courier New",monospace');
+    tInner.setAttribute('font-weight','bold');
+    tInner.setAttribute('fill', gc);
+    tInner.setAttribute('pointer-events','none');
+    tInner.setAttribute('class','vabbr');
+    tInner.textContent = abbr;
+    g.appendChild(tInner);
+
+    // labels below: translate(0,32), each line y=i*12 — exact JSX
+    var labelG = document.createElementNS('http://www.w3.org/2000/svg','g');
+    labelG.setAttribute('class','vlabels');
+    lines.forEach(function(line2, li){
+      var tl = document.createElementNS('http://www.w3.org/2000/svg','text');
+      tl.setAttribute('text-anchor','middle');
+      tl.setAttribute('y', li * 12);  // exact JSX
+      tl.setAttribute('font-size','9');
+      tl.setAttribute('font-family','"Courier New",monospace');
+      tl.setAttribute('fill','#e2e8f0');  // exact JSX
+      tl.setAttribute('opacity','0.9');   // exact JSX
+      tl.setAttribute('pointer-events','none');
+      tl.textContent = line2;
+      labelG.appendChild(tl);
+    });
+    g.appendChild(labelG);
+
+    // drag
+    g.addEventListener('mousedown', (function(node){
+      return function(ev){
+        ev.stopPropagation();
+        VV.drag = node; node.pinned = true;
+        var rect = svg.getBoundingClientRect();
+        VV.dragOff.x = ev.clientX - rect.left - node.x;
+        VV.dragOff.y = ev.clientY - rect.top  - node.y;
+        g.style.cursor = 'grabbing';
+      };
+    })(nd));
+    g.addEventListener('click', (function(node){ return function(ev){ ev.stopPropagation(); vvSelectNode(node.d.id); }; })(nd));
+    gNodes.appendChild(g);
+  });
+
+  // drag/release listeners
+  svg.addEventListener('mousemove', function(ev){
+    if(!VV.drag) return;
+    var rect = svg.getBoundingClientRect();
+    VV.drag.x = ev.clientX - rect.left - VV.dragOff.x;
+    VV.drag.y = ev.clientY - rect.top  - VV.dragOff.y;
+    VV.drag.vx = 0; VV.drag.vy = 0;
+  });
+  svg.addEventListener('mouseup', function(){ if(VV.drag){ VV.drag.pinned=false; VV.drag=null; } });
+  svg.addEventListener('mouseleave', function(){ if(VV.drag){ VV.drag.pinned=false; VV.drag=null; } });
+  svg.addEventListener('click', function(){ vvClearSelection(); });
+
+  vvBuildCritList();
+  VV.running = true;
+  vvTick();
+}
+
+// ── FORCE SIMULATION TICK ────────────────────────────────────
+function vvTick(){
+  if(!VV.running) return;
+  var nodes = VV.nodes, edges = VV.edges;
+  var nMap = {}; nodes.forEach(function(n){ nMap[n.d.id]=n; });
+  var svg = document.getElementById('vv-svg');
+  if(!svg){ VV.running=false; return; }
+  var W = svg.clientWidth||680, H = svg.clientHeight||480;
+
+  // forces — equivalent to JSX d3: charge -400, link distance 130+(1-str)*80, collide 52
   nodes.forEach(function(a){
-    if(a.pinned && a===dragNode) return;
+    if(a.pinned) return;
     var fx=0, fy=0;
-
-    // repulsion all pairs
+    // repulsion (charge -400 equivalent)
     nodes.forEach(function(b){
       if(b===a) return;
-      var dx=a.x-b.x, dy=a.y-b.y;
-      var d2 = dx*dx+dy*dy+0.01;
-      var d = Math.sqrt(d2);
+      var dx=a.x-b.x, dy=a.y-b.y, d2=dx*dx+dy*dy+1, d=Math.sqrt(d2);
       var F = 4000/d2;
-      fx += F*dx/d; fy += F*dy/d;
+      fx+=F*dx/d; fy+=F*dy/d;
     });
-
-    // spring attraction along edges
+    // link spring (distance: 130 + (1-w)*80)
     edges.forEach(function(e){
       var other = null;
-      if(e.s===a.id) other=nodeMap[e.t];
-      else if(e.t===a.id) other=nodeMap[e.s];
+      if(e.d.s===a.d.id) other=nMap[e.d.t];
+      else if(e.d.t===a.d.id) other=nMap[e.d.s];
       if(!other) return;
-      var dx=other.x-a.x, dy=other.y-a.y;
-      var d=Math.sqrt(dx*dx+dy*dy)+0.01;
-      var rest = 100 + (1-e.w)*60;
-      var F = 0.04*(d-rest);
-      fx += F*dx/d; fy += F*dy/d;
+      var dx=other.x-a.x, dy=other.y-a.y, d=Math.sqrt(dx*dx+dy*dy)+0.01;
+      var rest = 130 + (1-e.d.w)*80;  // exact JSX distance formula
+      var F = 0.05*(d-rest);
+      fx+=F*dx/d; fy+=F*dy/d;
     });
-
     // center pull
-    fx += (W/2-a.x)*0.003;
-    fy += (H/2-a.y)*0.004;
-
-    a.vx = (a.vx + fx)*0.82;
-    a.vy = (a.vy + fy)*0.82;
-    if(!a.pinned){
-      a.x += a.vx; a.y += a.vy;
-    }
-    a.x = Math.max(a.r+4, Math.min(W-a.r-4, a.x));
-    a.y = Math.max(a.r+4, Math.min(H-a.r-20, a.y));
+    fx += (W/2-a.x)*0.004; fy += (H/2-a.y)*0.005;
+    a.vx=(a.vx+fx)*0.78; a.vy=(a.vy+fy)*0.78;
+    a.x+=a.vx; a.y+=a.vy;
+    // collide radius 52
+    a.x=Math.max(52,Math.min(W-52,a.x)); a.y=Math.max(52,Math.min(H-52,a.y));
   });
+  nodes.forEach(function(n){ if(n.pinned&&n!==VV.drag) n.pinned=false; });
 
-  // release pin after drag ends
-  nodes.forEach(function(n){ if(n.pinned && n!==dragNode) n.pinned=false; });
-
-  // render
+  // render nodes
   nodes.forEach(function(nd){
-    var g = document.getElementById('fno'+nd.id) || document.getElementById('fn'+nd.id);
+    var g = document.getElementById('vn-'+nd.d.id);
     if(!g) return;
-    if(nd.shape==='diamond'){
-      var r=nd.r, pts=[nd.x+','+(nd.y-r),(nd.x+r)+','+nd.y,nd.x+','+(nd.y+r),(nd.x-r)+','+nd.y].join(' ');
-      var sh = g.querySelector('.nd-shape'); if(sh) sh.setAttribute('points',pts);
-    } else {
-      var sh = g.querySelector('.nd-shape');
-      if(sh){ sh.setAttribute('cx',nd.x); sh.setAttribute('cy',nd.y); }
+    var x=nd.x, y=nd.y;
+    var ring = g.querySelector('.vring');
+    var inner = g.querySelector('.vinner');
+    var abbr  = g.querySelector('.vabbr');
+    var lbls  = g.querySelector('.vlabels');
+    if(ring){  ring.setAttribute('cx',x);  ring.setAttribute('cy',y);  }
+    if(inner){ inner.setAttribute('cx',x); inner.setAttribute('cy',y); }
+    if(abbr){  abbr.setAttribute('x',x);   abbr.setAttribute('y',y);   }
+    if(lbls){  lbls.setAttribute('transform','translate('+x+','+(y+32)+')'); }  // exact JSX
+  });
+
+  // render edges + K labels
+  edges.forEach(function(e,i){
+    var line = document.getElementById('vl-'+i);
+    var klbl = document.getElementById('vk-'+i);
+    if(!line) return;
+    var a=e.a, b=e.b;
+    var dx=b.x-a.x, dy=b.y-a.y, d=Math.sqrt(dx*dx+dy*dy)+0.01;
+    // offset endpoint by r=22+arrowhead clearance
+    var ex=b.x-dx/d*28, ey=b.y-dy/d*28;
+    line.setAttribute('x1',a.x); line.setAttribute('y1',a.y);
+    line.setAttribute('x2',ex);  line.setAttribute('y2',ey);
+    // visibility from filters
+    var vis = (VV.filterType==='ALL'||e.d.type===VV.filterType) && e.d.K>=VV.filterK;
+    line.setAttribute('stroke-opacity', vis ? '0.75' : '0.05');
+    if(klbl){
+      klbl.setAttribute('x',(a.x+b.x)/2);
+      klbl.setAttribute('y',(a.y+b.y)/2-5);  // exact JSX: -5
+      klbl.setAttribute('opacity', vis && e.d.K>=6 ? '0.85' : (vis?'0.25':'0'));
     }
-    var lbl=g.querySelector('.nd-lbl'); if(lbl){ lbl.setAttribute('x',nd.x); lbl.setAttribute('y',nd.y); }
-    var sub=g.querySelector('.nd-sub'); if(sub){ sub.setAttribute('x',nd.x); sub.setAttribute('y',nd.y+nd.r+10); }
   });
 
-  var nodeMap2 = {};
-  nodes.forEach(function(n){ nodeMap2[n.id]=n; });
-  FD.edges.forEach(function(e,i){
-    var a=nodeMap2[e.s], b=nodeMap2[e.t];
-    if(!a||!b) return;
-    var path = document.getElementById('feo'+i) || document.getElementById('fe'+i);
-    if(!path) return;
-    var dx=b.x-a.x, dy=b.y-a.y;
-    var d=Math.sqrt(dx*dx+dy*dy)+0.01;
-    var br=b.r+6;
-    var ex=b.x-dx/d*br, ey=b.y-dy/d*br;
-    var mx=(a.x+b.x)/2 + (i%3-1)*20;
-    var my=(a.y+b.y)/2 + (i%2===0?15:-15);
-    path.setAttribute('d','M '+a.x+' '+a.y+' Q '+mx+' '+my+' '+ex+' '+ey);
-  });
-
-  requestAnimationFrame(fdTick);
+  requestAnimationFrame(vvTick);
 }
 
-function hexRgba(hex,a){
-  var r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
-  return 'rgba('+r+','+g+','+b+','+a+')';
+// ── INFO PANEL FUNCTIONS ─────────────────────────────────────
+function vvShowHover(idx){
+  if(VV.selectedEdge!==null) return;
+  var e = VV_LINKS[idx];
+  var col = VV_TYPE[e.type].color;
+  document.getElementById('vv-info').innerHTML =
+    '<div style="font-size:9px;letter-spacing:2px;color:#8b949e;margin-bottom:6px">HOVER</div>'+
+    '<div style="font-size:10px;color:'+col+';margin-bottom:4px;font-weight:bold">'+e.id+' · '+e.type+'</div>'+
+    '<div style="font-size:9px;color:#c9d1d9">'+e.s+' → '+e.t+'<br>Modo: '+e.mode+' · w='+e.w+'<br>K='+e.K+' (I='+e.I+' E='+e.E+' P='+e.P+')</div>';
 }
-
-function showNode(id, infoId){
-  if(!infoId) infoId='net-info-out';
-  var nd = fdNodes.find(function(n){ return n.id===id; });
+function vvClearHover(){
+  if(VV.selectedEdge!==null||VV.selectedNode!==null) return;
+  document.getElementById('vv-info').innerHTML =
+    '<div style="font-size:9px;letter-spacing:2px;color:#8b949e;margin-bottom:8px">SELECCIÓN</div>'+
+    '<div style="font-size:9px;color:#8b949e">Haz clic en un nodo o arista.</div>';
+}
+function vvSelectEdge(idx){
+  VV.selectedEdge = idx; VV.selectedNode = null;
+  var e = VV_LINKS[idx];
+  var col = VV_TYPE[e.type].color;
+  var kColor = e.K>=6?'#c2410c':e.K>=4?'#b45309':'#0369a1';
+  var html =
+    '<div style="font-size:9px;letter-spacing:2px;color:#8b949e;margin-bottom:6px">INTERDEPENDENCIA SELECCIONADA</div>'+
+    '<div style="font-size:11px;font-weight:bold;margin-bottom:6px;color:'+col+'">'+e.id+' — '+VV_TYPE[e.type].label+'</div>'+
+    '<table style="width:100%;border-collapse:collapse;font-size:9px">'+
+    ['Origen:'+e.s,'Destino:'+e.t,'Modo:'+e.mode,'Fuerza:'+(e.w*100).toFixed(0)+'%','Criticidad K:'+e.K+' / 9','Impacto I:'+e.I+' / 3','Exposición E:'+e.E+' / 3','Cascada P:'+e.P+' / 3'].map(function(r){
+      var p=r.indexOf(':'); var lbl=r.slice(0,p); var val=r.slice(p+1);
+      return '<tr><td style="color:#8b949e;padding:2px 4px 2px 0;width:70px">'+lbl+'</td><td style="color:#f0f6fc">'+val+'</td></tr>';
+    }).join('')+'</table>'+
+    '<div style="margin-top:8px">'+
+    '<div style="font-size:9px;color:#8b949e;margin-bottom:3px">Criticidad K = I+E+P</div>'+
+    '<div style="background:#e2e8f0;border-radius:2px;height:6px">'+
+    '<div style="background:'+kColor+';width:'+((e.K/9)*100)+'%;height:100%;border-radius:2px"></div></div>'+
+    '<div style="display:flex;justify-content:space-between;font-size:8px;color:#8b949e;margin-top:2px"><span>0</span><span>K≥6 crítico</span><span>9</span></div></div>'+
+    '<div style="margin-top:8px;font-size:9px;color:#c9d1d9;border-left:2px solid '+col+';padding-left:6px">'+e.just+'</div>';
+  document.getElementById('vv-info').innerHTML = html;
+}
+function vvSelectNode(id){
+  VV.selectedNode = id; VV.selectedEdge = null;
+  var nd = VV_NODES.find(function(n){ return n.id===id; });
   if(!nd) return;
-  var col = CC[nd.data.crit];
-  var critLbl = {C:'<b style="color:#ef4444">Crítico</b>',I:'<b style="color:#f59e0b">Importante</b>','-':'<span style="color:#6ee7b7">No-físico</span>'};
-  var eo = FD.edges.filter(function(e){ return e.s===id; }).length;
-  var ei = FD.edges.filter(function(e){ return e.t===id; }).length;
-  document.getElementById('net-info').innerHTML =
-    '<b style="color:'+col+'">'+nd.data.lbl+'</b> — '+nd.data.sub+
-    ' &nbsp;|&nbsp; Capa: '+nd.data.layer+' &nbsp;|&nbsp; Criticidad: '+critLbl[nd.data.crit]+
-    '<br>Activos: '+nd.data.assets+' &nbsp;|&nbsp; Ecuación: '+nd.data.eq+
-    ' &nbsp;|&nbsp; Conexiones: '+eo+' salientes, '+ei+' entrantes';
+  var gc = VV_GC[nd.group];
+  var deps = VV_LINKS.filter(function(e){ return e.s===id||e.t===id; });
+  var html =
+    '<div style="font-size:9px;letter-spacing:2px;color:#8b949e;margin-bottom:6px">NODO SELECCIONADO</div>'+
+    '<div style="font-size:13px;font-weight:bold;margin-bottom:4px;color:'+gc+'">'+nd.label.replace('\n',' ')+'</div>'+
+    '<div style="font-size:9px;color:#8b949e;margin-bottom:6px">Grupo: '+nd.group+'</div>'+
+    '<div style="font-size:9px;color:#8b949e;margin-bottom:4px">Dependencias:</div>'+
+    deps.map(function(l){
+      var col=VV_TYPE[l.type].color;
+      return '<div style="font-size:9px;color:'+col+';background:'+col+'11;padding:2px 6px;border-radius:2px;margin-bottom:2px;border-left:2px solid '+col+'">'+(l.s===id?'→ OUT':'← IN')+' '+(l.s===id?l.t:l.s)+' ['+l.type+'·K'+l.K+']</div>';
+    }).join('');
+  document.getElementById('vv-info').innerHTML = html;
+}
+function vvClearSelection(){
+  VV.selectedEdge=null; VV.selectedNode=null; vvClearHover();
+}
+function vvBuildCritList(){
+  var el = document.getElementById('vv-crit');
+  if(!el) return;
+  var crit = VV_LINKS.filter(function(e){ return e.K>=6; }).sort(function(a,b){ return b.K-a.K; });
+  el.innerHTML = crit.map(function(e,i){
+    var col=VV_TYPE[e.type].color;
+    var kc=e.K>=8?'#c2410c':e.K>=6?'#b45309':'#475569';
+    return '<div onclick="vvSelectEdge('+VV_LINKS.indexOf(e)+')" style="display:flex;gap:6px;align-items:center;margin-bottom:5px;cursor:pointer;padding:4px 6px;border-radius:3px;background:#0d1117;border:1px solid #e2e8f0;border-left:2px solid '+col+';transition:background .2s">'+
+      '<span style="font-size:8px;color:#8b949e;width:24px">'+e.id+'</span>'+
+      '<span style="font-size:8px;color:'+col+';width:22px">['+e.type+']</span>'+
+      '<span style="font-size:8px;color:#c9d1d9;flex:1">'+e.s+'→'+e.t+'</span>'+
+      '<span style="font-size:8px;font-weight:bold;color:'+kc+'">K'+e.K+'</span></div>';
+  }).join('');
 }
 
-function showEdge(i, infoId){
-  if(!infoId) infoId='net-info-out';
-  var e = FD.edges[i];
-  var col = LC[e.layer];
-  var crit = e.K>=6 ? ' <b style="color:'+col+'">▲ DEPENDENCIA CRÍTICA</b>' : '';
-  document.getElementById('net-info').innerHTML =
-    '<b style="color:'+col+'">'+e.s.replace('_','_')+'→'+e.t+'</b> ['+e.layer+', w='+e.w+']'+crit+
-    ' &nbsp;K_dep='+e.K+'<br>'+e.just;
+// ── FILTER FUNCTIONS ─────────────────────────────────────────
+function vvFilter(type){
+  VV.filterType = type;
+  // update button styles
+  ['ALL','PH','ICT','EC','GV','SO'].forEach(function(t){
+    var btn = document.getElementById('vvf-'+t);
+    if(!btn) return;
+    var active = (t===type);
+    var col = t==='ALL' ? '#475569' : VV_TYPE[t].color;
+    btn.style.borderColor = active ? col : '#e2e8f0';
+    btn.style.background  = active ? (t==='ALL'?'#f1f5f9':col+'18') : 'white';
+    btn.style.boxShadow   = active ? '0 0 6px '+col+'40' : 'none';
+  });
 }
-
-function toggleLayer(lyr, btn){
-  activeLayers[lyr] = !activeLayers[lyr];
-  btn.style.opacity = activeLayers[lyr] ? '1' : '0.3';
-  document.querySelectorAll('.edge-'+lyr).forEach(function(el){
-    el.style.display = activeLayers[lyr] ? '' : 'none';
+function vvKFilter(k){
+  VV.filterK = k;
+  [0,4,6,7].forEach(function(v){
+    var btn = document.getElementById('vvk-'+v);
+    if(!btn) return;
+    btn.style.borderColor = (v===k) ? '#c2410c' : '#e2e8f0';
+    btn.style.background  = (v===k) ? '#c2410c15' : 'white';
+    btn.style.color       = (v===k) ? '#c2410c' : '#64748b';
   });
 }
 
-// hook into setStep
-var _ss = window.setStep;
-var fdOutBuilt = false;
+// ── INIT on tab open ─────────────────────────────────────────
+var _vvSS = window.setStep;
 window.setStep = function(phase, step, el){
-  _ss(phase, step, el);
-  if(phase==='f1' && step==='out' && !fdOutBuilt){
-    fdOutBuilt = true;
-    setTimeout(function(){ fdInitOut(); }, 60);
+  _vvSS(phase, step, el);
+  if(phase==='f1' && step==='out'){
+    var sc = document.getElementById('right-f1-out');
+    if(sc) sc.style.height='100%';
+    if(!VV.built){ VV.built=true; setTimeout(vvBuild, 80); }
   }
 };
-function fdInitOut(){ fdInit('net-svg-out','net-info-out','layer-filters-out'); }
-function toggleLayerOut(lyr,btn){ toggleLayer(lyr,btn,'net-svg-out'); }
 
 </script>
 </body>
-</html>
