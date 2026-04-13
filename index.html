@@ -35,6 +35,12 @@ header{background:var(--s1);border-bottom:1px solid var(--b1);height:48px;paddin
 .st{display:flex;align-items:center;gap:7px;padding:5px 12px;border:1px solid transparent;border-bottom:none;border-radius:5px 5px 0 0;background:transparent;font-family:var(--f);font-size:12px;color:var(--t3);cursor:pointer;transition:all .12s;position:relative;top:1px}
 .st:hover{color:var(--t2);background:var(--s2)}
 .st.active{background:var(--s2);border-color:var(--b1);border-bottom-color:var(--s2);color:var(--t1);font-weight:500}
+.stp1{color:#10b981;font-weight:700;font-size:11px;letter-spacing:.03em}
+.stp2{color:#3b82f6;font-weight:700;font-size:11px;letter-spacing:.03em}
+.stf1{color:#a78bfa;font-weight:700;font-size:11px;letter-spacing:.03em}
+.st:hover .stp1,.st.active .stp1{color:#34d399}
+.st:hover .stp2,.st.active .stp2{color:#60a5fa}
+.st:hover .stf1,.st.active .stf1{color:#c4b5fd}
 .sb{font-size:9px;padding:1px 5px;border-radius:3px;font-weight:600;letter-spacing:.04em;text-transform:uppercase}
 .sb-ok{background:var(--gbg);color:var(--green);border:1px solid var(--gbd)}
 .sb-nx{background:var(--s3);color:var(--t3)}
@@ -43,7 +49,7 @@ header{background:var(--s1);border-bottom:1px solid var(--b1);height:48px;paddin
 .panel::-webkit-scrollbar{width:4px}
 .panel::-webkit-scrollbar-thumb{background:var(--s4);border-radius:2px}
 .pl{background:var(--s1);border-right:1px solid var(--b1)}
-.pr{background:var(--s2)}.pr#panel-right{overflow:hidden}
+.pr{background:var(--s2)}.pr#panel-right{overflow-y:auto}
 .plabel{font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:6px}
 .ptitle{font-size:18px;font-weight:600;color:var(--t1);margin-bottom:8px;line-height:1.25}
 .pdesc{font-size:13px;color:var(--t2);line-height:1.6;margin-bottom:20px;padding-bottom:18px;border-bottom:1px solid var(--b1)}
@@ -139,14 +145,14 @@ tr.dim td{opacity:.28}
   <button class="pb locked"><span class="pn">5</span>Diagn&oacute;stico y Factibilidad</button>
 </div>
 <div class="stabs">
-  <button class="st active" onclick="setStep('p1','t11',this)">P1 &mdash; T1.1 <span class="sb sb-ok">Aprobado</span></button>
-  <button class="st" onclick="setStep('p1','t12',this)">P1 &mdash; T1.2 <span class="sb sb-ok">Aprobado</span></button>
-  <button class="st" onclick="setStep('p1','t13',this)">P1 &mdash; T1.3 <span class="sb sb-ok">Aprobado</span></button>
-  <button class="st" onclick="setStep('p2','t21',this)">P2 &mdash; T2.1 <span class="sb sb-ok">Aprobado</span></button>
-  <button class="st" onclick="setStep('p2','t22',this)">P2 &mdash; T2.2 <span class="sb sb-ok">Aprobado</span></button>
-  <button class="st" onclick="setStep('p2','t23',this)">P2 &mdash; T2.3 <span class="sb sb-ok">Aprobado</span></button>
-  <button class="st" onclick="setStep('p2','t24',this)">P2 &mdash; T2.4 <span class="sb sb-ok">Aprobado</span></button>
-  <button class="st" onclick="setStep('f1','out',this)">Fase 1 &mdash; Output <span class="sb" style="background:rgba(16,185,129,0.15);color:var(--green);border:1px solid var(--gbd)">Modelo</span></button>
+  <button class="st active" onclick="setStep('p1','t11',this)"><span class="stp1">P1</span> T1.1 Perímetro</button>
+  <button class="st" onclick="setStep('p1','t12',this)"><span class="stp1">P1</span> T1.2 Activos</button>
+  <button class="st" onclick="setStep('p1','t13',this)"><span class="stp1">P1</span> T1.3 Baseline</button>
+  <button class="st" onclick="setStep('p2','t21',this)"><span class="stp2">P2</span> T2.1 Nodos</button>
+  <button class="st" onclick="setStep('p2','t22',this)"><span class="stp2">P2</span> T2.2 Interdep.</button>
+  <button class="st" onclick="setStep('p2','t23',this)"><span class="stp2">P2</span> T2.3 Ecuaciones</button>
+  <button class="st" onclick="setStep('p2','t24',this)"><span class="stp2">P2</span> T2.4 Verificación</button>
+  <button class="st" onclick="setStep('f1','out',this)"><span class="stf1">F1</span> Output</button>
 </div>
 
 <div class="panels">
